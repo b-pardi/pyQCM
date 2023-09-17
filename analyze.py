@@ -817,9 +817,6 @@ def analyze_data(input):
             tempVtime_ax = tempVtime_fig.add_subplot(111)
             plot_temp_v_time(tempVtime_fig, tempVtime_ax, temperature_df[analysis.temp_time_col].values, temperature_df[analysis.temp_col].values, plot_customs['time_scale'], plot_customs['fig_format'])    
 
-        if input.will_overwrite_file:
-            df.to_csv(f"raw_data/CLEANED-{analysis.formatted_fn}", index=False)
-
         # Titles, lables, etc. for plots
         rf_fig_title = "QCM-D Resonant Frequency"
         rf_fn = "qcmd-plots/resonant-freq-plot"
@@ -864,16 +861,19 @@ def analyze_data(input):
             time_scale_divisor = 60
         elif plot_customs['time_scale'] == 'hr':
             time_scale_divisor = 3600
+        
+        df.dropna(axis=0, how='any', inplace=True)
+        df[analysis.time_col] /= time_scale_divisor
+        print(df)
 
         raw_freqs, raw_disps = get_channels(input.which_plot['raw'].items())
         raw_freq_fig = plt.figure()
         raw_freq_ax = raw_freq_fig.add_subplot(111)
         # gather and plot raw frequency data
         for i in range(len(raw_freqs)):
-            rf_data_df = df[[analysis.time_col,raw_freqs[i]]]
-            rf_data_df = rf_data_df.dropna(axis=0, how='any', inplace=False)
-            x_time = rf_data_df[analysis.time_col] / time_scale_divisor
-            y_freq = rf_data_df[raw_freqs[i]]
+            freq_df = df[[analysis.time_col,raw_freqs[i]]]
+            x_time = freq_df[analysis.time_col]
+            y_freq = freq_df[raw_freqs[i]]
         
             raw_freq_ax.plot(x_time[::points_idx], y_freq[::points_idx], '.', markersize=1, label=ordinal(get_num_from_string(raw_freqs[i])), color=freq_color_map[raw_freqs[i]])
             
@@ -881,10 +881,9 @@ def analyze_data(input):
         raw_dis_fig = plt.figure()
         raw_dis_ax = raw_dis_fig.add_subplot(111)
         for i in range(len(raw_disps)):
-            dis_data_df = df[[analysis.time_col,raw_disps[i]]]
-            dis_data_df = dis_data_df.dropna(axis=0, how='any', inplace=False)
-            x_time = dis_data_df[analysis.time_col] / time_scale_divisor
-            y_dis = dis_data_df[raw_disps[i]]
+            dis_df = df[[analysis.time_col,raw_disps[i]]]
+            x_time = dis_df[analysis.time_col]
+            y_dis = dis_df[raw_disps[i]]
             raw_dis_ax.plot(x_time[::points_idx], y_dis[::points_idx], '.', markersize=1, label=ordinal(get_num_from_string(raw_disps[i])), color=dis_color_map[raw_disps[i]])
             
         # save raw frequency plots
@@ -908,6 +907,7 @@ def analyze_data(input):
                 interactive_plot(input, cleaned_df, (x_time_freq, x_time_dis), analysis.time_col, 'clean')
 
         if input.interactive_plot_data_fmt['raw']:
+            print(df)
             interactive_plot(input, df, (x_time, x_time), analysis.time_col, 'raw')
 
     # clear plots and lists for next iteration
