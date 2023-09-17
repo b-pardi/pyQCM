@@ -347,6 +347,15 @@ def map_colors():
 
     return freq_colors, dis_colors
 
+def get_time_scale_divisor(time_scale):
+    time_scale_div = 1
+    if time_scale == 'min':
+        time_scale_div = 60
+    elif time_scale == 'hr':
+        time_scale_div = 3600
+
+    return time_scale_div
+
 def set_x_entry():
     def handle_focus_in(entry):
         x_entry.delete(0,"end")
@@ -716,14 +725,6 @@ def analyze_data(input):
 
         if input.will_calculate_offset:
             find_offset_values(baseline_df)
-
-        # choose appropriate divisor for x scale of time
-        if plot_customs['time_scale'] == 'min':
-            divisor = 60
-        elif plot_customs['time_scale'] == 'hr':
-            divisor = 3600
-        else:
-            divisor = 1
         
         for i in range(clean_iters):
             # grab data from df and grab only columns we need, then drop nan values
@@ -751,7 +752,7 @@ def analyze_data(input):
             # shift x to left to start at 0
             baseline_start = data_df[analysis.time_col].iloc[0]
             data_df[analysis.time_col] -= baseline_start # baseline correction
-            data_df[analysis.time_col] /= divisor
+            data_df[analysis.time_col] /= get_time_scale_divisor(plot_customs['time_scale'])
             
             x_time = data_df[analysis.time_col]
             y_freq = data_df[clean_freqs[i]]
@@ -815,6 +816,7 @@ def analyze_data(input):
         if input.will_plot_temp_v_time:
             tempVtime_fig = plt.figure()
             tempVtime_ax = tempVtime_fig.add_subplot(111)
+            temperature_df[analysis.temp_time_col] /= get_time_scale_divisor(plot_customs['time_scale'])
             plot_temp_v_time(tempVtime_fig, tempVtime_ax, temperature_df[analysis.temp_time_col].values, temperature_df[analysis.temp_col].values, plot_customs['time_scale'], plot_customs['fig_format'])    
 
         # Titles, lables, etc. for plots
@@ -854,16 +856,8 @@ def analyze_data(input):
         rf_fig_title = "RAW QCM-D Resonant Frequency"
         fig_x = determine_xlabel(plot_customs['time_scale'])
         dis_fig_title = "RAW QCM-D Dissipation"
-
-        # choose appropriate divisor for x scale of time
-        time_scale_divisor = 1
-        if plot_customs['time_scale'] == 'min':
-            time_scale_divisor = 60
-        elif plot_customs['time_scale'] == 'hr':
-            time_scale_divisor = 3600
         
-        df.dropna(axis=0, how='any', inplace=True)
-        df[analysis.time_col] /= time_scale_divisor
+        df[analysis.time_col] /= get_time_scale_divisor(plot_customs['time_scale'])
         print(df)
 
         raw_freqs, raw_disps = get_channels(input.which_plot['raw'].items())

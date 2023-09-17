@@ -16,7 +16,7 @@ import pandas as pd
 import numpy as np
 
 import Exceptions
-from analyze import analyze_data, ordinal, select_calibration_data
+from analyze import analyze_data, ordinal
 from format_file import format_raw_data
 from modeling import thin_film_liquid_analysis, thin_film_air_analysis, sauerbrey, avgs_analysis, gordon_kanazawa, crystal_thickness
 
@@ -269,11 +269,11 @@ class App(tk.Tk):
 
         # scrollbar
         self.app_canvas = tk.Canvas(container)
-        self.app_canvas.pack(side='left', fill='both', expand=True)
         self.scrollbarX = ttk.Scrollbar(container, orient='horizontal', command=self.app_canvas.xview)
         self.scrollbarX.pack(side='bottom', fill='x')
         self.scrollbarY = ttk.Scrollbar(container, orient='vertical', command=self.app_canvas.yview)
         self.scrollbarY.pack(side='right', fill='y')
+        self.app_canvas.pack(side='left', fill='both', expand=True)
         self.app_canvas.configure(yscrollcommand=self.scrollbarY.set, xscrollcommand=self.scrollbarX.set)
         
         self.inner_frame = tk.Frame(self.app_canvas)
@@ -340,6 +340,9 @@ class App(tk.Tk):
     def open_plot_opts_window(self):
         self.plot_opts_window.open_opts_window(self)
         self.plot_opts_window.fill_opts_window(self)
+
+    def force_resize(self):
+        self.plot_opts_window.force_resize(self)
 
     def open_calibration_window(self):
         self.calibration_window.open_calibration_window(self)
@@ -568,10 +571,10 @@ class CalibrationWindow():
 
         self.wrapper_frame = tk.Frame(calibration_window)
         self.calibration_canv = tk.Canvas(self.wrapper_frame)
-        self.calibration_canv.pack(side='left', fill='both', expand=True)
 
         scrollbarY = ttk.Scrollbar(self.wrapper_frame, orient='vertical', command=self.calibration_canv.yview)
         scrollbarY.pack(side='right', fill='y')
+        self.calibration_canv.pack(side='left', fill='both', expand=True)
 
         self.calibration_canv.configure(yscrollcommand=scrollbarY.set)
         self.calibration_canv.bind("<Configure>", self.update_calibration_scrollregion)
@@ -747,16 +750,17 @@ class PlotOptsWindow():
         self.container = container
 
     def open_opts_window(self):
-        opts_window = tk.Toplevel(self)
-        opts_window.title('Customize Plots')
-        opts_window.geometry('700x900')
+        self.opts_window = tk.Toplevel(self)
+        self.opts_window.title('Customize Plots')
+        self.init_width, self.init_height = 700, 800
+        self.opts_window.geometry(f'{self.init_width}x{self.init_height}')
 
-        self.wrapper_frame = tk.Frame(opts_window)        
+        self.wrapper_frame = tk.Frame(self.opts_window)        
         self.opts_canv = tk.Canvas(self.wrapper_frame)
-        self.opts_canv.pack(side='left', fill='both', expand=True)
 
         scrollbarY = ttk.Scrollbar(self.wrapper_frame, orient='vertical', command=self.opts_canv.yview)
         scrollbarY.pack(side='right', fill='y')
+        self.opts_canv.pack(side='left', fill='both', expand=True)
 
         self.opts_canv.configure(yscrollcommand=scrollbarY.set)
         self.opts_canv.bind('<Configure>', self.update_opts_scrollregion)
@@ -931,7 +935,21 @@ class PlotOptsWindow():
         self.confirm_button = tk.Button(self.opts_frame, text="Confirm selections", width=14, command=self.confirm_opts)
         self.confirm_button.grid(row=30, column=6, pady=(4,16))
 
-    def update_opts_scrollregion(self, event=None):
+    def force_resize(self):
+        cur_width, cur_height = self.opts_window.winfo_width(), self.opts_window.winfo_height()
+        print(self.opts_window.winfo_height())
+        print(self.init_height)
+
+        if cur_height == self.init_height:
+            self.opts_window.geometry(f'{cur_width}x{cur_height+1}')
+        else:
+            self.opts_window.geometry(f'{self.init_width}x{self.init_height}')
+        print(self.opts_window.winfo_width(), self.opts_window.winfo_height())
+        print(self.init_height)
+
+
+    def update_opts_scrollregion(self, event):
+        self.opts_canv.update_idletasks()
         self.opts_canv.configure(scrollregion=self.opts_canv.bbox('all'))
 
     def choose_color(self, ov_num):
@@ -958,6 +976,8 @@ class PlotOptsWindow():
         else:
             self.time_scale_frame.grid_forget()
             input.x_timescale = 's'
+        self.force_resize()
+        self.opts_canv.update_idletasks()
 
     def receive_file_format_radios(self):
         global input
@@ -975,6 +995,8 @@ class PlotOptsWindow():
         else:
             self.file_format_frame.grid_forget()
             input.fig_format = 'png'
+        self.force_resize()
+        self.opts_canv.update_idletasks()
     
     def set_default_values(self):
         with open('plot_opts/default_opts.json', 'r') as fp:
@@ -995,6 +1017,8 @@ class PlotOptsWindow():
         self.which_time_scale_var.set(1)
         
         self.options = default_opts
+        self.wrapper_frame.update_idletasks()
+        self.force_resize()
 
     def confirm_opts(self):
         set_input_altered_flag(True)

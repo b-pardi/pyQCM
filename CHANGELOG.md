@@ -2,12 +2,10 @@
 
 bug fixes:
 - thin film liquid Df should be multiplied by -1?? interpret this
-- calibration window scrolling issue
 
 format changes:
 
 features:
-- select file feature for calibration data
 - customization option for line plot (and other types)
 
 publication/documentation: 
@@ -38,6 +36,18 @@ waiting on data:
 - full gordon-kanazawa data
 
 ### CHANGE LOG
+
+9/16
+- fixed raw data interactive plot time conversion issue
+- fixed calibration window scroll bar issue
+    - applied same fix to other windows even though problems weren't evident in them
+- fix horizontal scroll bar in main ui
+- fixed qsense raw data bug where would only go as far as temp time column would
+- fixed temperature vs time time scale issue
+- fixed plot opts scroll bar issue
+    - tkinter is annoying and update idletasks isn't working
+    - solution was to resize window by 1 pixel when things changed on screen thereby making the window update
+
 
 9/9
 - UI has been updated to reflect automatic qcmi offset calculation
