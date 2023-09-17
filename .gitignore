@@ -1,5 +1,9 @@
-qcmd-plots**/*.png
-qcmd-plots**/*.tiff
-qcmd-plots**/*.pdf
+qcmd-plots/*.png
+qcmd-plots/*.tiff
+qcmd-plots/*.pdf
+
+qcmd-plots/modeling/*.png
+qcmd-plots/modeling/*.tiff
+qcmd-plots/modeling/*.pdf
 
 raw_data/*
