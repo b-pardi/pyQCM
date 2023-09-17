@@ -1,5 +1,5 @@
-qcmd-plots/*.png
-qcmd-plots/*.tiff
-qcmd-plots/*.pdf
+qcmd-plots**/*.png
+qcmd-plots**/*.tiff
+qcmd-plots**/*.pdf
 
 raw_data/*
