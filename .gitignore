@@ -2,8 +2,13 @@ qcmd-plots/*.png
 qcmd-plots/*.tiff
 qcmd-plots/*.pdf
 
+!qcmd-plots/.gitkeep
+
 qcmd-plots/modeling/*.png
 qcmd-plots/modeling/*.tiff
 qcmd-plots/modeling/*.pdf
 
+!qcmd-plots/modeling/.gitkeep
+
 raw_data/*
+!raw_data/.gitkeep
