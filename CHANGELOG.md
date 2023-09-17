@@ -3,7 +3,6 @@
 bug fixes:
 - thin film liquid Df should be multiplied by -1?? interpret this
 - calibration window scrolling issue
-- raw 
 
 format changes:
 
