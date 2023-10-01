@@ -730,10 +730,11 @@ class ModelingWindow():
         self.run_tf_air_analysis_button.grid(row=11, column=0, pady=4)
 
         # Gordon-Kanazawa model
+        ''' deprecated until future version
         self.run_GK_button = tk.Button(self.models_frame, text="Run Gordon-Kanazawa model", padx=6, pady=4, width=20,
                                              command=lambda: gordon_kanazawa((input.which_plot['clean'], input.will_use_theoretical_vals)))
         self.run_GK_button.grid(row=12, column=0, pady=4)
-
+        '''
         # Quartz crystal thickness model
         self.run_crystal_thickness_button = tk.Button(self.models_frame, text="Run crystal thickness", padx=6, pady=4, width=20,
                                              command=lambda: crystal_thickness((input.which_plot['raw'], input.will_use_theoretical_vals)))

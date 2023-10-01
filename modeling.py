@@ -18,7 +18,7 @@ PI = np.pi
     # inner most arrays are of individual values [val_x1, val_x2, ... val_xn]
     # mid level arrays are pairs of each component [val_x, stddex_x], [val_y, stddev_y], [...], ...
     # outer array is a list of these pairs [pair_x, pair_y, ...]
-# returns propogated error of set of mean data
+# returns propogated error of set of average data
 def propogate_mult_err(val, data):
     comp = np.zeros(len(data[0][0]), dtype=float)
     temp = 0
@@ -167,10 +167,10 @@ def avg_and_propogate(label, sources, df, is_frequency):
     delta_vals = []
     sigma_delta_vals = []
     if is_frequency:
-        delta_col = 'Dfreq_mean'
+        delta_col = 'Dfreq_average'
         sigma_delta_col = 'Dfreq_std_dev'
     else:
-        delta_col = 'Ddis_mean'
+        delta_col = 'Ddis_average'
         sigma_delta_col = 'Ddis_std_dev'
 
     for source in sources: # grabs data grouped by label and further groups into source
@@ -484,7 +484,7 @@ def gordon_kanazawa(user_input):
     print(f"***f0 = {f0}")
 
     # for saving output data
-    header = "overtone,mu_Df,mu_Df_n,kinematic_viscosity,range_name,data_source\n"
+    header = "overtone,average_Df,average_Df_n,kinematic_viscosity,range_name,data_source\n"
     stats_out_fn = 'selected_ranges/gordon-kanazawa_output.csv'                
 
     # grab data from file
@@ -498,7 +498,7 @@ def gordon_kanazawa(user_input):
 
     for label in labels:
         stats_df_range = stats_df.loc[stats_df['range_name'] == label]
-        mu_Df = stats_df_range['Dfreq_mean'].values # grab averages and normalize
+        mu_Df = stats_df_range['Dfreq_average'].values # grab averages and normalize
         mu_Df_n = mu_Df / overtones # grab averages and normalize
         sigma_mu_Df_n = stats_df_range['Dfreq_std_dev'].values
         kinematic_viscosity = gk_eqn(mu_Df_n, f0)
@@ -574,7 +574,7 @@ def sauerbrey_fit(df, overtones, label, C, fig_format, dpi):
     # grabbing data from df
     df_range = df.loc[df['range_name'] == label]
     # method 1 of Sauerbrey mass (linear fit slope * C)
-    mu_Df = df_range['Dfreq_mean'].values # average change in frequency (y)
+    mu_Df = df_range['Dfreq_average'].values # average change in frequency (y)
     delta_mu_Df = df_range['Dfreq_std_dev'].values # std dev of y
 
     if mu_Df.shape != overtones.shape:
@@ -662,9 +662,9 @@ def avgs_analysis():
         # grabbing data from df
         rf_df_range = rf_df.loc[rf_df['range_name'] == label]
         dis_df_range = dis_df.loc[dis_df['range_name'] == label]
-        mu_Df = rf_df_range['Dfreq_mean'].values # average change in frequency (y)
+        mu_Df = rf_df_range['Dfreq_average'].values # average change in frequency (y)
         delta_mu_Df = rf_df_range['Dfreq_std_dev'].values # std dev of y
-        mu_Dd = dis_df_range['Ddis_mean'].values # average change in dissipation (y)
+        mu_Dd = dis_df_range['Ddis_average'].values # average change in dissipation (y)
         delta_mu_Dd = dis_df_range['Ddis_std_dev'].values # std dev of y
 
         if mu_Df.shape != overtones.shape:

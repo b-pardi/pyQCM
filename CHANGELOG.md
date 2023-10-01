@@ -37,6 +37,13 @@ waiting on data:
 
 ### CHANGE LOG
 
+9/30
+- changed all user visible instances of mu or mean to average for consistency
+
+9/24
+- removed gordon kanazawa from UI
+    - will be added in future version when flushed out
+
 9/16
 - fixed raw data interactive plot time conversion issue
 - fixed calibration window scroll bar issue
