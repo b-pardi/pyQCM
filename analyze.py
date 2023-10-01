@@ -504,12 +504,12 @@ def interactive_plot_analysis(fn, df, range, imin, imax, which_plot, which_fmt):
     # prep and save data to file
     # frequency stats for bandwidth shift
     stats_out_fn = f'selected_ranges/{which_fmt}_all_stats_rf.csv'
-    header = f"overtone,Dfreq_mean,Dfreq_std_dev,Dfreq_median,range_name,x_lower,x_upper,data_source\n"
+    header = f"overtone,Dfreq_average,Dfreq_std_dev,Dfreq_median,range_name,x_lower,x_upper,data_source\n"
     prepare_stats_file(header, range[which_fmt], fn, stats_out_fn)
     
     # dissipation stats for bandwidth shift
     stats_out_fn = f'selected_ranges/{which_fmt}_all_stats_dis.csv'
-    header = f"overtone,Ddis_mean,Ddis_std_dev,Ddis_median,range_name,x_lower,x_upper,data_source\n"
+    header = f"overtone,Ddis_average,Ddis_std_dev,Ddis_median,range_name,x_lower,x_upper,data_source\n"
     prepare_stats_file(header, range[which_fmt], fn, stats_out_fn)
 
     range_statistics(df, imin, imax, which_plot, range[which_fmt], which_fmt, fn)
@@ -794,7 +794,7 @@ def analyze_data(input):
                                ordinal(get_num_from_string(clean_disps[i])),
                                mult_fig, mult_ax1, mult_ax2,freq_color_map[clean_freqs[i]])
 
-            print(f"rf mean: {rf_base_avg}; dis mean: {dis_base_avg}\n")
+            print(f"rf average: {rf_base_avg}; dis average: {dis_base_avg}\n")
 
             # put cleaned data back into original df for interactive plot
             if input.will_overwrite_file or input.enable_interactive_plot:
