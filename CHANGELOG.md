@@ -37,6 +37,10 @@ waiting on data:
 
 ### CHANGE LOG
 
+10/12
+- removed FWHM option from calibration window since QCMI auto grabs offsets
+- bug fix with double digit overtone order for dissipation
+
 9/30
 - changed all user visible instances of mu or mean to average for consistency
 
