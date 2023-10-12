@@ -697,8 +697,9 @@ def analyze_data(input):
 
             for i, ov in enumerate(clean_freqs):
                 if ov not in clean_disps:
-                    corr_dis = 'fundamental_dis' if ov.__contains__('fundamental') else ov[:4] + 'dis'
+                    corr_dis = 'fundamental_dis' if ov.__contains__('fundamental') else ordinal(get_num_from_string(ov)) + '_dis'
                     clean_disps.insert(i, corr_dis)
+            print('************',clean_disps)
 
         # diff neg -> more disp channels than freq
         elif diff < 0:
@@ -729,6 +730,7 @@ def analyze_data(input):
         for i in range(clean_iters):
             # grab data from df and grab only columns we need, then drop nan values
             data_df = df[[analysis.time_col,clean_freqs[i],clean_disps[i]]]
+            print(clean_disps,'********\n********', data_df)
             print(f"clean freq ch: {clean_freqs[i]}; clean disp ch: {clean_disps[i]}")
             data_df = data_df.dropna(axis=0, how='any', inplace=False)
             if data_df.empty:
