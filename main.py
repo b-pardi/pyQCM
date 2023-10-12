@@ -89,6 +89,7 @@ def browse_files(file_dir, btn_title):
                                           filetypes=(("Comma Separated Value files", "*.csv"),
                                                     ("Excel file 2007 and later", "*.xlsx"),
                                                     ("Excel file 1997-2003", "*.xls"),
+                                                    ("Open XML", "*.xlsm"),
                                                     ("Text file", "*.txt")))
     
     return fp
@@ -596,9 +597,9 @@ class CalibrationWindow():
         self.calibration_vals_fmt_label.grid(row=3, column=0, columnspan=2, padx=16, pady=12)
         self.calibration_vals_fmt_var = tk.IntVar()
         self.dissipation_radio = tk.Radiobutton(self.calibration_frame, text="Dissipation", variable=self.calibration_vals_fmt_var, value=0, command=self.handle_offset_radios)
-        self.dissipation_radio.grid(row=4, column=0)
+        #self.dissipation_radio.grid(row=4, column=0)
         self.FWHM_radio = tk.Radiobutton(self.calibration_frame, text="FWHM", variable=self.calibration_vals_fmt_var, value=1, command=self.handle_offset_radios)
-        self.FWHM_radio.grid(row=4, column=1)
+        #self.FWHM_radio.grid(row=4, column=1)
         self.calibration_vals_fmt_var.set(0)
 
         self.labelled_entries = generate_labelled_entries(self.calibration_frame)
