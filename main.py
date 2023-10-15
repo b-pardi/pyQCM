@@ -594,7 +594,7 @@ class CalibrationWindow():
 
         # option for inputting FWHM instead of dissipation values
         self.calibration_vals_fmt_label = tk.Label(self.calibration_frame, text="Are you reporting dissipation values, or FWHM?")
-        self.calibration_vals_fmt_label.grid(row=3, column=0, columnspan=2, padx=16, pady=12)
+        #self.calibration_vals_fmt_label.grid(row=3, column=0, columnspan=2, padx=16, pady=12)
         self.calibration_vals_fmt_var = tk.IntVar()
         self.dissipation_radio = tk.Radiobutton(self.calibration_frame, text="Dissipation", variable=self.calibration_vals_fmt_var, value=0, command=self.handle_offset_radios)
         #self.dissipation_radio.grid(row=4, column=0)

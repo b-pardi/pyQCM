@@ -43,6 +43,7 @@ waiting on data:
     - change initially applied to and tested with qcmi
     - soon after applied to qsense and qcm next
 - refactored qcmi formatting process in a cleaner way using 1 dictionary instead of 1 dict and 1 list
+- removed label corresponding to fwhm in calibration window
 
 10/12
 - removed FWHM option from calibration window since QCMI auto grabs offsets
