@@ -1,7 +1,6 @@
 ### WIP
 
 bug fixes:
-- thin film liquid Df should be multiplied by -1?? interpret this
 
 format changes:
 
@@ -36,6 +35,14 @@ waiting on data:
 - full gordon-kanazawa data
 
 ### CHANGE LOG
+
+10/14
+- removed AWSensors option for input file type until we can get a data file to confirm
+- added extension .xlsm to file browser class in main ui, and to opening df in format file
+- fixed issue where during file formatting when renaming columns it would crash if columns not all columns for all overtones were present
+    - change initially applied to and tested with qcmi
+    - soon after applied to qsense and qcm next
+- refactored qcmi formatting process in a cleaner way using 1 dictionary instead of 1 dict and 1 list
 
 10/12
 - removed FWHM option from calibration window since QCMI auto grabs offsets

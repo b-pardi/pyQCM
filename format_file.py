@@ -20,7 +20,7 @@ def open_df_from_file(file):
             df = pd.read_csv(file, sep='\t')
         elif ext == '.xls':
             df = pd.read_excel(file, engine='xlrd')
-        elif ext =='.xlsx':
+        elif ext =='.xlsx' or ext == '.xlsm':
             df = pd.read_excel(file, engine='openpyxl')
         else:
             print("invalid file format or path, please use either .csv, .xls, .xlsx, or .txt (with tab delimiter)")
@@ -31,36 +31,37 @@ def open_df_from_file(file):
     
     return df
 
+def rename_cols(df, cols_dict):
+    relevant_cols = []
+    for col in list(cols_dict.keys()):
+        if col in df.columns:
+            relevant_cols.append(col)
+        else:
+            del cols_dict[col]
+    slim_df = df[relevant_cols]
+    fmt_df = slim_df.rename(columns=cols_dict)
+
+    return fmt_df
+
 # following 3 functions take input data from their respective machines,
 # and converts to singular format usable by analysis script for consistency
-def format_QCMd(df):
-    if 'Frequency_0' in df.columns:
-        df.rename(columns={'Time':'abs_time', 'Relative_time':'Time',
-        'Frequency_0':freqs[0],'Dissipation_0':disps[0],
-        'Frequency_1':freqs[1], 'Dissipation_1':disps[1],
-        'Frequency_2':freqs[2], 'Dissipation_2':disps[2],
-        'Frequency_3':freqs[3], 'Dissipation_3':disps[3],
-        'Frequency_4':freqs[4], 'Dissipation_4':disps[4],
-        'Temperature':'Temp'}, inplace=True)
+def format_QCM_next(df):
+    renamed_cols_dict = {'Time':'abs_time', 'Relative_time':'Time',
+            'Frequency_0':freqs[0],'Dissipation_0':disps[0],
+            'Frequency_1':freqs[1], 'Dissipation_1':disps[1],
+            'Frequency_2':freqs[2], 'Dissipation_2':disps[2],
+            'Frequency_3':freqs[3], 'Dissipation_3':disps[3],
+            'Frequency_4':freqs[4], 'Dissipation_4':disps[4],
+            'Temperature':'Temp'}
+
+    fmt_df = rename_cols(df, renamed_cols_dict)
     
-    return df
+    return fmt_df
 
 
 def format_QCMi(df):
     print("QCM-i selected")
-    slim_df = df[['Channel A QCM Time [sec]', # grab only relevant columns
-             'Channel A Fundamental Frequency [Hz]', 'Channel A Fundamental Dissipation [ ]',
-             'Channel A 3. Overtone [Hz]', 'Channel A 3. Dissipation  [ ]',
-             'Channel A 5. Overtone [Hz]', 'Channel A 5. Dissipation  [ ]',
-             'Channel A 7. Overtone [Hz]', 'Channel A 7. Dissipation  [ ]',
-             'Channel A 9. Overtone [Hz]', 'Channel A 9. Dissipation  [ ]',
-             'Channel A 11. Overtone [Hz]', 'Channel A 11. Dissipation  [ ]',
-             'Channel A 13. Overtone [Hz]', 'Channel A 13. Dissipation  [ ]',
-             'Channel A Temp [Celsius]']]
-    
-    # rename columns
-    if 'Channel A QCM Time [sec]' in df.columns:
-        fmt_df = slim_df.rename(columns={'Channel A QCM Time [sec]':'Time',
+    renamed_cols_dict = {'Channel A QCM Time [sec]':'Time',
             'Channel A Fundamental Frequency [Hz]':freqs[0],'Channel A Fundamental Dissipation [ ]':disps[0],
             'Channel A 3. Overtone [Hz]':freqs[1], 'Channel A 3. Dissipation  [ ]':disps[1],
             'Channel A 5. Overtone [Hz]':freqs[2], 'Channel A 5. Dissipation  [ ]':disps[2],
@@ -68,7 +69,9 @@ def format_QCMi(df):
             'Channel A 9. Overtone [Hz]':freqs[4], 'Channel A 9. Dissipation  [ ]':disps[4],
             'Channel A 11. Overtone [Hz]':freqs[5], 'Channel A 11. Dissipation  [ ]':disps[5],
             'Channel A 13. Overtone [Hz]':freqs[6], 'Channel A 13. Dissipation  [ ]':disps[6],
-            'Channel A Temp [Celsius]':'Temp'})
+            'Channel A Temp [Celsius]':'Temp'}
+    
+    fmt_df = rename_cols(df, renamed_cols_dict)
 
     return fmt_df
 
@@ -97,11 +100,10 @@ def unnormalize(df):
 
     return df
 
-def format_Qsense(fmt_df, calibration_df):
+def format_Qsense(df, calibration_df):
     print("Qsense selected")
 
-    if 'F_1:1' in fmt_df.columns:
-        fmt_df.rename(columns={'Time_1':'Time',
+    renamed_cols_dict = {'Time_1':'Time',
         'F_1:1':freqs[0], 'D_1:1':disps[0],
         'F_1:3':freqs[1], 'D_1:3':disps[1],
         'F_1:5':freqs[2], 'D_1:5':disps[2],
@@ -109,20 +111,17 @@ def format_Qsense(fmt_df, calibration_df):
         'F_1:9':freqs[4], 'D_1:9':disps[4],
         'F_1:11':freqs[5], 'D_1:11':disps[5],
         'F_1:13':freqs[6], 'D_1:13':disps[6],
-        'Meas. Temp. Time':'Temp_Time', 'Tact':'Temp'}, inplace=True)
+        'Meas. Temp. Time':'Temp_Time', 'Tact':'Temp'}
 
+    fmt_df = rename_cols(df, renamed_cols_dict)
 
     if calibration_df.empty:
         print("Opting for theoretical values, calibration values will NOT be added to data")
         return fmt_df
     
-    fmt_df.to_csv(f"raw_data/qsenseA.csv", index=False)
     fmt_df.loc[:, disps] = fmt_df.loc[:, disps].apply(lambda x: x*1e-6)
-    fmt_df.to_csv(f"raw_data/qsenseB.csv", index=False)
     fmt_df = unnormalize(fmt_df)
-    fmt_df.to_csv(f"raw_data/qsenseC.csv", index=False)
     fmt_df = add_offsets(calibration_df, fmt_df)
-    fmt_df.to_csv(f"raw_data/qsenseD.csv", index=False)
 
     return fmt_df
 
@@ -166,7 +165,7 @@ def format_raw_data(src_type, data_file, will_use_theoretical_vals):
     data_df = open_df_from_file(data_file)
     print(f"*** Before formatting\n{data_df}")
     if src_type == 'QCM-d':
-        formatted_df = format_QCMd(data_df)
+        formatted_df = format_QCM_next(data_df)
     elif src_type == 'QCM-i':
         formatted_df = format_QCMi(data_df)
     elif src_type == 'Qsense' or src_type == 'AWSensors':

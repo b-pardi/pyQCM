@@ -401,9 +401,9 @@ class srcFileFrame(tk.Frame):
         self.opt2_radio = tk.Radiobutton(self, text="QCM-I ", variable=self.file_src_var, value=1, command=self.handle_radios)
         self.opt2_radio.grid(row=1, column=1)
         self.opt3_radio = tk.Radiobutton(self, text="QSense ", variable=self.file_src_var, value=2, command=self.handle_radios)
-        self.opt3_radio.grid(row=2, column=0)
+        self.opt3_radio.grid(row=2, column=0, columnspan=2)
         self.opt4_radio = tk.Radiobutton(self, text="AWSensors ", variable=self.file_src_var, value=3, command=self.handle_radios)
-        self.opt4_radio.grid(row=2, column=1)
+        #self.opt4_radio.grid(row=2, column=1)
 
         self.calibration_warning_label = tk.Label(self, text="WARNING: When using Qsense or AWSensors,\nif not calibration data entered,\nuser is limited to only basic visualizations")
 
