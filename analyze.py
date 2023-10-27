@@ -379,7 +379,7 @@ def set_x_entry():
 
     return plot_win, x_entry
 
-def generate_interactive_plot(int_plot_overtone, time_scale, df, time_col):
+def generate_interactive_plot(int_plot_overtone, time_scale, df, time_col, is_raw):
     plt.close("all") # clear all previous plots
 
     # setup plot objects
@@ -407,8 +407,8 @@ def generate_interactive_plot(int_plot_overtone, time_scale, df, time_col):
     int_ax1_zoom.set_title("\nFrequency Selection Data", fontsize=16, fontfamily='Arial')
     int_ax2_zoom.set_title("\nDissipation Selection Data", fontsize=16, fontfamily='Arial')
     ax.set_title("Click and drag to select range", fontsize=20, fontfamily='Arial', weight='bold', pad=40)
-    y_ax1.set_ylabel(determine_ylabel('freq', False), fontsize=14, fontfamily='Arial', labelpad=20) # label the shared axes
-    y_ax2.set_ylabel(determine_ylabel('dis', False), fontsize=14, fontfamily='Arial', labelpad=5)
+    y_ax1.set_ylabel(determine_ylabel('freq', False, is_raw), fontsize=14, fontfamily='Arial', labelpad=20) # label the shared axes
+    y_ax2.set_ylabel(determine_ylabel('dis', False, is_raw), fontsize=14, fontfamily='Arial', labelpad=5)
     ax.set_xlabel(determine_xlabel(time_scale), fontsize=16, fontfamily='Arial')
     plt.sca(int_ax1)
     plt.xticks(fontsize=12, fontfamily='Arial')
@@ -519,7 +519,8 @@ def interactive_plot(input, selected_df, x_time, time_col, data_fmt):
 
     int_plot_analysis = Analysis(input.file)
     spans = []        
-    int_plot, int_ax1, int_ax2, int_ax1_zoom, int_ax2_zoom, y_rf, y_dis = generate_interactive_plot(input.interactive_plot_overtone[data_fmt], plot_customs['time_scale'], selected_df, time_col)
+    is_raw = True if data_fmt == 'raw' else False
+    int_plot, int_ax1, int_ax2, int_ax1_zoom, int_ax2_zoom, y_rf, y_dis = generate_interactive_plot(input.interactive_plot_overtone[data_fmt], plot_customs['time_scale'], selected_df, time_col, is_raw)
 
     which_fmt = [fmt[0] for fmt in input.interactive_plot_data_fmt.items() if fmt[1] == True][0]
 
