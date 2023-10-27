@@ -38,6 +38,7 @@ waiting on data:
 ### CHANGE LOG
 
 10/26
+- fixed bug where int plot would show delta in the y axis label when plotting raw data
 - added support for openqcm next to auto calculate offsets like qcmi
     - adjusted UI options for prompting user of this
     - set flag for calculating offsets to True for qcmnext
