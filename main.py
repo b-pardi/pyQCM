@@ -414,6 +414,7 @@ class srcFileFrame(tk.Frame):
 
         if self.file_src_type == 'QCM-d':
             input.is_relative_time = False
+            input.will_calculate_offset = True
         elif self.file_src_type == 'QCM-i':
             input.is_relative_time = True
             input.will_calculate_offset = True
@@ -444,7 +445,7 @@ class calibrationValsFrame(tk.Frame):
         #self.browse_files_button = tk.Button(self.theoretical_or_calibration_peak_freq_frame, text="Select Calibration File", command=lambda: select_calibration_file(self.filename_label))
         
         self.calibration_file_label = tk.Label(self.theoretical_or_calibration_peak_freq_frame, text="Copy/paste values\ndirectly into file in \n'offset_data' folder\n\nOR")
-        self.qcmi_warning_label = tk.Label(self.theoretical_or_calibration_peak_freq_frame, text="QCM-i will grab offsets automatically\nfrom baseline range")
+        self.qcmi_warning_label = tk.Label(self.theoretical_or_calibration_peak_freq_frame, text="Will grab offsets automatically\nfrom baseline range for this file type")
         self.calibration_vals_window_button = tk.Button(self.theoretical_or_calibration_peak_freq_frame, text="Enter values here", command=self.open_calibration_window)
 
     def open_calibration_window(self):
@@ -454,9 +455,9 @@ class calibrationValsFrame(tk.Frame):
         global input
         set_input_altered_flag(True)
         is_qcmi = input.file_src_type == 'QCM-i'
-        print(is_qcmi)
+        is_qcm_next = input.file_src_type == 'QCM-d'
         input.will_use_theoretical_vals = self.theoretical_or_calibration_peak_freq_var.get()
-        if not input.will_use_theoretical_vals and not is_qcmi:
+        if not input.will_use_theoretical_vals and (not is_qcmi and not is_qcm_next):
             self.calibration_file_label.grid(row=3, column=0, columnspan=2, pady=(2,4))
             self.calibration_vals_window_button.grid(row=4, column=0, columnspan=2, pady=(8,4))
             self.qcmi_warning_label.grid_forget()
@@ -464,7 +465,7 @@ class calibrationValsFrame(tk.Frame):
             self.calibration_file_label.grid_forget()
             self.calibration_vals_window_button.grid_forget()
 
-        if is_qcmi:
+        if is_qcmi or is_qcm_next:
             self.qcmi_warning_label.grid(row=4, column=0, columnspan=2, pady=(8,4))
             
 

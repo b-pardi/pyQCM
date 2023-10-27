@@ -3,6 +3,7 @@
 bug fixes:
 
 format changes:
+- remove absolute time from openqcm and stick with relative for consistency
 
 features:
 - customization option for line plot (and other types)
@@ -35,6 +36,11 @@ waiting on data:
 - full gordon-kanazawa data
 
 ### CHANGE LOG
+
+10/26
+- added support for openqcm next to auto calculate offsets like qcmi
+    - adjusted UI options for prompting user of this
+    - set flag for calculating offsets to True for qcmnext
 
 10/14
 - removed AWSensors option for input file type until we can get a data file to confirm
