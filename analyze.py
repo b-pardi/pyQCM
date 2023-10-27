@@ -311,7 +311,7 @@ def find_offset_values(df):
     print(f"** OFFSETS BEFORE:\n{offset_df}")
     offset_dict = {}
     for i, col in enumerate(df.columns):
-        if not col.__contains__('Time') and not col.__contains__('Temp'):
+        if col.__contains__('_freq') or col.__contains__('_dis'):
             print("COL TEST", col)
             offset = df[col].mean()
             offset_dict[col] = offset
