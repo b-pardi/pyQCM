@@ -182,6 +182,7 @@ def avg_and_propogate(label, sources, df, is_frequency):
     n_srcs = len(sources) # num sources -> number of ranges used for average
     mean_delta_vals = np.zeros(delta_vals[0].shape)
     for i in range(n_srcs):
+        print(mean_delta_vals, delta_vals)
         mean_delta_vals += delta_vals[i]
     
     mean_delta_vals /= n_srcs
@@ -576,6 +577,7 @@ def sauerbrey_fit(df, overtones, label, C, fig_format, dpi):
     # method 1 of Sauerbrey mass (linear fit slope * C)
     mu_Df = df_range['Dfreq_average'].values # average change in frequency (y)
     delta_mu_Df = df_range['Dfreq_std_dev'].values # std dev of y
+    print('***',mu_Df,delta_mu_Df)
 
     if mu_Df.shape != overtones.shape:
         raise Exceptions.ShapeMismatchException((mu_Df.shape, overtones.shape),"ERROR: Different number of overtones selected in UI than found in stats file")
@@ -595,8 +597,7 @@ def sauerbrey_fit(df, overtones, label, C, fig_format, dpi):
 
     return mu_Df, delta_mu_Df, mu_Df_fit
 
-def sauerbrey(user_input):
-    use_theoretical_vals, calibration_data_from_file = user_input
+def sauerbrey(use_theoretical_vals):
     plot_customs = get_plot_preferences()
     fig_format = plot_customs['fig_format']
     dpi = plot_customs['fig_dpi']
@@ -614,17 +615,14 @@ def sauerbrey(user_input):
     # calculate C for Sauerbrey mass formula if user opts to use calibration vals
     C = -17.7 # default theoretical value
     if not use_theoretical_vals:
-        if calibration_data_from_file: # if user opted to put in their own calibration values from the machine 
-            pass
-        else: # if user made selection data
-            calibration_df = pd.read_csv("offset_data/COPY-PASTE_OFFSET_VALUES_HERE.csv")
-            f0 = calibration_df.loc[0]['fundamental_freq']
-            print(f"f0: {f0}")
+        calibration_df = pd.read_csv("offset_data/COPY-PASTE_OFFSET_VALUES_HERE.csv")
+        f0 = calibration_df.loc[0]['fundamental_freq']
+        print(f"f0: {f0}")
 
         quarts_wave_velocity = 3340
         quartz_density = 2650
         C = -1 * ( quarts_wave_velocity * quartz_density ) / ( 2 * ( f0 ** 2 )  )
-        C *= 1e8
+        C *= 1e8 # unit conversion
     print(f"C: {C}")
 
     for label in labels:
