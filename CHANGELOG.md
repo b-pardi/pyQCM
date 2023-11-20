@@ -6,6 +6,7 @@ format changes:
 - remove absolute time from openqcm and stick with relative for consistency
 
 features:
+- when selecting files that record less than up to the 13th overtone, gray out those selections in cols 2 and 3
 - customization option for line plot (and other types)
 
 publication/documentation: 
@@ -36,6 +37,21 @@ waiting on data:
 - full gordon-kanazawa data
 
 ### CHANGE LOG
+
+11/18 - 11/19
+- calibration vals frame visibility updates when changing from device that requires calibration vals to one that doesn't and vice versa
+- software can now handle files that have some overtones columns not present (i.e. only having recorded 3rd, 5th, 7th when the device usually records 1st through 11th)
+    - added local disps to format awsensors and qsense for magnitude conversion, to use only dissipation values that are recorded in the columns
+    - unnormalization now grabs all column headers and filters through dissipation ones grabbing the number in front to use as the multiple scalar to unnormalize
+    - adding offsets now simplified
+        - go through cols in calibration df, if col also in fmt df, add value of that col to all vals in fmt df
+        - this change was brought on by the need to address that some data files will not just have no data in cols for some overtones, but the overtones may not have cols there at all
+    - updated qsense formatting function to scale magnitude of dissipation values same way as awsensors regarding the part accounting for some dissipation columns not recorded
+- implemented pop up error messages for exception handling
+    - all exceptions that were being caught previously now include error pop up windows (error msgs still print in terminal for debugging purposes as well)
+    - exceptions that were caught and closed the program no longer close it, opting for the popup instead
+    - added new exception catch in file formatting for if columns in data file don't match ones of chosen device manufacturer
+- implemented warning messages for things that are not as serious as errors
 
 10/26
 - fixed bug where int plot would show delta in the y axis label when plotting raw data

@@ -485,6 +485,7 @@ def update_interactive_plot(spans, int_plot, int_ax1_zoom, int_ax2_zoom, plot_cu
     except Exception as e:
         print(e)
         err_txt = "Curve fit failed!"
+        Exceptions.error_popup(err_txt)
         legend_text = int_ax1_zoom.legend([err_txt], loc='best')
         legend_text = int_ax2_zoom.legend([err_txt], loc='best')
     int_ax1_zoom.legend(loc='best', fontsize=plot_customs['legend_text_size'], prop={'family': plot_customs['font']}, framealpha=0.3)
@@ -535,7 +536,9 @@ def interactive_plot(input, selected_df, x_time, time_col, data_fmt):
             int_ax1_zoom.set_xlim(xmin, xmax)
             int_plot.canvas.draw()
         except ValueError:
-            print("Invalid input format. Please enter a valid range.")
+            msg = "Invalid input format. Please enter a valid range."
+            Exceptions.error_popup(msg)
+            print(msg)
 
         imin, imax = update_interactive_plot(spans, int_plot, int_ax1_zoom, int_ax2_zoom, plot_customs,
                                   xmin, xmax, x_time, y_rf, y_dis, plot_customs['time_scale'])
@@ -686,7 +689,9 @@ def analyze_data(input):
                 temperature_df = df[[analysis.temp_time_col, analysis.temp_col]].copy()
                 temperature_df = temperature_df.dropna(axis=0, how='any', inplace=False)
             except Exception as e:
-                print(f"Experiment file does not have temperature data\nerr: {e}")
+                msg = f"Experiment file does not have temperature data, setting temperature values to 0.\nerr: {e}"
+                print(msg)
+                Exceptions.error_popup(msg)
                 temperature_df = df[[analysis.time_col]]
                 temperature_df[analysis.temp_col] = 0
 
@@ -700,7 +705,6 @@ def analyze_data(input):
                 if ov not in clean_disps:
                     corr_dis = 'fundamental_dis' if ov.__contains__('fundamental') else ordinal(get_num_from_string(ov)) + '_dis'
                     clean_disps.insert(i, corr_dis)
-            print('************',clean_disps)
 
         # diff neg -> more disp channels than freq
         elif diff < 0:
