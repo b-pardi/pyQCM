@@ -214,27 +214,32 @@ def err_check():
     total_num_channels_tested = raw_num_channels_tested + clean_num_channels_tested
     # check if any channels were selected to test
     if total_num_channels_tested == 0:
-        print("WARNING: User did not select any channels to plot")
-        sys.exit(1)
+        msg = "WARNING: User indicated to plot raw channels,\ndid not indicate which"
+        print(msg)
+        Exceptions.error_popup(msg)
 
     # check if clean data was chosen, but no clean channels selected
     if input.will_plot_clean_data and clean_num_channels_tested == 0:
-        print("WARNING: User indicated to plot clean channels,\ndid not indicate which")
-        sys.exit(1)
+        msg = "WARNING: User indicated to plot clean channels,\ndid not indicate which"
+        print(msg)
+        Exceptions.error_popup(msg)
 
     # check if raw data was chosen, but no raw data was selected
     if input.will_plot_raw_data and raw_num_channels_tested == 0:
-        print("WARNING: User indicated to plot raw channels,\ndid not indicate which")
-        sys.exit(1)
+        msg = "WARNING: User indicated to plot raw channels,\ndid not indicate which"
+        print(msg)
+        Exceptions.error_popup(msg)
 
     # verify options
     if input.x_timescale == 'u':
-        print("WARNING: User indicated to change timescale,\nbut did not specify what scale")
-        sys.exit(1)
+        msg = "WARNING: User indicated to change timescale,\nbut did not specify what scale"
+        print(msg)
+        Exceptions.error_popup(msg)
 
     if input.fig_format == 'u':
-        print("WARNING: User indicated to change fig format,\nbut did not specify which")
-        sys.exit(1)
+        msg = "WARNING: User indicated to change fig format,\nbut did not specify which"
+        print(msg)
+        Exceptions.error_popup(msg)
 
 def set_frame_flag():
     global input
@@ -243,7 +248,6 @@ def set_frame_flag():
 
 def exit():
     sys.exit()
-
 
 
 # menu class inherits Tk class 
@@ -386,7 +390,6 @@ class App(tk.Tk):
     def confirm_range(self):
         self.modeling_window.confirm_range(self)
 
-
 class srcFileFrame(tk.Frame):
     def __init__(self, container):
         super().__init__(container)
@@ -401,9 +404,9 @@ class srcFileFrame(tk.Frame):
         self.opt2_radio = tk.Radiobutton(self, text="QCM-I ", variable=self.file_src_var, value=1, command=self.handle_radios)
         self.opt2_radio.grid(row=1, column=1)
         self.opt3_radio = tk.Radiobutton(self, text="QSense ", variable=self.file_src_var, value=2, command=self.handle_radios)
-        self.opt3_radio.grid(row=2, column=0, columnspan=2)
+        self.opt3_radio.grid(row=2, column=0)
         self.opt4_radio = tk.Radiobutton(self, text="AWSensors ", variable=self.file_src_var, value=3, command=self.handle_radios)
-        #self.opt4_radio.grid(row=2, column=1)
+        self.opt4_radio.grid(row=2, column=1)
 
         self.calibration_warning_label = tk.Label(self, text="WARNING: When using Qsense or AWSensors,\nif not calibration data entered,\nuser is limited to only basic visualizations")
 
@@ -415,13 +418,18 @@ class srcFileFrame(tk.Frame):
         if self.file_src_type == 'QCM-d':
             input.is_relative_time = False
             input.will_calculate_offset = True
+            self.calibration_warning_label.grid_forget()
         elif self.file_src_type == 'QCM-i':
             input.is_relative_time = True
             input.will_calculate_offset = True
+            self.calibration_warning_label.grid_forget()
         elif self.file_src_type == 'Qsense' or self.file_src_type == 'AWSensors':
             input.is_relative_time = True
             self.calibration_warning_label.grid(row=3, column=0, columnspan=2)
+        
         self.container.blit_time_input_frame(input.is_relative_time)
+        self.container.calibration_vals_frame.handle_radios()
+
 
 class calibrationValsFrame(tk.Frame):
     def __init__(self, parent):
@@ -511,7 +519,9 @@ class absTimeInputFrame(tk.Frame):
         try:
             return (time(int(h0),int(m0),int(s0)), time(int(hf),int(mf),int(sf)))
         except ValueError as exc:
-            print(f"Please enter integer values for time: {exc}")
+            msg = f"Please enter integer values for time: {exc}"
+            print(msg)
+            Exceptions.error_popup(msg)
 
     def clear(self):
         self.hours_entry_t0.delete(0, tk.END)
@@ -543,7 +553,9 @@ class relTimeInputFrame(tk.Frame):
             t0 = self.t0_entry.get()
             tf = self.tf_entry.get()
         except Exception as exc:
-            print(f"ERROR: please enter valid relative time input in seconds\n{exc}")
+            msg = f"ERROR: please enter valid relative time input in seconds\n{exc}"
+            print(msg)
+            Exceptions.error_popup(msg)
         return t0, tf
 
     def clear(self):
@@ -639,7 +651,9 @@ class CalibrationWindow():
                 calibration_vals.append(float(le.entry.get()))
             except ValueError as ve:
                 if not warned_flag:
-                    print("WARNING: AT LEAST ONE ENTRY EXISTS WITH A MISSING OR INVALID INPUT\nWILL CONVERT THESE ENTRIES TO 0")
+                    msg = "WARNING: At least one entry exists with a missing or invalid input\nwill convert these entries to 0"
+                    print(msg)
+                    Exceptions.warning_popup(msg)
                     warned_flag = True
                 calibration_vals.append(0.0)
         calibration_vals.insert(0,'index')
@@ -1077,7 +1091,7 @@ class PlotOptsWindow():
             json.dump(self.options, fp)
 
 
-class Col1(tk.Frame):
+class Col1(tk.Frame, App):
     def __init__(self, parent, container):
         super().__init__(container)
         self.col_position = 0
