@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 import os
 import sys
+import re
+import Exceptions
 
 freqs = ['fundamental_freq', '3rd_freq', '5th_freq', '7th_freq', '9th_freq', '11th_freq', '13th_freq']
 disps = ['fundamental_dis', '3rd_dis', '5th_dis', '7th_dis', '9th_dis', '11th_dis', '13th_dis']
@@ -26,11 +28,22 @@ def open_df_from_file(file):
             print("invalid file format or path, please use either .csv, .xls, .xlsx, or .txt (with tab delimiter)")
             sys.exit(-1)
     except AssertionError as ae:
-        print(f"Error occurred, ensure data file is not protected, and that it is less than 1 million rows\
-              if file is protected, create new file and copy data to it")
+        msg = f"Error occurred, ensure data file is not protected, and that it is less than 1 million rows.\n"+\
+              "if file is protected, create new file and copy data to it"
+        print(msg)
+        Exceptions.error_popup(msg)
     
     return df
 
+# takes string of column header and returns the overtone number it is associated with
+def extract_num_from_string(string):
+    if string.__contains__('fundamental'):
+        return 1
+    else:
+        pattern = r'\d+'
+        return int(re.search(pattern, string).group())
+
+# changes all column headers to one standard format using a specified dict containing old and new cols
 def rename_cols(df, cols_dict):
     relevant_cols = []
     for col in list(cols_dict.keys()):
@@ -38,13 +51,43 @@ def rename_cols(df, cols_dict):
             relevant_cols.append(col)
         else:
             del cols_dict[col]
+    if not relevant_cols:
+        msg = "Found no column headers corresponding to the selected device in data file.\n"+\
+                "Please ensure that the correct device was selected (e.g. QSense, QCMi, etc.).\n"+\
+                "And the column headers in your data file are the default output headers."
+        Exceptions.error_popup(msg)
+        return None
     slim_df = df[relevant_cols]
     fmt_df = slim_df.rename(columns=cols_dict)
+    return fmt_df
+
+# takes offset values and adds them to all data values in corresponding columns
+# will take into account that some columns may not be recorded
+def add_offsets(calibration_df, fmt_df):
+    for col in calibration_df.columns:
+        if col in fmt_df.columns:
+            fmt_df[col] += calibration_df[col].iloc[0]
+            print(calibration_df[col].iloc[0])
 
     return fmt_df
 
-# following 3 functions take input data from their respective machines,
+# multiplies frequency values in all columns by their respective overtone number
+def unnormalize(df):
+    #overtones = np.asarray([i if i%2 == 1 else i-1 for i in range(1,15)])
+    #overtones = np.insert(overtones, 0,0)
+    for col in enumerate(df.columns):
+        if col.__contains__("freq"): # only frequency needs un-normalization
+            # get number prepending column header
+            overtone_num = extract_num_from_string(col)
+            df.loc[:, col] *= overtone_num
+
+    return df
+
+# following 4 functions take input data from their respective machines,
 # and converts to singular format usable by analysis script for consistency
+# first 2 (qcm next and qcmi) are simple and merely require the columns renamed/dropped
+# last 2 (qsense and awsensors) require operations on the data to be consistent
+
 def format_QCM_next(df):
     renamed_cols_dict = {'Time':'abs_time', 'Relative_time':'Time',
             'Frequency_0':freqs[0],'Dissipation_0':disps[0],
@@ -57,7 +100,6 @@ def format_QCM_next(df):
     fmt_df = rename_cols(df, renamed_cols_dict)
     
     return fmt_df
-
 
 def format_QCMi(df):
     print("QCM-i selected")
@@ -74,31 +116,6 @@ def format_QCMi(df):
     fmt_df = rename_cols(df, renamed_cols_dict)
 
     return fmt_df
-
-def add_offsets(calibration_df, fmt_df, overtones_skipped=[]):
-    calibration_vals = calibration_df.values.flatten() 
-    print('***', '\n', overtones_skipped, '\n', len(overtones_skipped), '***')  
-    if len(overtones_skipped) != 0:
-        for ov in tuple(sorted(overtones_skipped, reverse=True)):
-            calibration_vals = np.concatenate((calibration_vals[:ov-1], calibration_vals[ov+1:]))
-
-    print('***fmt_df',fmt_df.shape,'\n', fmt_df)
-    for col_i, val in enumerate(calibration_vals):
-        print(col_i, val)
-        if val != 'index': # skip index col in offset vals, also meaning skip time col in dataframe
-            fmt_df.iloc[:, col_i] += val
-
-    return fmt_df
-
-def unnormalize(df):
-    overtones = np.asarray([i if i%2 == 1 else i-1 for i in range(1,15)])
-    overtones = np.insert(overtones, 0,0)
-    print(overtones)
-    for i, val in enumerate(overtones):
-        if i != 0 and df.columns[i].__contains__("freq"):
-            df.iloc[:, i] *= val
-
-    return df
 
 def format_Qsense(df, calibration_df):
     print("Qsense selected")
@@ -119,40 +136,37 @@ def format_Qsense(df, calibration_df):
         print("Opting for theoretical values, calibration values will NOT be added to data")
         return fmt_df
     
-    fmt_df.loc[:, disps] = fmt_df.loc[:, disps].apply(lambda x: x*1e-6)
+    local_disps = [dissipation in disps for dissipation in fmt_df.columns] # account for cols not recorded in df
+    fmt_df.loc[:, local_disps] = fmt_df.loc[:, local_disps].apply(lambda x: x*1e-6)
     fmt_df = unnormalize(fmt_df)
     fmt_df = add_offsets(calibration_df, fmt_df)
 
     return fmt_df
 
-def format_AWSensors(fmt_df, calibration_df):
+def format_AWSensors(df, calibration_df):
     print("AWSensors selected")
 
-    if 'Delta_F/n_n=3_(Hz)' in fmt_df.columns:
-        fmt_df.rename(columns={'Time_(s)':'Time',
+    renamed_cols_dict = {'Time_(s)':'Time',
         'Delta_F/n_n=3_(Hz)':freqs[1], 'Delta_D_n=3_()':disps[1],
         'Delta_F/n_n=5_(Hz)':freqs[2], 'Delta_D_n=5_()':disps[2],
         'Delta_F/n_n=7_(Hz)':freqs[3], 'Delta_D_n=7_()':disps[3],
         'Delta_F/n_n=9_(Hz)':freqs[4], 'Delta_D_n=9_()':disps[4],
-        'Delta_F/n_n=11_(Hz)':freqs[5], 'Delta_D_n=11_()':disps[5]}, inplace=True)
+        'Delta_F/n_n=11_(Hz)':freqs[5], 'Delta_D_n=11_()':disps[5]}
 
-        reorder = ['Time']
-        i = 1
-        while i < len(freqs)-1:
-            reorder.append(freqs[i])
-            reorder.append(disps[i])
-            i+=1
-        print(reorder)
-        fmt_df_reordered = fmt_df.reindex(columns=reorder)
+    fmt_df = rename_cols(df, renamed_cols_dict)
 
     if calibration_df.empty:
         print("Opting for theoretical values, calibration values will NOT be added to data")
-        return fmt_df_reordered
-    print(fmt_df_reordered)
-    fmt_df_reordered = unnormalize(fmt_df_reordered)
-    fmt_df_reordered = add_offsets(calibration_df, fmt_df_reordered, [1, 13])
-    print(fmt_df_reordered)
+        return fmt_df
+    
+    local_disps = [dissipation in disps for dissipation in fmt_df.columns] # account for cols not recorded in df
+    
+    fmt_df.loc[:, local_disps] = fmt_df.loc[:, local_disps].apply(lambda x: x*1e-6)
+    fmt_df = unnormalize(fmt_df)
+    fmt_df = add_offsets(calibration_df, fmt_df)
+
     return fmt_df
+
 
 def format_raw_data(src_type, data_file, will_use_theoretical_vals):
     file_name, _ = os.path.splitext(data_file)
