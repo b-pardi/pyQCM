@@ -18,7 +18,7 @@ import numpy as np
 import Exceptions
 from analyze import analyze_data, ordinal
 from format_file import format_raw_data
-from modeling import thin_film_liquid_analysis, thin_film_air_analysis, sauerbrey, avgs_analysis, gordon_kanazawa, crystal_thickness
+from modelling import thin_film_liquid_analysis, thin_film_air_analysis, sauerbrey, avgs_analysis, gordon_kanazawa, crystal_thickness
 
 '''Variable Initializations'''
 class Input:
@@ -600,7 +600,7 @@ class CalibrationWindow():
     def fill_calibration_window(self):
         self.calibration_label = tk.Label(self.calibration_frame, text="Offset Data", font=('TkDefaultFont', 12, 'bold'))
         self.calibration_label.grid(row=1, column=0, columnspan=2, padx=16, pady=12)
-        instructions = "Input offset frequency values here\nthese values will be used for modeling purposes\n\n" +\
+        instructions = "Input offset frequency values here\nthese values will be used for modelling purposes\n\n" +\
                         "Supports exponential format. i.e. 2.5e-6 or 1.34e7"
         self.instruction_label = tk.Label(self.calibration_frame, text=instructions)
         self.instruction_label.grid(row=2, column=0, columnspan=2, padx=16, pady=12)
@@ -714,13 +714,13 @@ class ModelingWindow():
 
     def open_modeling_window(self):
         self.model_window = tk.Toplevel(self)
-        self.model_window.title('Modeling Options')
+        self.model_window.title('Modelling Options')
         self.models_frame = tk.Frame(self.model_window)
         self.models_frame.pack(side='left', anchor='n')
 
     def fill_modeling_window(self):
         # first column contains most plot customizations
-        self.customize_label = tk.Label(self.models_frame, text="Modeling Options", font=('TkDefaultFont', 12, 'bold'))
+        self.customize_label = tk.Label(self.models_frame, text="Modelling Options", font=('TkDefaultFont', 12, 'bold'))
         self.customize_label.grid(row=0, column=0, columnspan=3, padx=16, pady=12)
         self.range_label = tk.Label(self.models_frame, text="NOTE: Visit this section AFTER submitting")
         self.range_label.grid(row=1, column=0, padx=10, pady=(0,8))
@@ -1342,7 +1342,7 @@ class Col4(tk.Frame):
         self.enable_interactive_plot_check = tk.Checkbutton(self, text="Enable interactive plot", variable=self.enable_interactive_plot_var, onvalue=1, offvalue=0, command=self.receive_optional_checkboxes)
         self.enable_interactive_plot_check.grid(row=7, column=4)
 
-        self.open_model_window_button = tk.Button(self, text="Modeling", padx=8, pady=6, command=self.model_window_button)
+        self.open_model_window_button = tk.Button(self, text="Modelling", padx=8, pady=6, command=self.model_window_button)
         self.open_model_window_button.grid(row=10, column=4, pady=8)
 
         self.submit_button = tk.Button(self, text="Submit", padx=8, pady=6, width=20, command=self.submit)
