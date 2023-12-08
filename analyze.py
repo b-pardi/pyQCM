@@ -450,7 +450,7 @@ def generate_interactive_plot(int_plot_overtone, time_scale, df, time_col, is_ra
 def update_interactive_plot(spans, int_plot, int_ax1_zoom, int_ax2_zoom, plot_customs,
                               xmin, xmax, x_time, y_rf, y_dis, x_scale):
     
-    from modeling import linearly_analyze # import in function to avoid circular import
+    from modelling import linearly_analyze # import in function to avoid circular import
     
     for span in spans:
         if span.active:
