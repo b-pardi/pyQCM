@@ -90,7 +90,8 @@ def browse_files(file_dir, btn_title):
                                                     ("Excel file 2007 and later", "*.xlsx"),
                                                     ("Excel file 1997-2003", "*.xls"),
                                                     ("Open XML", "*.xlsm"),
-                                                    ("Text file", "*.txt")))
+                                                    ("Text file", "*.txt"),
+                                                    ("QSense Raw file", "*.qsd")))
     
     return fp
 
