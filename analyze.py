@@ -79,7 +79,6 @@ def get_num_from_string(string):
     return int(num)
 
 # returns the ordinal suffix of number (i.e. the rd in 3rd)
-# instead of 'st' for 1st, will return 'fundamental'
 def ordinal(n):
     overtone_ordinal = ("th" if 4<=n%100<=20 else {1:"st",2:"nd",3:"rd"}.get(n%10, "th"))
     overtone_ordinal = str(n) + overtone_ordinal
@@ -91,7 +90,7 @@ def rotate_point(x, y, theta):
     return x_rot, y_rot
 
 def shift_by_slope(x_time, y_data, baseline_df, time_col, freq):
-    from modeling import linear # import in function to avoid circular import
+    from modelling import linear # import in function to avoid circular import
 
     # slope accounted baseline correction
     params, _ = curve_fit(linear, baseline_df[time_col], baseline_df[freq])

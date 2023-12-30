@@ -5,6 +5,8 @@ import sys
 import re
 import Exceptions
 
+from format_qsd import read_qsd, extract_sensor_data
+
 freqs = ['fundamental_freq', '3rd_freq', '5th_freq', '7th_freq', '9th_freq', '11th_freq', '13th_freq']
 disps = ['fundamental_dis', '3rd_dis', '5th_dis', '7th_dis', '9th_dis', '11th_dis', '13th_dis']
     
@@ -24,6 +26,8 @@ def open_df_from_file(file):
             df = pd.read_excel(file, engine='xlrd')
         elif ext =='.xlsx' or ext == '.xlsm':
             df = pd.read_excel(file, engine='openpyxl')
+        elif ext =='.qsd':
+            df = extract_sensor_data(*read_qsd(file))
         else:
             print("invalid file format or path, please use either .csv, .xls, .xlsx, or .txt (with tab delimiter)")
             sys.exit(-1)
@@ -169,7 +173,7 @@ def format_AWSensors(df, calibration_df):
 
 
 def format_raw_data(src_type, data_file, will_use_theoretical_vals):
-    file_name, _ = os.path.splitext(data_file)
+    file_name, ext = os.path.splitext(data_file)
     file_name = os.path.basename(file_name)
     # check if file has already been formatted previously
     if data_file.__contains__("Formatted"):
@@ -182,6 +186,8 @@ def format_raw_data(src_type, data_file, will_use_theoretical_vals):
         formatted_df = format_QCM_next(data_df)
     elif src_type == 'QCM-i':
         formatted_df = format_QCMi(data_df)
+    elif src_type == 'Qsense' and ext == '.qsd':
+        formatted_df = data_df
     elif src_type == 'Qsense' or src_type == 'AWSensors':
         if not will_use_theoretical_vals:
             calibration_df = open_df_from_file("offset_data/COPY-PASTE_OFFSET_VALUES_HERE.csv")
