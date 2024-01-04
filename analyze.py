@@ -45,13 +45,26 @@ class Analysis:
         self.disps = ['fundamental_dis', '3rd_dis', '5th_dis', '7th_dis', '9th_dis', '11th_dis', '13th_dis']
 
 ''' UTILITY FUNCTIONS '''
+
 def get_plot_preferences():
+    '''opens plot customization json file and returns dictionary of values'''
+
     with open ("plot_opts/plot_customizations.json", 'r') as fp:
         plot_customs = json.load(fp)  
     return plot_customs  
 
-# function fills list of channels selected to be clean plot from gui
+
+
 def get_channels(channels):
+    """find what overtones the user indicated to plot for raw/clean data,
+    given the dictionary obtained from the UI of channel options
+
+    Args:
+        channels (dict - str:bool): dictionary of key/val:overtone/boolean dictating whether user indicated to plot overtone
+
+    Returns:
+        tuple of lists containing selected overtones for frequency and dissipation
+    """    
     freq_list = []
     disp_list = []
         
@@ -66,7 +79,11 @@ def get_channels(channels):
 
     return (freq_list, disp_list)
 
+
 def get_num_from_string(string):
+    '''returns integer given string with a number in it
+    use case ex. "3rd_freq -> 3"'''
+
     if string.__contains__("fundamental"):
         return 1
     nums = []
@@ -78,18 +95,25 @@ def get_num_from_string(string):
         num += int(digit) * 10**i
     return int(num)
 
-# returns the ordinal suffix of number (i.e. the rd in 3rd)
 def ordinal(n):
+    '''returns the ordinal suffix of number (i.e. the rd in 3rd)'''
+
     overtone_ordinal = ("th" if 4<=n%100<=20 else {1:"st",2:"nd",3:"rd"}.get(n%10, "th"))
     overtone_ordinal = str(n) + overtone_ordinal
     return overtone_ordinal
 
+
 def rotate_point(x, y, theta):
+    '''DEPRECATED
+    determines new position of point given theta for slope correction'''
     x_rot = x * np.cos(theta) - y * np.sin(theta)
     y_rot = x * np.sin(theta) + y * np.cos(theta)
     return x_rot, y_rot
 
+
 def shift_by_slope(x_time, y_data, baseline_df, time_col, freq):
+    '''DEPRECATED
+    shifts data to counteract drift and maintain a horizontal trend'''
     from modelling import linear # import in function to avoid circular import
 
     # slope accounted baseline correction
@@ -106,6 +130,8 @@ def shift_by_slope(x_time, y_data, baseline_df, time_col, freq):
     return x_time_adjsuted, y_data_adjusted
 
 def determine_xlabel(x_timescale):
+    '''takes time scale spec'd by user in UI and returns the graph x axis label'''
+
     if x_timescale == 's':
         return "Time, " + '$\it{t}$' + " (s)"
     elif x_timescale == 'min':
@@ -115,6 +141,7 @@ def determine_xlabel(x_timescale):
     else:
         return "placeholder"
     
+# same as xlabel above, but for y axis, accounting for various user inputs to correctly label data
 def determine_ylabel(ydata_type, is_normalized, is_raw_data=False):
     if ydata_type == 'dis':
         if is_raw_data:
@@ -128,8 +155,23 @@ def determine_ylabel(ydata_type, is_normalized, is_raw_data=False):
             return r"Change in frequency, $\frac{\mathit{Δf_{n}}}{\mathit{n}}$ (Hz)"
         else:
             return r"Change in frequency, $\mathit{Δf_{n}}$ (Hz)"
+plt.figure
+
 
 def setup_plot(fig, ax, fig_x, fig_y, fig_title, fn, will_save=False, legend=True):
+    """takes in a plt figure object and applies figure attributes passed in
+    also applies attributes from plot customs
+
+    Args:
+        fig (plt.figure object): pre initialized plt figure
+        ax (plt.axes object): empty plt axis generated from plt.subplots()
+        fig_x (str): x axis title for figure
+        fig_y (str): y axis title for figure
+        fig_title (str): title for figure
+        fn (str): file name if desired to save figure
+        will_save (bool, optional): _description_. Defaults to False.
+        legend (bool, optional): _description_. Defaults to True.
+    """    
     plot_customs = get_plot_preferences()
     dpi = plot_customs['fig_dpi']
     fig_format = plot_customs['fig_format']
@@ -167,27 +209,55 @@ def setup_plot(fig, ax, fig_x, fig_y, fig_title, fn, will_save=False, legend=Tru
     if will_save:
         fig.savefig(fn + '.' + fig_format, format=fig_format, bbox_inches='tight', transparent=True, dpi=dpi)
 
-def find_nearest_time(time, my_df, time_col_name, is_relative_time):
+
+def find_nearest_time(time, df, time_col_name, is_relative_time):
+    """if user inputs a baseline time of x, and x is not a time recorded in the data, finds index of next closest value
+
+    Args:
+        time (str): user inputted baseline time (t0 or tf)
+        df (pd.Dataframe): dataframe of experimental data
+        time_col_name (str): name of time column
+        is_relative_time (bool): boolean determining if time is relative or absolute (like for openQCM)
+
+    Returns:
+        int: index of nearest time entry to what user specified
+    """    
     # locate where baseline starts/ends
     if is_relative_time:
-        time_df = my_df.iloc[(my_df[time_col_name] - int(time)).abs().argsort()[:1]]
+        time_df = df.iloc[(df[time_col_name] - int(time)).abs().argsort()[:1]]
         base_t0_ind = time_df.index[0]
     else:
-        time_df = my_df[my_df[time_col_name].str.contains(time)]
+        time_df = df[df[time_col_name].str.contains(time)]
 
-        # if exact time not in dataframe, find nearest one
         # convert the last 2 digits (the seconds) into integers and increment by 1, mod by 10
         # this method will find nearest time since time stamps are never more than 2 seconds apart
         while(time_df.shape[0] == 0): # iterate until string found in time dataframe
             ta = time[:7]
             tb = (int(time[7:]) + 1) % 10
             time = ta + str(tb)
-            time_df = my_df[my_df[time_col_name].str.contains(time)]
+            time_df = df[df[time_col_name].str.contains(time)]
         base_t0_ind = time_df.index[0]
 
     return base_t0_ind
 
+
 def plot_multiaxis(input, x_time, y_rf, y_dis, freq_label, dis_label, fig, ax1, ax2, color):
+    """similar to setup plot, but for multiaxis (freq and dis vs time)
+    also plots the data instead of just setting it up
+
+    Args:
+        input (Input object): contains all relevant information from UI
+        x_time (pd.Series): tuple of time data. x_time[0] -> time for freq, x_time[1] time for dis
+                        both are the same unless user opted for slop correction, as they would need different shifting
+        y_rf (pd.Series): frequency data of current overtone
+        y_dis (pd.Series): dissipation data of current overtone
+        freq_label (str): frequency legend label of current overtone
+        dis_label (str): dissipation legend label of current overtone
+        fig (plt.Figure): plt figure object for plotting multiaxis
+        ax1 (plt.axes): plt axis object for plotting multiaxis
+        ax2 (plt.axes): plt twin axis object for plotting multiaxis
+        color (str): color for overtone specified by map_colors() following user preference (or default)
+    """    
     plt.figure(fig.number)
     plot_customs = get_plot_preferences()
     points_idx = plot_customs['points_plotted_index']
@@ -215,7 +285,10 @@ def plot_multiaxis(input, x_time, y_rf, y_dis, freq_label, dis_label, fig, ax1, 
     plt.yticks(fontsize=plot_customs['value_text_size'], fontfamily=plot_customs['font'])
     plt.title("Change in Frequency vs Change in Dissipation", fontsize=plot_customs['title_text_size'], fontfamily=plot_customs['font'])
 
-def plot_temp_v_time(fig, ax, time, temp, x_scale, fig_format):
+
+def plot_temp_v_time(fig, ax, time, temp, x_scale):
+    """plot temperature vs time, utilizing setup_plot"""
+
     plot_prefs = get_plot_preferences()
     points_idx = plot_prefs['points_plotted_index']
     ax.plot(time[::points_idx], temp[::points_idx], '.', markersize=1)
@@ -225,6 +298,16 @@ def plot_temp_v_time(fig, ax, time, temp, x_scale, fig_format):
 # this allows for overwriting of only the currently selected file and frequency,
 # without having to append all data, or overwrite all data each time
 def prepare_stats_file(header, which_range, src_fn, stats_fn):
+    """check if label and file already exists and remove if it does before writing new data for that range
+    this allows for overwriting of only the currently selected file and frequency,
+    without having to append all data, or overwrite all data each time
+
+    Args:
+        header (str): contains column names separated by commas to head the csv file
+        which_range (str): range name identifier specified by user in interactive plot settings
+        src_fn (str): name and path of data file
+        stats_fn (_type_): name and local path of file for saving statistical data outputs
+    """    
     save_flag = False # flag determines if file will need to be saved or not after opening df
     try: # try to open df from stats csv
         try:
@@ -239,30 +322,44 @@ def prepare_stats_file(header, which_range, src_fn, stats_fn):
             temp_df = temp_df.loc[temp_df['range_name'] != '']
             save_flag = True
         if which_range in temp_df['range_name'].unique()\
-        and src_fn in temp_df['data_source'].unique():
+        and src_fn in temp_df['data_source'].unique(): # if given range and file name already in stats file,
             to_drop = temp_df.loc[((temp_df['range_name'] == which_range)\
                                 & (temp_df['data_source'] == src_fn))].index.values
-            temp_df = temp_df.drop(index=to_drop)
+            temp_df = temp_df.drop(index=to_drop) # remove old stats values
             save_flag = True
         if save_flag:
-            temp_df.to_csv(stats_fn, float_format="%.16E", index=False)
-    except (FileNotFoundError, pd.errors.EmptyDataError, KeyError) as e:
+            temp_df.to_csv(stats_fn, float_format="%.16E", index=False) # save updated stats file
+    except (FileNotFoundError, pd.errors.EmptyDataError, KeyError) as e: # make new file if stats file not found
         print(f"err 2: {e}")
         print("making new stats file...")
         with open(stats_fn, 'w') as new_file:
             new_file.write(header)
 
+
 def range_statistics(df, imin, imax, overtone_sel, which_range, which_fmt, fn):
+    """perform basic statistical analysis on data in selection made by user in interactive plot
+    save this data to the stats file prepared by prepare_stats_file()
+
+    Args:
+        df (pd.Dataframe): data frame, contents depend on clean/raw, norm/unnorm, or if slope corrected
+        imin (int): index of minimum value made in selection
+        imax (int): index of maximum value made in selection
+        overtone_sel (dict.items): list of tuples from dictionary.items of all overtones and booleans referring to if they were selected by user
+        which_range (str): user specified range/selection identifier
+        which_fmt (str): raw or clean
+        fn (str): data file name and path
+    """    
+    # determine what overtones were selected in UI
     which_overtones = []
     for ov in overtone_sel:
         if ov[1]:
             which_overtones.append(ov[0])
-        
+    
+    # open stat files, either raw or clean as spec'd by user in var 'which_fmt'
     dis_stat_file = open(f"selected_ranges/{which_fmt.upper()}_all_stats_dis.csv", 'a')
     rf_stat_file = open(f"selected_ranges/{which_fmt.upper()}_all_stats_rf.csv", 'a')
 
     # statistical analysis for all desired overtones using range of selection
-    range_df = pd.DataFrame()
     x_data = df["Time"]
     x_sel = x_data[imin:imax]
     for overtone in overtone_sel:
@@ -276,12 +373,12 @@ def range_statistics(df, imin, imax, overtone_sel, which_range, which_fmt, fn):
             std_dev_y = np.std(y_sel)
             median_y = np.median(y_sel)
         
-            if ov.__contains__('freq'):
+            if ov.__contains__('freq'): # save frequency stats to frequency stat file
                 rf_stat_file.write(f"{ov},{mean_y:.16E},{std_dev_y:.16E},{median_y:.16E},{which_range},{np.min(x_sel)},{np.max(x_sel)},{fn}\n")
-            elif ov.__contains__('dis'):
+            elif ov.__contains__('dis'): # save dissipation stats to dissipation stat file
                 dis_stat_file.write(f"{ov},{mean_y:.16E},{std_dev_y:.16E},{median_y:.16E},{which_range},{np.min(x_sel)},{np.max(x_sel)},{fn}\n")
         
-        else:
+        else: # if overtone not selected, save as 0s (necessary for functionality in modelling.py)
             print(f"\n{ov} not selected\n")
             if ov.__contains__('freq'):
                 rf_stat_file.write(f"{ov},{0:.16E},{0:.16E},{0:.16E},{which_range},{0:.16E},{0:.16E},{fn}\n")
@@ -289,11 +386,12 @@ def range_statistics(df, imin, imax, overtone_sel, which_range, which_fmt, fn):
             elif ov.__contains__('dis'):
                 dis_stat_file.write(f"{ov},{0:.16E},{0:.16E},{0:.16E},{which_range},{0:.16E},{0:.16E},{fn}\n")
     
-    
     dis_stat_file.close()
     rf_stat_file.close()
 
 def save_calibration_data(df, imin, imax, which_plots, range, fn):
+    """DEPRECATED
+    was used to save statistical calculationsof int plot raw data under the guise of offset values"""    
     calibration_file = open(f"calibration_data/calibration_data.csv", 'a')
     for overtone in which_plots:
         ov = overtone[0]
@@ -305,11 +403,19 @@ def save_calibration_data(df, imin, imax, which_plots, range, fn):
             n = get_num_from_string(ov)
             calibration_file.write(f"{n},{mean_y:.16E},{std_dev_y:.16E},{range},{fn}\n")
 
+
 def find_offset_values(df):
+    """QCM-i records the full values as well as the deltas,
+    we can use these with the baseline to calculate the offset ourselves
+    saves these values in the same csv file that users enter their offsets manually (for not QCM-i devices)
+    
+    Args:
+        df (pd.Dataframe): data frame containing just the data from user spec'd baseline
+    """
     offset_df = pd.read_csv("offset_data/COPY-PASTE_OFFSET_VALUES_HERE.csv")
     print(f"** OFFSETS BEFORE:\n{offset_df}")
     offset_dict = {}
-    for i, col in enumerate(df.columns):
+    for col in df.columns:
         if col.__contains__('_freq') or col.__contains__('_dis'):
             print("COL TEST", col)
             offset = df[col].mean()
@@ -320,8 +426,12 @@ def find_offset_values(df):
     print(f"** OFFSETS FOUND:\n{offset_df}")
     offset_df.to_csv("offset_data/COPY-PASTE_OFFSET_VALUES_HERE.csv")
 
-# removing axis lines for plots
 def remove_axis_lines(ax):
+    """simple util function to remove axis spines (borders) of axes in subplots
+
+    Args:
+        ax (plt.axes): axes object from interactive plot (can be used for others as well)
+    """    
     ax.spines['top'].set_color('none')
     ax.spines['bottom'].set_color('none')
     ax.spines['left'].set_color('none')
@@ -329,6 +439,14 @@ def remove_axis_lines(ax):
     ax.tick_params(labelcolor='w', top=False, bottom=False, left=False, right=False)
 
 def map_colors():
+    """in order to keep colors consistent, map overtones to colors from plot customizations (or default)
+    json containing this data has colors same for each overtone, use this function to make dict for freq and dis separately
+    allows for possibility of having separate colors for freq/dis
+    probably a simpler way to do this, this is an old function when I was a wee python dev
+
+    Returns:
+        _type_: _description_
+    """    
     plot_customs = get_plot_preferences()
     colors = plot_customs['colors'].values()
     freq_colors = {'fundamental_freq':'', '3rd_freq':'', '5th_freq':'',
@@ -347,6 +465,8 @@ def map_colors():
     return freq_colors, dis_colors
 
 def get_time_scale_divisor(time_scale):
+    """takes user spec'd time scale (str of 'sec', 'min', or 'hr')
+    and returns an int to divide time values by to change to the corresponding unit"""
     time_scale_div = 1
     if time_scale == 'min':
         time_scale_div = 60
@@ -356,6 +476,7 @@ def get_time_scale_divisor(time_scale):
     return time_scale_div
 
 def set_x_entry():
+    """util function for the Tk.Entry widgets in the interactive plot for manual time entry"""    
     def handle_focus_in(entry):
         x_entry.delete(0,"end")
         x_entry.config(foreground='black')
@@ -379,6 +500,31 @@ def set_x_entry():
     return plot_win, x_entry
 
 def generate_interactive_plot(int_plot_overtone, time_scale, df, time_col, is_raw):
+    """prepare interactive plot for utilization
+    this function takes care of all int plot related utilities such as init subplots, clear old data, set titles/labels, etc.
+    it then plots the initial data in the left 2 subplots to be selected from
+    
+    Args:
+        int_plot_overtone (str): string of overtone that user opted to plot
+        time_scale (_type_): user specified time scale (sec, min, hr)
+        df (pd.Dataframe): dataframe of data processed to user specifications (clean/raw, norm/unnorm, etc.)
+        time_col (str): name of time column in dataframe
+        is_raw (bool): indicates if int plot will contain raw (True) or clean (False) data
+
+    Raises:
+        Exceptions.InputtedIntPlotOvertoneNotSelectedException:
+        occurs when user selects an overtone to visualize in the int plot that wasn't selected for processing
+
+    Returns:
+        int_plot (plt.Figure): interactive plot object after initialization and formatting
+        int_ax1 (plt.axes): subplot for frequency data to make selections from
+        int_ax2 (plt.axes): subplot for dissipation data to make selections from
+        int_ax1_zoom (plt.axes): subplot for frequency data in which zoomed selections will be plotted
+        int_ax2_zoom (plt.axes): subplot for dissipation data in which zoomed selections will be plotted
+        y_rf (pd.Series): frequency values of given visualized overtone
+        y_dis (pd.Series): dissipation values of given visualized overtone
+    """
+    
     plt.close("all") # clear all previous plots
 
     # setup plot objects
@@ -448,6 +594,26 @@ def generate_interactive_plot(int_plot_overtone, time_scale, df, time_col, is_ra
 
 def update_interactive_plot(spans, int_plot, int_ax1_zoom, int_ax2_zoom, plot_customs,
                               xmin, xmax, x_time, y_rf, y_dis, x_scale):
+    """_summary_
+
+    Args:
+        spans (list of matplotlob.Widgets.SpanSelector): contains the spanning objects for freq and dis windows for selections
+        int_plot (plt.Figure): interactive plot figure object
+        int_ax1_zoom (plt.axes): subplot to display zoomed frequency data selection
+        int_ax2_zoom (plt.axes): subplot to display zoomed dissipation data selection
+        plot_customs (dict): plot customization options dictionary
+        xmin (int): minimum x (time) value
+        xmax (int): maximum x (time) value
+        x_time (pd.Series): time data
+        y_rf (pd.Series): frequency data of int plot selected overtone
+        y_dis (pd.Series): dissipation data of int plot selected overtone
+        x_scale (str): scale of time to display interactive plot
+
+    Returns:
+        imin (int): index of minimum (lefmost) value made in user selction
+        imax (int): index of maximum (rightmost) value made in user selction
+
+    """    
     
     from modelling import linearly_analyze # import in function to avoid circular import
     
@@ -501,6 +667,7 @@ def update_interactive_plot(spans, int_plot, int_ax1_zoom, int_ax2_zoom, plot_cu
     return imin, imax
 
 def interactive_plot_analysis(fn, df, range, imin, imax, which_plot, which_fmt):
+    """prepares, generates, and saves statistical calculations of int plot selected data"""
     # prep and save data to file
     # frequency stats for bandwidth shift
     stats_out_fn = f'selected_ranges/{which_fmt}_all_stats_rf.csv'
@@ -515,6 +682,15 @@ def interactive_plot_analysis(fn, df, range, imin, imax, which_plot, which_fmt):
     range_statistics(df, imin, imax, which_plot, range[which_fmt], which_fmt, fn)
 
 def interactive_plot(input, selected_df, x_time, time_col, data_fmt):
+    """main function for handling interactive plot, all other int plot related functions called from here
+
+    Args:
+        input (Input object): contains all user inputs spec'd in UI
+        selected_df (pd.Dataframe): dataframe of processed data for display in int plot
+        x_time (pd.Series): time data
+        time_col (str): name of time column in df
+        data_fmt (str): 'raw' or 'clean'
+    """    
     plot_customs = get_plot_preferences()
 
     int_plot_analysis = Analysis(input.file)
@@ -522,6 +698,7 @@ def interactive_plot(input, selected_df, x_time, time_col, data_fmt):
     is_raw = True if data_fmt == 'raw' else False
     int_plot, int_ax1, int_ax2, int_ax1_zoom, int_ax2_zoom, y_rf, y_dis = generate_interactive_plot(input.interactive_plot_overtone[data_fmt], plot_customs['time_scale'], selected_df, time_col, is_raw)
 
+    # raw or clean interactive plot, as decided by user in UI
     which_fmt = [fmt[0] for fmt in input.interactive_plot_data_fmt.items() if fmt[1] == True][0]
 
 
@@ -583,103 +760,36 @@ def interactive_plot(input, selected_df, x_time, time_col, data_fmt):
 
     plt.show()
 
-def raw_interactive_plot(input, raw_df, overtone_select, which_range, x_time, time_col):
-    plot_customs = get_plot_preferences()
-    int_plot, int_ax1, int_ax2, int_ax1_zoom, int_ax2_zoom, y_rf, y_dis = generate_interactive_plot(overtone_select, plot_customs['time_scale'], raw_df, time_col)
-    int_plot_analysis = Analysis(input.file)
-    def on_raw_select(xmin, xmax):
-        if which_range == '':
-            print("** WARNING: NO RANGE SELECTED VALUES WILL NOT BE ACCOUNTED FOR")
-        else:
-            # adjust other span to match the moved span
-            for span in spans:
-                if span.active:
-                    span.extents = (xmin, xmax)
 
-            # min and max indices are where elements should be inserted to maintain order
-            imin, imax = np.searchsorted(x_time, (xmin, xmax))
-            # range will be at most all elems in x, or imax
-            imax = min(len(x_time)-1, imax)
-
-            # cursor x and y for zoomed plot and data range
-            zoomx = x_time[imin:imax]
-            zoomy1 = y_rf[imin:imax]
-            zoomy2 = y_dis[imin:imax]
-
-            # update data to newly spec'd range
-            int_ax1_zoom.plot(zoomx, zoomy1, '.', color='green', markersize=1)
-            int_ax2_zoom.plot(zoomx, zoomy2, '.', color='blue', markersize=1)
-            
-            # set limits of tick marks
-            int_ax1_zoom.set_xlim(zoomx.min(), zoomx.max())
-            int_ax1_zoom.set_ylim(zoomy1.min(), zoomy1.max())
-            int_ax2_zoom.set_xlim(zoomx.min(), zoomx.max())
-            int_ax2_zoom.set_ylim(zoomy2.min(), zoomy2.max())
-            int_plot.canvas.draw_idle()
-
-            # prep and save data to file
-            stats_out_fn = 'calibration_data/calibration_data.csv'
-            header = f"overtone,calibration_freq,std_dev,range_used,data_source\n"
-            prepare_stats_file(header, which_range, int_plot_analysis.formatted_fn, stats_out_fn)
-            save_calibration_data(raw_df, imin, imax, input.which_plot['raw'].items(), which_range, int_plot_analysis.formatted_fn)
-        
-    # using plt's span selector to select area of top plot
-    span1 = SpanSelector(int_ax1, on_raw_select, 'horizontal', useblit=True,
-                props=dict(alpha=0.5, facecolor='blue'),
-                interactive=True, drag_from_anywhere=True)
-    
-    span2 = SpanSelector(int_ax2, on_raw_select, 'horizontal', useblit=True,
-                props=dict(alpha=0.5, facecolor='blue'),
-                interactive=True, drag_from_anywhere=True)
-    
-    spans = [span1, span2]
-    plt.show()
-
-def select_calibration_data(input, overtone_select, which_range):
-    # prepare raw data
-    raw_analysis = Analysis(input.file)
-    raw_df = pd.read_csv(raw_analysis.formatted_fn)
-    drop_cols = [key for key, val in input.which_plot['raw'].items() if val == False]
-    raw_df.drop(drop_cols, axis=1, inplace=True)
-    x_time = raw_df[raw_analysis.time_col]
-    print(raw_df.head())
-
-    raw_interactive_plot(input, raw_df, overtone_select, which_range, x_time, raw_analysis.time_col)
-
+''' Main routine for data analysis and visualization
+This function is called with the input object containing all the user input specs from main.py
+All data processing is done here, with preceeding functions being called by this one as utilities
+'''
 def analyze_data(input):
-    analysis = Analysis(input.file)
-    t0_str = str(input.abs_base_t0).lstrip('0')
-    tf_str = str(input.abs_base_tf).lstrip('0')
+    analysis = Analysis(input.file) # analysis object contains relevant file/data information
+    t0_str = str(input.abs_base_t0).lstrip('0') # baseline time t=0 spec'd by user
+    tf_str = str(input.abs_base_tf).lstrip('0') # baseline time t=f spec'd by user
 
     # grab singular file and create dataframe from it
     df = pd.read_csv(analysis.formatted_fn)
     freq_color_map, dis_color_map = map_colors()
 
     plot_customs = get_plot_preferences()
-    dpi = plot_customs['fig_dpi']
-    points_idx = plot_customs['points_plotted_index']
+    dpi = plot_customs['fig_dpi'] # resolution of figure from plot customization (200 default)
+    points_idx = plot_customs['points_plotted_index'] # plot every 'xth' point
 
-    '''Cleaning Data and plotting clean data'''
+    # cleaning data and plotting clean data
     if input.will_plot_clean_data:
         clean_freqs, clean_disps = get_channels(input.which_plot['clean'].items())
         freq_plot_cap = len(clean_freqs)
         disp_plot_cap = len(clean_disps)
-        diff = len(clean_freqs) - len(clean_disps)
+        diff = len(clean_freqs) - len(clean_disps) # account for potentially different num of freq and dis overtones
 
         # plotting objects
         freq_fig = plt.figure()
         freq_ax = freq_fig.add_subplot(111)
         dis_fig = plt.figure()
-        dis_ax = dis_fig.add_subplot(111)
-
-        if input.will_plot_dD_v_dF:
-            disVfreq_fig = plt.figure()
-            disVfreq_ax = disVfreq_fig.add_subplot(111)
-
-        # prepare multiaxis if desired by user
-        if input.will_plot_dF_dD_together:
-            mult_fig, mult_ax1 = plt.subplots()
-            mult_ax2 = mult_ax1.twinx()
+        dis_ax = dis_fig.add_subplot(111)            
 
         if input.will_plot_temp_v_time:
             try:
@@ -791,10 +901,14 @@ def analyze_data(input):
 
             # plotting change in disp vs change in freq
             if input.will_plot_dD_v_dF:
+                disVfreq_fig = plt.figure()
+                disVfreq_ax = disVfreq_fig.add_subplot(111)
                 disVfreq_ax.plot(y_freq[::points_idx], y_dis[::points_idx], '.', markersize=1, label=ordinal(get_num_from_string(clean_freqs[i])))
             
             # multi axis plot for change in freq and change in dis vs time
             if input.will_plot_dF_dD_together:
+                mult_fig, mult_ax1 = plt.subplots()
+                mult_ax2 = mult_ax1.twinx()
                 plot_multiaxis(input, (x_time_freq, x_time_dis), y_freq, y_dis,
                                ordinal(get_num_from_string(clean_freqs[i])),
                                ordinal(get_num_from_string(clean_disps[i])),
@@ -823,7 +937,7 @@ def analyze_data(input):
             tempVtime_fig = plt.figure()
             tempVtime_ax = tempVtime_fig.add_subplot(111)
             temperature_df[analysis.temp_time_col] /= get_time_scale_divisor(plot_customs['time_scale'])
-            plot_temp_v_time(tempVtime_fig, tempVtime_ax, temperature_df[analysis.temp_time_col].values, temperature_df[analysis.temp_col].values, plot_customs['time_scale'], plot_customs['fig_format'])    
+            plot_temp_v_time(tempVtime_fig, tempVtime_ax, temperature_df[analysis.temp_time_col].values, temperature_df[analysis.temp_col].values, plot_customs['time_scale'])    
 
         # Titles, lables, etc. for plots
         rf_fig_title = "QCM-D Resonant Frequency"
