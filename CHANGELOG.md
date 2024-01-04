@@ -38,6 +38,15 @@ waiting on data:
 
 ### CHANGE LOG
 
+1/2 - 1/3
+- major code documentation overhaul of analyze.py
+- minor refactoring
+- removed deprecated code for raw interactive plot
+    - regular interactive plot can already handle either
+
+12/28 - 12/29
+- preliminary read raw .qsd implementation (credit to Jean-Michel)
+
 11/18 - 11/19
 - calibration vals frame visibility updates when changing from device that requires calibration vals to one that doesn't and vice versa
 - software can now handle files that have some overtones columns not present (i.e. only having recorded 3rd, 5th, 7th when the device usually records 1st through 11th)
