@@ -1,7 +1,7 @@
 """
 Author: Brandon Pardi
 Created: 9/7/2022, 1:53 pm
-Last Modified: 3/8/2022, 9:16 pm
+Last Modified: 1/4/2024
 """
 
 import tkinter as tk
@@ -22,6 +22,8 @@ from modelling import thin_film_liquid_analysis, thin_film_air_analysis, sauerbr
 
 '''Variable Initializations'''
 class Input:
+    """this object will contain all the input dictated by user, and any information needed by subsequent analysis/modelling functions
+    """    
     def __init__(self): 
         self.file = ''
         self.calibration_file = ''
@@ -67,23 +69,30 @@ input = Input()
 INPUT_ALTERED_FLAG = False
 
 def set_input_altered_flag(flag, notif=True):
+    """function to set global flag when anything in UI has been altered
+    this is used to avoid rerunning the same calculations if user didn't change anything in UI
+
+    Args:
+        flag (bool): bool for what to set the flag too
+        notif (bool, optional): used to determine if user should be notified. Defaults to True.
+    """    
     global input
     global INPUT_ALTERED_FLAG
     if not INPUT_ALTERED_FLAG and notif:
         print("Input altered, will run calculations")
     INPUT_ALTERED_FLAG = flag
-    
-def check_entries(frame, data):
-    for widget in frame.winfo_children():
-        if isinstance(widget, tk.Entry):
-            entry_text = widget.get()
-            if not entry_text.strip():  # Check if the entry is empty or contains only whitespace
-                key = widget.cget("text")  # Assuming the Entry's text corresponds to a key in the dictionary
-                if key in data:
-                    widget.delete(0, tk.END)
-                    widget.insert(tk.END, data[key])
+
 
 def browse_files(file_dir, btn_title):
+    """prompts user with file explorer window to select data file
+
+    Args:
+        file_dir (_type_): local file data path (relative to main.py)
+        btn_title (_type_): title for btn: 'Select data file'
+
+    Returns:
+        _type_: returns global file path to where data file selected
+    """    
     fp = filedialog.askopenfilename(initialdir=os.path.join(os.getcwd(), file_dir),
                                           title=btn_title,
                                           filetypes=(("Comma Separated Value files", "*.csv"),
@@ -96,20 +105,27 @@ def browse_files(file_dir, btn_title):
     return fp
 
 def select_data_file(label):
+    """prompted when button clicked to browse for data file
+
+    Args:
+        label (tk.Label): tkinter label object to display the file path/name chosen
+    """    
     global input
     fp = browse_files('raw_data', 'Select data file')
     input.file = fp
     label.configure(text=f"File selected: {os.path.basename(fp)}")
     print(input.file)
 
-def select_calibration_file(label):
-    global input
-    fp = browse_files('offset_data', 'Select calibration file')
-    input.calibration_file = fp
-    label.configure(text=f"File selected: {os.path.basename(fp)}")
-    print(input.calibration_file)
-
 def create_checkboxes(frame, cleanliness):
+    """utility function to create all the checkboxes for columns 2 and 3 iteratively
+
+    Args:
+        frame (tk.Frame): tkinter frame for the column that the checkboxes will be put in
+        cleanliness (str): indicates if this will be the raw or clean column
+
+    Returns:
+        list: list of tk.Checkbutton objects
+    """    
     keys = list(input.which_plot[cleanliness].keys())
     checks = []
     for i in range(14):
@@ -137,6 +153,15 @@ def create_checkboxes(frame, cleanliness):
     return checks
 
 def generate_labelled_entries(frame):
+    """similar to generate checboxes, but generates pairs of label and entry object
+    primary use is for calibration value input window
+
+    Args:
+        frame (tk.Frame): tkinter Frame that these objects will be rendered to
+
+    Returns:
+        list of LabelledEntry objects: labelled entry objects are just convenient ways to represent the pairs of labels/entries
+    """
     keys = list(input.which_plot['clean'].keys())
     labelled_entries = []
     for i in range(14): # 7 different overtones each with freq and dis
@@ -152,6 +177,14 @@ def generate_labelled_entries(frame):
     return labelled_entries
 
 def receive_int_plot_input(int_plot_input):
+    """receives input of the interactive plot Frame of the UI
+    frame only visible upon click radiobutton for interactive plot in cols 2 or 3
+
+    Args:
+        int_plot_input (tuple): self (column class), frame containing inputs of int plot,
+    intvar (Tk.IntVar holds status selected buttons),
+    prev_frame (Tk.Frame) int plot input frame for column previously selected (if selecting int plot col2 this will be col3 if col3 int plot was previously selected)
+    """    
     global input
     self, frame, intvar, prev_frame = int_plot_input
     print(intvar.get(), input.enable_interactive_plot)
@@ -170,6 +203,15 @@ def receive_int_plot_input(int_plot_input):
 
 # expects input in the form of a list with alternate freq, FWHM as depicted in the UI for selections
 def convert_FWHM(calibration_vals):
+    """DEPRECATED
+    used to convert values entered by user from full width half max to dissipation if indicated by user
+
+    Args:
+        calibration_vals (list of floats): contains values entered by user in offset window
+
+    Returns:
+        (list of floats): converted values from FWHM to dissipation
+    """
     converted_vals = []
     for i, val in enumerate(calibration_vals):
         if val == 0:
@@ -187,6 +229,9 @@ def convert_FWHM(calibration_vals):
     return converted_vals
 
 def err_check():
+    """checks as many errors as possible prior to calling analyze_data routine
+    typically erroneous user inputs
+    """    
     global input
     '''Verify File Info'''
     # make sure file name was inputted
@@ -242,17 +287,16 @@ def err_check():
         print(msg)
         Exceptions.error_popup(msg)
 
-def set_frame_flag():
-    global input
-    print("flag set")
-    input.range_frame_flag = True
-
 def exit():
     sys.exit()
 
 
-# menu class inherits Tk class 
 class App(tk.Tk):
+    """parent class of the UI
+
+    Args:
+        tk (TK): inherits the Tkinter class
+    """    
     def __init__(self):
         super().__init__() # initialize parent class for the child
 
@@ -317,6 +361,8 @@ class App(tk.Tk):
         self.prev_opts = self.options
 
     def repack_frames(self):
+        """used to refresh the frames when needed
+        """        
         for frame in self.frames:
             frame = self.frames[frame]
             if frame.is_visible:
@@ -392,6 +438,10 @@ class App(tk.Tk):
         self.modeling_window.confirm_range(self)
 
 class srcFileFrame(tk.Frame):
+    """Frame handling Tk objects for determing user's QCM-D device manufacturer
+
+    Inherits from Tk.Frame
+    """    
     def __init__(self, container):
         super().__init__(container)
         self.container = container
@@ -412,6 +462,10 @@ class srcFileFrame(tk.Frame):
         self.calibration_warning_label = tk.Label(self, text="WARNING: When using Qsense or AWSensors,\nif not calibration data entered,\nuser is limited to only basic visualizations")
 
     def handle_radios(self):
+        """handles what to do when this frame's radio buttons are clicked
+        certain device options have more/less information attached with them,
+        such as additional required information, warning labels, etc.
+        """        
         global input
         self.file_src_type = self.file_src_types[self.file_src_var.get()]
         input.file_src_type = self.file_src_type
@@ -433,6 +487,9 @@ class srcFileFrame(tk.Frame):
 
 
 class calibrationValsFrame(tk.Frame):
+    """frame to determine method of obtaining offset values
+    not to be confused with calibrationValsWindow
+    """    
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
@@ -461,6 +518,9 @@ class calibrationValsFrame(tk.Frame):
         self.parent.parent.open_calibration_window()
 
     def handle_radios(self):
+        """handles radio button selections for this frame
+        updates labels and other options dependend on which radio selected
+        """        
         global input
         set_input_altered_flag(True)
         is_qcmi = input.file_src_type == 'QCM-i'
@@ -479,6 +539,7 @@ class calibrationValsFrame(tk.Frame):
             
 
 class absTimeInputFrame(tk.Frame):
+    """Frame for input of absolute baseline time"""    
     def __init__(self, container):
         super().__init__(container)
         baseline_time_label = tk.Label(self, text="Enter absolute baseline time")
@@ -533,6 +594,8 @@ class absTimeInputFrame(tk.Frame):
         self.seconds_entry_tf.delete(0, tk.END)
 
 class relTimeInputFrame(tk.Frame):
+    """frame for receiving input regarding the baseline time entered in relative time format
+    """
     def __init__(self, container):
         super().__init__(container)
         baseline_time_label = tk.Label(self, text="Enter relative baseline time")
@@ -546,10 +609,13 @@ class relTimeInputFrame(tk.Frame):
         self.tf_entry = tk.Entry(self, width=5)
         self.tf_entry.grid(row=2, column=1)
 
-        self.t0_entry.insert(0, '2') # REMOVE FOR RELEASE
-        self.tf_entry.insert(0, '120') # REMOVE FOR RELEASE
-
     def get_rel_time(self):
+        """retrieves the times from the Tk entry fields
+
+        Returns:
+            t0 (str): time=0 for baseline time entered by user
+            tf (str): time=final for baseline time entered by user
+        """        
         try:
             t0 = self.t0_entry.get()
             tf = self.tf_entry.get()
@@ -564,17 +630,26 @@ class relTimeInputFrame(tk.Frame):
         self.tf_entry.delete(0, tk.END)
 
 class CheckBox:
+    """class for making adding a plethora of checkboxes simpler
+    attrs are all essential checkbox elements
+    """    
     def __init__(self, intvar, checkbutton, key):
         self.intvar = intvar
         self.checkbutton = checkbutton
         self.key = key 
     
 class LabelledEntry:
+    """class for simplifying adding many pairs of labels/entries
+    attrs are just the label and entry objects
+    """    
     def __init__(self, label, entry):
         self.label = label
         self.entry = entry
 
 class CalibrationWindow():
+    """window for handling the entering of offset values
+    required by devices that do not record the full values, just deltas
+    """    
     def __init__(self, parent, container):
         super().__init__(container) # initialize parent class for the child
         self.parent = parent
@@ -631,6 +706,9 @@ class CalibrationWindow():
         self.calibration_canv.configure(scrollregion=self.calibration_canv.bbox('all'))
 
     def handle_offset_radios(self):
+        """handle radio buttons pertaining to offset
+        updates labels for all labelled entries in window dependent on if user selects 'dissipation' or 'FWHM' to be entered
+        """        
         label_text = 'dissipation' if self.calibration_vals_fmt_var.get() == 0 else 'FWHM'
         for i, labelled_entry in enumerate(self.labelled_entries):
             overtone = (i+1) % 2
@@ -645,6 +723,9 @@ class CalibrationWindow():
         print("CLEARED")
         
     def confirm_values(self):
+        """gets and saves all values entered by user
+        also checks for if offset values file is present, if not makes new one
+        """        
         calibration_vals = []
         warned_flag = False
         for le in self.labelled_entries:
@@ -679,6 +760,9 @@ class CalibrationWindow():
 
 
 class InteractivePlotOptions(tk.Frame):
+    """class for frame containing all of the interactive plot options
+    options made available upon selecting radio button for interactive plot in cols 2 or 3
+    """    
     def __init__(self, container, data_fmt):
         super().__init__(container)
 
@@ -708,6 +792,8 @@ class InteractivePlotOptions(tk.Frame):
 
 
 class ModelingWindow():
+    """class for the Tkinter window popup for user to run any of the modelling functions
+    """    
     def __init__(self, parent, container):
         super().__init__(container)
         self.is_visible = input.range_frame_flag
@@ -762,6 +848,8 @@ class ModelingWindow():
 
 
 class PlotOptsWindow():
+    """window for handling all of the plot customization options
+    """    
     def __init__(self, parent, container):
         super().__init__(container) # initialize parent class for the child
         self.parent = parent
@@ -954,6 +1042,10 @@ class PlotOptsWindow():
         self.confirm_button.grid(row=30, column=6, pady=(4,16))
 
     def force_resize(self):
+        """force a 1 pixel resize of the window
+        called when anything in window is blitted
+        this was the only way to get the scrollbar to work properly tkinter kinda dumb sometimes
+        """        
         cur_width, cur_height = self.opts_window.winfo_width(), self.opts_window.winfo_height()
         print(self.opts_window.winfo_height())
         print(self.init_height)
@@ -1039,6 +1131,9 @@ class PlotOptsWindow():
         self.force_resize()
 
     def confirm_opts(self):
+        '''confirm the options entered by user
+        any values left blank are set to default values and user is warned
+        '''
         set_input_altered_flag(True)
         print(self.prev_opts)
         
@@ -1093,6 +1188,7 @@ class PlotOptsWindow():
 
 
 class Col1(tk.Frame, App):
+    '''parent column for all data file related UI entries'''
     def __init__(self, parent, container):
         super().__init__(container)
         self.col_position = 0
@@ -1167,6 +1263,7 @@ class Col1(tk.Frame, App):
         self.submitted_label.grid_forget()
 
 class Col2(tk.Frame):
+    '''parent column for any raw overtone selections'''
     def __init__(self, parent, container):
         super().__init__(container)
         self.parent = parent
@@ -1234,10 +1331,10 @@ class Col2(tk.Frame):
         for channel in input.which_plot['raw']:
             input.which_plot['raw'][channel] = True   
         print(input.which_plot)
-            
-
+        
 
 class Col3(tk.Frame):
+    '''parent column for any clean overtone selections'''
     def __init__(self, parent, container):
         super().__init__(container)
         self.parent = parent
@@ -1311,6 +1408,7 @@ class Col3(tk.Frame):
 
 
 class Col4(tk.Frame):
+    '''parent column for any alternate plot options and submissions'''
     def __init__(self, parent, container):
         super().__init__(container)
 
@@ -1413,6 +1511,7 @@ class Col4(tk.Frame):
         files = [rf_clean_stats, dis_clean_stats, rf_raw_stats, dis_raw_stats, sauerbray_stats, sauerbrey_ranges, tfa, tfl]
         for file in files:
             file.write('')
+            file.close()
 
 
 
