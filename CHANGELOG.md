@@ -4,6 +4,7 @@ bug fixes:
 
 format changes:
 - remove absolute time from openqcm and stick with relative for consistency
+- for input altered flag, prompt user with warning message
 
 features:
 - when selecting files that record less than up to the 13th overtone, gray out those selections in cols 2 and 3

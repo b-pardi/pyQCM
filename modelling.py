@@ -1,7 +1,7 @@
 """
 Author: Brandon Pardi
-Created: 12/30/2022, 1:53 pm
-Last Modified: 3/16/2023, 8:19 pm
+Created: 12/30/2022
+Last Modified: 1/5/2024
 """
 
 import numpy as np

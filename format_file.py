@@ -7,12 +7,21 @@ import Exceptions
 
 from format_qsd import read_qsd, extract_sensor_data
 
+'''lists of col names for frequency and dissipation to be formatted to'''
 freqs = ['fundamental_freq', '3rd_freq', '5th_freq', '7th_freq', '9th_freq', '11th_freq', '13th_freq']
 disps = ['fundamental_dis', '3rd_dis', '5th_dis', '7th_dis', '9th_dis', '11th_dis', '13th_dis']
     
 
 # using the user defn file name and path (if provided) open file as dataframe
 def open_df_from_file(file):
+    """opens the file as a dataframe
+
+    Args:
+        file (str): global path and name of data file
+
+    Returns:
+        pd.DataFrame: dataframe of opened spreadsheet file
+    """    
     fn = os.path.basename(file)
     print(fn)
     fn, ext = os.path.splitext(fn)
@@ -39,16 +48,33 @@ def open_df_from_file(file):
     
     return df
 
-# takes string of column header and returns the overtone number it is associated with
 def extract_num_from_string(string):
+    """takes string of column header and returns the overtone number it is associated with
+
+
+    Args:
+        string (str): string to convert to number
+
+    Returns:
+        int: integer found and cast from string
+    """    
     if string.__contains__('fundamental'):
         return 1
     else:
         pattern = r'\d+'
         return int(re.search(pattern, string).group())
 
-# changes all column headers to one standard format using a specified dict containing old and new cols
+
 def rename_cols(df, cols_dict):
+    """changes all column headers to one standard format using a specified dict containing old and new cols
+
+    Args:
+        df (pd.DataFrame): experimental data as dataframe to change column names of
+        cols_dict (dictionary): dictionary with keys being original column name and value being new
+
+    Returns:
+        pd.DataFrame: dataframe post column name formatting
+    """
     relevant_cols = []
     for col in list(cols_dict.keys()):
         if col in df.columns:
@@ -65,9 +91,17 @@ def rename_cols(df, cols_dict):
     fmt_df = slim_df.rename(columns=cols_dict)
     return fmt_df
 
-# takes offset values and adds them to all data values in corresponding columns
-# will take into account that some columns may not be recorded
 def add_offsets(calibration_df, fmt_df):
+    """takes offset values and adds them to all data values in corresponding columns
+    will take into account that some columns may not be recorded
+
+    Args:
+        calibration_df (pd.DataFrame): dataframe of offset values, entered by user in window or directly into file
+        fmt_df (pd.DataFrame): experimental data dataframe that has had column renaming a priori
+
+    Returns:
+        pd.Dataframe: dataFrame after offset adding
+    """
     for col in calibration_df.columns:
         if col in fmt_df.columns:
             fmt_df[col] += calibration_df[col].iloc[0]
@@ -75,8 +109,17 @@ def add_offsets(calibration_df, fmt_df):
 
     return fmt_df
 
-# multiplies frequency values in all columns by their respective overtone number
 def unnormalize(df):
+    """multiplies frequency values in all columns by their respective overtone number
+    certain devices record their data normalized, data analysis relies on non-normalized frequency
+    dissipation is not recorded as normalized by these devices, so need not unnormalize it
+
+    Args:
+        df (pd.DataFrame): dataframe that contains normalized frequency values
+
+    Returns:
+        pd.DataFrame: dataframe containing now unnormalized frequency values
+    """    
     #overtones = np.asarray([i if i%2 == 1 else i-1 for i in range(1,15)])
     #overtones = np.insert(overtones, 0,0)
     for col in enumerate(df.columns):
@@ -87,12 +130,16 @@ def unnormalize(df):
 
     return df
 
-# following 4 functions take input data from their respective machines,
-# and converts to singular format usable by analysis script for consistency
-# first 2 (qcm next and qcmi) are simple and merely require the columns renamed/dropped
-# last 2 (qsense and awsensors) require operations on the data to be consistent
-
 def format_QCM_next(df):
+    """format data from openQCM-Next to fit BraTaDio execution
+    renames columns
+    
+    Args:
+        df (pd.DataFrame): dataframe containing experimental data recorded from openQCM-next
+
+    Returns:
+        pd.DataFrame: dataframe formatted to BraTaDio standard
+    """    
     renamed_cols_dict = {'Time':'abs_time', 'Relative_time':'Time',
             'Frequency_0':freqs[0],'Dissipation_0':disps[0],
             'Frequency_1':freqs[1], 'Dissipation_1':disps[1],
@@ -106,6 +153,15 @@ def format_QCM_next(df):
     return fmt_df
 
 def format_QCMi(df):
+    """format data from QCM-i to fit BraTaDio execution
+    renames columns
+    
+    Args:
+        df (pd.DataFrame): dataframe containing experimental data recorded from QCM-i
+
+    Returns:
+        pd.DataFrame: dataframe formatted to BraTaDio standard
+    """    
     print("QCM-i selected")
     renamed_cols_dict = {'Channel A QCM Time [sec]':'Time',
             'Channel A Fundamental Frequency [Hz]':freqs[0],'Channel A Fundamental Dissipation [ ]':disps[0],
@@ -122,6 +178,15 @@ def format_QCMi(df):
     return fmt_df
 
 def format_Qsense(df, calibration_df):
+    """format data from QSense to fit BraTaDio execution
+    renames columns, converts dissipation magnitude, unnormalizes, adds offsets
+    
+    Args:
+        df (pd.DataFrame): dataframe containing experimental data recorded from QSense
+
+    Returns:
+        pd.DataFrame: dataframe formatted to BraTaDio standard
+    """    
     print("Qsense selected")
 
     renamed_cols_dict = {'Time_1':'Time',
@@ -148,6 +213,15 @@ def format_Qsense(df, calibration_df):
     return fmt_df
 
 def format_AWSensors(df, calibration_df):
+    """format data from AWSensors to fit BraTaDio execution
+    renames columns, converts dissipation magnitude, unnormalizes, adds offsets
+    
+    Args:
+        df (pd.DataFrame): dataframe containing experimental data recorded from AWSensors
+
+    Returns:
+        pd.DataFrame: dataframe formatted to BraTaDio standard
+    """    
     print("AWSensors selected")
 
     renamed_cols_dict = {'Time_(s)':'Time',
@@ -173,6 +247,14 @@ def format_AWSensors(df, calibration_df):
 
 
 def format_raw_data(src_type, data_file, will_use_theoretical_vals):
+    """main function for data formatting/column header renaming
+    determines which file is being worked with and calls functions appropriately
+
+    Args:
+        src_type (str): indicates selection from UI regarding which device recorded the given data
+        data_file (str): data file path/name
+        will_use_theoretical_vals (bool): indicates to use experimental (from user) or theoretical (from file) offset values
+    """    
     file_name, ext = os.path.splitext(data_file)
     file_name = os.path.basename(file_name)
     # check if file has already been formatted previously
