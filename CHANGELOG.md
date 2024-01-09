@@ -25,11 +25,8 @@ publication/documentation:
     - file directories and conversion instructions 
 
 optimizations/refactoring: 
-- remove unnecessary prints
-- error messages become window popups
-    - like when trying to submit with selections that there are no data for
-    - have all exceptions be custom exception classes that generate a popup window with the err msg
-- document and comment the hell out of the code
+- remove simga calibration vals from get_calibration_values() in modelling.py
+- simplify modelling avging and propagating code since it was made to avg across multiple ranges, but it shouldn't actually do that, and currently only ever feed one range/source at a time
 - remove latex features
 - refactor analyze() to put each opt into its own function
 
@@ -39,8 +36,11 @@ waiting on data:
 
 ### CHANGE LOG
 
-1/2 - 1/3
-- major code documentation overhaul of analyze.py
+1/8
+- finished documentation overhaul, specifically modelling.py
+
+1/2 - 1/5
+- major code documentation overhaul
 - minor refactoring
 - removed deprecated code for raw interactive plot
     - regular interactive plot can already handle either

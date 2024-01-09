@@ -14,50 +14,79 @@ from analyze import get_plot_preferences, get_num_from_string, prepare_stats_fil
 
 PI = np.pi
 
-# pass in 3 dimensional array of data values
-    # inner most arrays are of individual values [val_x1, val_x2, ... val_xn]
-    # mid level arrays are pairs of each component [val_x, stddex_x], [val_y, stddev_y], [...], ...
-    # outer array is a list of these pairs [pair_x, pair_y, ...]
-# returns propogated error of set of average data
+
 def propogate_mult_err(val, data):
+    """pass in 3 dimensional array of data values
+    inner most arrays are of individual values [val_x1, val_x2, ... val_xn]
+    mid level arrays are pairs of each component [val_x, stddex_x], [val_y, stddev_y], [...], ...
+    outer array is a list of these pairs [pair_x, pair_y, ...]
+
+    returns propogated multiplication error of set of average data
+    main purpose is to find error in bandwidth calculation (delta_D * f_0 / 2)
+
+    Args:
+        val (np.array): array of values that are the result of the multiplication that is now being propagated
+        data (list of np.array): 3D array containing pairs of lists of values
+        pair[0] is the list of data point, pair[1] is the list of errors associated with that point
+        *** data var should contain the pairs of points/error for all values used in calculation that is being propagated ***
+
+    Returns:
+        np.array: array of error values corresponding to the values resulting from the multiplication(s) requiring this function
+    """    
     comp = np.zeros(len(data[0][0]), dtype=float)
-    temp = 0
     for pair in data:
+        # pair[0] is the array of values, pair[1] is the array of errors corresponding with those values
         for i in range(len(pair[0])):
-            if pair[0][i] == 0:
-                temp = 0
-            else:
-                temp = ( pair[1][i] / pair[0][i] ) # divide err by val
-                temp = float(temp) # ensure correct data type of all vals in innermost array
-                temp = np.power(temp, 2)
-                comp[i] = temp
+            if pair[0][i] == 0: # this is 0 for overtones not recorded/selected
+                comp[i] = 0 # error for overtones with no data is 0
+            else: # error propagation for multiplication
+                comp[i] = np.power(float(( pair[1][i] / pair[0][i] )), 2) # (sigma_x / x_mu) ** 2
 
     err = val * np.sqrt( comp )
     return (err)
 
-# pass in an array of mean values,
-# 2d array of err vals where the ith inner err array correlates to the ith mean value
-# n_vals is how many err vals each mean has
-# n_means is how many means will be propogated (essentially number of overtones)
-def propogate_mean_err(means, errs, n_vals):
-    n_means = len(means)
+def propogate_mean_err(n_means, errs, n_srcs):
+    """propagation of error for mean calculations
+    we already have the error values assoc with the values we found the mean of,
+    so the propagation is simply a sum of squares of these errors, div by n-1 (or n if just 1 mean)
+
+    appears unnecessarily complicated, but this will work for multiple sources in one pass
+
+    Args:
+        n_means (int): number of mean values to have errors propagated
+        errs (list): error values associated with mean calculations
+        n_srcs (int): number of range selections made
+
+    Returns:
+        list: list of propagated error values associated with the means
+    """    
     comp = 0
     sigmas = []
-    # the new error is the square root of the sum of the squares of the errors and divide it by n_vals
+    # the new error is the square root of the sum of the squares of the errors and divide it by n_srcs
     for i in range(n_means):
-        for j in range(n_vals):
+        for j in range(n_srcs):
             comp += np.power( ( errs[j][i] ), 2 )
-        if n_vals == 1:
+        if n_srcs == 1:
             sigmas.append(np.sqrt(comp))
         else:
-            sigmas.append(np.sqrt( comp/( n_vals-1 ) ))
+            sigmas.append(np.sqrt( comp/( n_srcs-1 ) ))
 
     return sigmas
 
 def linear(x, m, b):
+    """linear equation y = mx + b used for linear regression"""
     return m * x + b
 
 def elastic_modulus_stiffening(n):
+    """sub component of the crystal thickness equation
+    all values are constants and there is no fitting or solving here (consts defn below)
+
+    Args:
+        n (int): overtone number
+
+    Returns:
+        float: elastic modulus of quarts
+    """    
     # constants
     mu_q = 2.93e10      # N/m^2 elastic modulus of quarts
     epsilon = -9.24e-2  # C/m^2 piezoelectric stress coefficient
@@ -73,6 +102,15 @@ def elastic_modulus_stiffening(n):
     return mu_qn
 
 def crystal_thickness_eqn(n, h_q):
+    """equation for the linear fitting of the crystal thickness model
+
+    Args:
+        n (int): overtone number
+        h_q (float): crystal thickness (fitting parameter)
+
+    Returns:
+        float: resonant frequency
+    """    
     # constants
     rho_q = 2649.7      # kg/m^3 density of quarts
 
@@ -88,11 +126,22 @@ def crystal_thickness_eqn(n, h_q):
     return f_Rn
 
 def gk_eqn(mu_Df_n, f0):
+    """Gordon-Kanazawa equation
+    CURRENTLY NOT IN USE
+
+    Args:
+        mu_Df_n (float): average change in frequency of the given overtone
+        f0 (float): resonant frequency of the fundamental overtone
+
+    Returns:
+        _type_: _description_
+    """    
     # constants
     rhoQ = 2650 # (kg/m^3) density of quartz
     muQ = 3.3698e-4 # (m) thickness of quartz
+
     # fitting parameters
-    ''' eta*rho = kinematic_viscosity
+    ''' eta*rho = kinematic viscosity
         rhoL (kg/m^3) 
         etaL (Pa*s) dynamic viscosity
     '''
@@ -100,6 +149,9 @@ def gk_eqn(mu_Df_n, f0):
     return kinematic_viscosity
 
 def get_overtones_selected(which_plot):
+    """simple util function to return list of overtones being selected
+    given the dictionary of selections from the UI
+    """
     overtones = []
     
     for ov in which_plot.items():
@@ -109,6 +161,19 @@ def get_overtones_selected(which_plot):
     return overtones
 
 def get_calibration_values(which_plot, use_theoretical_vals):
+    """obtain offset values from the file 'COPY_PASTE_OFFSET_VALUES_HERE.csv' if user opted for experimental,
+    or 'theoretical_frequencies.csv' is user chose theoretical
+    overtones not selected have entries filled with 0
+
+    sigma_calibration_vals SHOULD BE REMOVED IT IS VESTIGIAL
+
+    Args:
+        which_plot (_type_): _description_
+        use_theoretical_vals (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """    
     which_freq_plots = {}
     calibration_freq = []
     sigma_calibration_freq = []
@@ -146,9 +211,7 @@ def get_calibration_values(which_plot, use_theoretical_vals):
                 print(exp_vals_df.head())
                 print(exp_vals_df.iloc[0,i])
                 calibration_freq.append(exp_vals_df.iloc[0,i])
-                #sigma_calibration_freq.append(exp_vals_df.iloc[i,2])
             else:
-                print('not')
                 calibration_freq.append(0)
             sigma_calibration_freq.append(0) # calibration vals have no err
             i+=1
@@ -157,8 +220,18 @@ def get_calibration_values(which_plot, use_theoretical_vals):
         
     return (calibration_freq, sigma_calibration_freq)
 
-# plot will be mean of bandwidth shift vs overtone * mean of change in frequency
 def avg_and_propogate(label, sources, df, is_frequency):
+    """group data, average it w.r.t. overtones, and propagate
+
+    Args:
+        label (str): user specified identifier of the range of data they selected
+        source (str): file name that data originated from
+        df (_type_): dataframe of statistical calculations of range selected by user
+        is_frequency (bool): _description_
+
+    Returns:
+        _type_: _description_
+    """    
     df_ranges = df.loc[df['range_name'] == label]
 
     # group data by range and then source
@@ -186,37 +259,50 @@ def avg_and_propogate(label, sources, df, is_frequency):
         mean_delta_vals += delta_vals[i]
     
     mean_delta_vals /= n_srcs
-    sigma_mean_delta_vals = propogate_mean_err(mean_delta_vals, sigma_delta_vals, n_srcs)
+    sigma_mean_delta_vals = propogate_mean_err(len(mean_delta_vals), sigma_delta_vals, n_srcs)
     
     return mean_delta_vals, sigma_mean_delta_vals
 
-# takes in an array of data, and its corresponding error array,
-# finds locations where elements are 0, and removes them from both
-def remove_zero_elements(data_arr, err_arr):
-    indices = np.where(data_arr==0.)
-    data_arr = np.delete(data_arr, indices[0])
-    err_arr = np.delete(err_arr, indices[0])
 
-    return data_arr, err_arr
+def remove_zero_elements(arrs):
+    """takes in a list of arrays of data, finds locations where elements are 0, and removes them from both
 
-def setup_plot(use_tex=False):
-    if use_tex:
-        plt.rc('text', usetex=True)
-        plt.rc('font', family='Arial')
-        plt.rc('font', family='sans-serif')
-        plt.rc('mathtext', fontset='stix', rm='serif')
-        plt.rc('\DeclareUnicodeCharacter{0394}{\ensuremath{\Delta}}')
-        plt.rc('\DeclareUnicodeCharacter{0398}{\ensuremath{\Gamma}}')
-    plot = plt.figure()
-    plt.clf()
-    plt.subplots_adjust(hspace=0.4)
-    ax = plot.add_subplot(1,1,1)
-    plt.cla()
-    return plot, ax
+    Args:
+        arrs (list of np.Array): list of arrays of data that need 0s removed
+
+    Returns:
+        (list of np.Array): list of arrays of data that have had 0s removed
+
+    """
+    cleaned_arrs = []
+    for arr in arrs:
+        indices = np.where(arr==0.)
+        arr = np.delete(arr, indices[0])
+        cleaned_arrs.append(arr)
+
+    return cleaned_arrs
 
 def plot_data(xdata, ydata, xerr, yerr, label, has_err, color='black'):
-    fig, ax = setup_plot(False)
-    
+    """plot x and y data with or without error bars
+
+    Args:
+        xdata (_type_): x axis data to be plotted, can take any type that plt.plot() accepts
+        ydata (_type_): y axis data to be plotted, can take any type that plt.plot() accepts
+        xerr (_type_): error associated with x data, can take any type that plt.plot() accepts
+        yerr (_type_): error associated with x data, can take any type that plt.plot() accepts
+        label (_type_): legend label for plot
+        has_err (bool): determines if there is error associated with the data, which dictates plotting of error bars
+        color (str, optional): color of plot. Defaults to 'black'.
+
+    Returns:
+        plt.Figure, plt.Axes: figure and axes objects with the plotted data
+    """    
+    fig = plt.figure()
+    plt.clf()
+    plt.subplots_adjust(hspace=0.4)
+    ax = fig.add_subplot(1,1,1)
+    plt.cla()
+
     # plotting modeled data slightly different than range data
     if has_err:
         if label:
@@ -231,6 +317,18 @@ def plot_data(xdata, ydata, xerr, yerr, label, has_err, color='black'):
     return fig, ax
 
 def linearly_analyze(x, y, ax, label_prefix='', label_postfix=''):
+    """handles the linear fit and necessary operations surrounding it
+
+    Args:
+        x (_type_): x data for linear fit
+        y (_type_): y data for fit
+        ax (plt.Axes): axes for plotting fit
+        label_prefix (str, optional): text to write to legend preceeding the slope value. Defaults to ''.
+        label_postfix (str, optional): text to write to legend following the slope value. Defaults to ''.
+
+    Returns:
+        slope, y-intercept: results of the linear fit
+    """    
     # performing the linear fit 
     params, cov = curve_fit(linear, x, y)
     m, b = params
@@ -259,6 +357,8 @@ def linearly_analyze(x, y, ax, label_prefix='', label_postfix=''):
     return m, b
 
 def format_plot(ax, x_label, y_label, title, xticks=np.asarray(None)):
+    """apply formatting from plot customs and add labels and title
+    """
     plot_customs = get_plot_preferences()
     font = plot_customs['font']
     if xticks.any():
@@ -272,8 +372,19 @@ def format_plot(ax, x_label, y_label, title, xticks=np.asarray(None)):
     plt.tick_params(axis='both', direction=plot_customs['tick_dir'])
     plt.title(title, fontsize=plot_customs['title_text_size'], fontfamily=font)
 
-# grab plot labels determined by use of latex, and which function modeling
+
 def get_labels(label, type, subtype='', usetex=False):
+    """grab plot labels determined by which function modeling
+
+    Args:
+        label (str): user spec'd range identifier
+        type (str): model that data is currently being applied to
+        subtype (str, optional): subtype specific to certain models. Defaults to ''.
+        usetex (bool, optional): will use latex formatting for plot. Defaults to False.
+
+    Returns:
+        list of strings: strings containing the determined, data (legend) label, plot title, and axis labels
+    """
     if type == 'film_liquid':
         data_label = None
         title = "Thin Film in Liquid " + r"$\frac{\mathit{\Delta}\mathit{\Gamma}}{\mathit{-\Delta}f} \approx J^{\prime}_{f}\omega\eta_{bulk}$" + f"  for range: {label}"
@@ -322,6 +433,21 @@ def get_labels(label, type, subtype='', usetex=False):
     return data_label, x, y, title
 
 def process_bandwidth_calculations_for_linear_regression(which_plot, sources, rf_df, dis_df, label, use_theoretical_vals):
+    """takes statistical data from user's interactive plot selection,
+    and prepares it for linear regression calculations for thin film models
+    this involves getting calibration values, averaging, propagating, and converting dissipation to bandwidth
+
+    Args:
+        which_plot (dict): dictionary of overtones where they value is a bool indicating if overtone is selected
+        sources (list): list of strings indicating which files the data came from
+        rf_df (pd.DataFrame): dataframe from 'selected_ranges/clean_all_stats_rf.csv'
+        dis_df (pd.DataFrame): dataframe from 'selected_ranges/clean_all_stats_dis.csv'
+        label (str): user spec'd identifier of range being selected and models being applied to
+        use_theoretical_vals (bool): determines if offset values will be theoretical or experimental
+
+    Returns:
+        np.Arrays: experimental values and their errors post processing
+    """    
     calibration_freq, sigma_calibration_freq = get_calibration_values(which_plot, use_theoretical_vals)
     print(rf_df, dis_df)
     mean_delta_freqs, sigma_mean_delta_freqs = avg_and_propogate(label, sources, rf_df, True)
@@ -338,13 +464,26 @@ def process_bandwidth_calculations_for_linear_regression(which_plot, sources, rf
     sigma_delta_gamma = propogate_mult_err(delta_gamma, data)
 
     # remove entries of freqs not being analyzed
-    delta_gamma, sigma_delta_gamma = remove_zero_elements(delta_gamma, sigma_delta_gamma)
-    n_mean_delta_freqs, sigma_n_mean_delta_freqs = remove_zero_elements(np.array(n_mean_delta_freqs), np.array(sigma_n_mean_delta_freqs))
+    arrs = [delta_gamma, sigma_delta_gamma, np.array(n_mean_delta_freqs), np.array(sigma_n_mean_delta_freqs)]
+    delta_gamma, sigma_delta_gamma, n_mean_delta_freqs, sigma_n_mean_delta_freqs = remove_zero_elements(arrs)
 
     return n_mean_delta_freqs, delta_gamma, sigma_n_mean_delta_freqs, sigma_delta_gamma
 
 
 def thin_film_liquid_analysis(user_input):
+    """application of thin film in liquid model
+    works for multiple range selections at a time, as long as from same data file
+
+    Args:
+        user_input (tuple: (
+        which_plot (dict): overtones and booleans on whether or not to plot/analyze
+        use_theoretical_vals (bool): indicates to use theoretical values for resonant frequency, or offset
+        latex_installed: TO BE DEPRECATED
+        )): rely on a tuple passed in of all necessary variables, since tkinter buttons can only pass 1 argument to function
+
+    Raises:
+        Exceptions.ShapeMismatchException: raises when there is a different number of overtones selected in ui than found in stats file
+    """    
     which_plot, use_theoretical_vals, latex_installed = user_input
     plot_customs = get_plot_preferences()
     fig_format = plot_customs['fig_format']
@@ -393,6 +532,20 @@ def thin_film_liquid_analysis(user_input):
         plt.rc('text', usetex=False)
 
 def thin_film_air_analysis(user_input):
+    """application of thin film in air model
+    works for multiple range selections at a time, as long as from same data file
+    similar process to thin film in liquid, but a few extra steps
+
+    Args:
+        user_input (tuple: (
+        which_plot (dict): overtones and booleans on whether or not to plot/analyze
+        use_theoretical_vals (bool): indicates to use theoretical values for resonant frequency, or offset
+        latex_installed: TO BE DEPRECATED
+        )): rely on a tuple passed in of all necessary variables, since tkinter buttons can only pass 1 argument to function
+
+    Raises:
+        Exceptions.ShapeMismatchException: raises when there is a different number of overtones selected in ui than found in stats file
+    """   
     which_plot, use_theoretical_vals, latex_installed = user_input
     plot_customs = get_plot_preferences()
     fig_format = plot_customs['fig_format']
@@ -420,9 +573,11 @@ def thin_film_air_analysis(user_input):
         print("AAA", delta_gamma, overtones)
         delta_gamma_norm = delta_gamma / overtones
         sigma_delta_gamma_norm = sigma_delta_gamma / overtones
+
         # Df is divided twice since process function returns n*DGamma
         delta_freqs_norm = n_mean_delta_freqs / overtones / overtones
         sigma_delta_freqs_norm = sigma_n_mean_delta_freqs / overtones / overtones
+
         # plotting against overtones^2
         sq_overtones = overtones * overtones
         print(f"delta_gamma: {delta_gamma}\ndelta_gamma_normalized: {delta_gamma_norm}\nn^2: {sq_overtones}")
@@ -471,6 +626,16 @@ def thin_film_air_analysis(user_input):
         plt.rc('text', usetex=False)
 
 def gordon_kanazawa(user_input):
+    """application of Gordon-Kanazawa model
+    NOT FULLY IMPLEMENTED, FUNCTION HERE NOT CALLED ANYWHERE CURRENTLY
+
+    Args:
+        user_input (tuple: (
+        which_plot (dict): overtones and booleans on whether or not to plot/analyze
+        use_theoretical_vals (bool): indicates to use theoretical values for resonant frequency, or offset
+        )): rely on a tuple passed in of all necessary variables, since tkinter buttons can only pass 1 argument to function
+
+    """    
     which_plot, will_use_theoretical_vals = user_input
     fig_format = get_plot_preferences()['fig_format']
     print("Analyzing Gordon-Kanazawa Equation...")
@@ -513,6 +678,16 @@ def gordon_kanazawa(user_input):
 
 
 def crystal_thickness(user_input):
+    """application of quartz crystal thickness model
+    linear regression on offset value data to crystal thickness eqn, slope (h_q) is reported in mm
+
+    Args:
+        user_input (tuple: (
+        which_plot (dict): overtones and booleans on whether or not to plot/analyze
+        use_theoretical_vals (bool): indicates to use theoretical values for resonant frequency, or offset
+        )): rely on a tuple passed in of all necessary variables, since tkinter buttons can only pass 1 argument to function
+
+    """      
     which_plot, will_use_theoretical_vals = user_input
     plot_customs = get_plot_preferences()
     fig_format = plot_customs['fig_format']
@@ -523,7 +698,6 @@ def crystal_thickness(user_input):
     offset_vals = np.asarray(get_calibration_values(which_plot, will_use_theoretical_vals)[0]) # get offset data
     offset_vals = offset_vals[offset_vals != 0]
 
-    print('*****', will_use_theoretical_vals, '\n', overtones, '\n', offset_vals)
     # performing the for crystal thickness equation fit 
     params, cov = curve_fit(crystal_thickness_eqn, overtones, offset_vals)
     h_q = params[0]
@@ -556,6 +730,27 @@ def crystal_thickness(user_input):
 
 
 def sauerbrey_avgs(mu_Df, delta_mu_Df, C, overtones, label, fig_format, dpi):
+    """method 2 of applying Sauerbrey model
+    finds mu_Dm and delta_mu_Dm over the range selected for EACH overtone
+    works for multiple range selections at a time, as long as from same data file
+
+    Args:
+        mu_Df (np.Array): numpy array of floats containing avg change in frequencies for each overtone 
+        delta_mu_Df (np.Array): numpy array of floats containing error for avg change in frequencies for each overtone 
+        C (float): mass sensitivity constant obtained in parent sauerbrey() function 
+        overtones (np.Array): numpy array of integers containing overtone numbers selected
+        label (str): label for legend in plot
+        fig_format (str): user spec'd file format for the figure
+        dpi (int): dots per inch of figure (quality)
+
+    Raises:
+        Exceptions.ShapeMismatchException: raises when there is a different number of overtones selected in ui than found in stats file
+    
+    Returns:
+        mu_Dm (np.Array): average change in Sauerbrey mass for each selected overtone
+        delta_mu_Dm (np.Array): error in average change in Sauerbrey mass for each selected overtone
+
+    """   
     # method 2 avg rf * C for each overtone
     mu_Dm = mu_Df * C / overtones
     delta_mu_Dm = np.abs(delta_mu_Df * C / overtones)
@@ -572,6 +767,27 @@ def sauerbrey_avgs(mu_Df, delta_mu_Df, C, overtones, label, fig_format, dpi):
     return mu_Dm, delta_mu_Dm
 
 def sauerbrey_fit(df, overtones, label, C, fig_format, dpi):
+    """method 2 of applying Sauerbrey model
+    finds mu_Dm and delta_mu_Dm over the range selected for EACH overtone
+    works for multiple range selections at a time, as long as from same data file
+
+    Args:
+        df (pd.DataFrame): contains the statistical information from range selection in interactive plot
+        overtones (np.Array): numpy array of integers containing overtone numbers selected
+        label (str): label for legend in plot
+        C (float): mass sensitivity constant obtained in parent sauerbrey() function 
+        fig_format (str): user spec'd file format for the figure
+        dpi (int): dots per inch of figure (quality)
+
+    Raises:
+        Exceptions.ShapeMismatchException: raises when there is a different number of overtones selected in ui than found in stats file
+
+    Returns:
+        mu_Df (np.Array): array of floats containing the average change in Sauerbrey mass
+        delta_mu_Df (np.Array): array of floats containing error for the average change in Sauerbrey mass
+        mu_Df_fit (np.Array): array of floats containing the linear fit for average change in Sauerbrey mass (slope * C is mass)
+
+    """    
     # grabbing data from df
     df_range = df.loc[df['range_name'] == label]
     # method 1 of Sauerbrey mass (linear fit slope * C)
@@ -641,6 +857,11 @@ def sauerbrey(use_theoretical_vals):
     plt.rc('text', usetex=False)
 
 def avgs_analysis():
+    """plot the average change in frequency and dissipation of range selection for each overtone
+
+    Raises:
+        Exceptions.ShapeMismatchException: raises when there is a different number of overtones selected in ui than found in stats file
+    """    
     plot_customs = get_plot_preferences()
     fig_format = plot_customs['fig_format']
     dpi = plot_customs['fig_dpi']
