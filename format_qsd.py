@@ -6,6 +6,16 @@ import pandas as pd
 from analyze import ordinal
 
 def read_qsd(filename):
+    """bit manipulation code to open the raw data file output by QSense devices,
+    without need for their proprietary software
+    credit: Jean-Michel
+
+    Args:
+        filename (str): file name and path for the raw .qsd file
+
+    Returns:
+        list of np.Arrays of floats: formatted values of .qsd file
+    """    
     with open(filename, 'rb') as f:
         d = f.read()
 
@@ -92,13 +102,22 @@ def read_qsd(filename):
     return tim, fre, dis, reslen, ns
 
 
-# time, freq, dis are 2d arrs as follows:
-# arr -> [ [overtone1 sensor1], [overtone2 sensor1], ... ,
-# [overtone_n sensor1], [overtone1 sensor2], [overtone2 sensor2], ... , [overtone_n sensor_ns] ]
-
-# reslen is num of total entries (ns * n overtones)
-# ns is num sensors
 def extract_sensor_data(time,freq,dis,reslen,ns):
+    """take the formatted raw qsd file and put it into a dataframe, into a csv for later use
+    time, freq, dis are 2d arrs as follows:
+    arr -> [ [overtone1 sensor1], [overtone2 sensor1], ... ,
+    [overtone_n sensor1], [overtone1 sensor2], [overtone2 sensor2], ... , [overtone_n sensor_ns] ]
+
+    Args:
+        time (np.Array): formatted time values from raw .qsd
+        freq (np.Array): formatted frequency values from raw .qsd
+        dis (np.Array): formatted dissipation values from raw .qsd
+        reslen (int): reslen is num of total entries (ns * n overtones)
+        ns (int): num sensors
+
+    Returns:
+        _type_: _description_
+    """    
     df = pd.DataFrame()
     reslen = len(reslen)
     n_overtones = int(reslen / ns)
