@@ -49,7 +49,7 @@ Tools > Preferences > IPython console > Graphics > Graphics Backend > Apply & OK
 
   
 
-## Plot Customization (1.1
+## Plot Customization (1.1)
 
 - At the bottom of the data file column, there is a 'customize plot options button', Here you can specify the following:
 	- Font type.
