@@ -183,6 +183,7 @@ def format_Qsense(df, calibration_df):
     
     Args:
         df (pd.DataFrame): dataframe containing experimental data recorded from QSense
+        calibration_df (pd.DataFrame): dataframe containing offset data recorded by user
 
     Returns:
         pd.DataFrame: dataframe formatted to BraTaDio standard
@@ -199,18 +200,18 @@ def format_Qsense(df, calibration_df):
         'F_1:13':freqs[6], 'D_1:13':disps[6],
         'Meas. Temp. Time':'Temp_Time', 'Tact':'Temp'}
 
-    fmt_df = rename_cols(df, renamed_cols_dict)
+    df = rename_cols(df, renamed_cols_dict)
 
     if calibration_df.empty:
         print("Opting for theoretical values, calibration values will NOT be added to data")
-        return fmt_df
+        return df
     
-    local_disps = [dissipation in disps for dissipation in fmt_df.columns] # account for cols not recorded in df
-    fmt_df.loc[:, local_disps] = fmt_df.loc[:, local_disps].apply(lambda x: x*1e-6)
-    fmt_df = unnormalize(fmt_df)
-    fmt_df = add_offsets(calibration_df, fmt_df)
+    local_disps = [dissipation in disps for dissipation in df.columns] # account for cols not recorded in df
+    df.loc[:, local_disps] = df.loc[:, local_disps].apply(lambda x: x*1e-6)
+    df = unnormalize(df)
+    df = add_offsets(calibration_df, df)
 
-    return fmt_df
+    return df
 
 def format_AWSensors(df, calibration_df):
     """format data from AWSensors to fit BraTaDio execution
@@ -269,6 +270,7 @@ def format_raw_data(src_type, data_file, will_use_theoretical_vals):
     elif src_type == 'QCM-i':
         formatted_df = format_QCMi(data_df)
     elif src_type == 'Qsense' and ext == '.qsd':
+        calibration_df = open_df_from_file("offset_data/COPY-PASTE_OFFSET_VALUES_HERE.csv")
         formatted_df = data_df
     elif src_type == 'Qsense' or src_type == 'AWSensors':
         if not will_use_theoretical_vals:
@@ -286,4 +288,4 @@ def format_raw_data(src_type, data_file, will_use_theoretical_vals):
 
 
 if __name__ == '__main__':
-    format_raw_data('Qsense', 'qsense_unprotected_copy.xls')
+    format_raw_data('Qsense', 'sample_generations/2020-02-05-Col-I only with wash.qsd', False)
