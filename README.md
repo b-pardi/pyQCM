@@ -21,6 +21,8 @@ Tools > Preferences > IPython console > Graphics > Graphics Backend > Apply & OK
 
 ### Figure 1 - pyQCM-BraTaDio UI for reference
 ![Figure 1 - pyQCM-BraTaDio UI for reference](https://iili.io/J7rm8Wg.png)
+### Figure 1 - pyQCM-BraTaDio UI for reference
+(1) Initialization conditions, (2) selection of frequencies and dissipation for data mining, visualization, and modeling, (3) interactive plotting options for data range selection, and (4) selection of plotting options and modeling.
 
 ## File Information (1)
 - To select the data file to analyze, simply click the select data file button.
@@ -37,14 +39,14 @@ Tools > Preferences > IPython console > Graphics > Graphics Backend > Apply & OK
 	- For testing purposes, it is appropriate to enter 0-100 (in seconds) as a sample baseline time.
 	- In practice, this should be the last x number of seconds where the frequency is stable before the experiment begins.
 - Next is to specify theoretical or calibration values for calculations in the modeling section.
-	- If user selects theoretical, it will use theoretical peak frequency values and theoretical C = -17.7 for Sauerbrey model.
+	- If user selects theoretical, it will use theoretical peak frequency values and theoretical mass sensitivity constant, C = -17.7 ng/(Hz*cm^2) for Sauerbrey model.
 	- If user selects calibration, there is the prompt to either:
 		- Copy/paste offset values into a file 'offset_data/COPY-PASTE_CALIBRATION_DATA_HERE.csv'
 			- There are populated values in this value already for demonstrative purposes.
 		- OR click a button 'Enter values here' and enter the values into the software directly
 - **Once all information is entered, user can then click 'Submit File Information'.**
 
--  **NOTE** if you are using Qsense and do not have the calibration values for your experiment, you are limited to just visualization, no modeling features will work correctly due to the nature of how Qsense only records the change in frequency, not the actual values.
+-  **NOTE** if you are using QSense and do not have the calibration values for your experiment, you are limited to just visualization, no modeling features will work correctly due to the nature of how QSense only records the change in frequency, not the actual values.
 - **NOTE** if you are using QCM-I or Open QCM-Next, upon selecting 'offset' a label popups up to notify you that entering these values is unnecessary, as these devices record information that QSense and AWSensors do not, so the offset is found computationally.
 
   
@@ -71,26 +73,27 @@ Tools > Preferences > IPython console > Graphics > Graphics Backend > Apply & OK
 - If selections are confirmed and there are entries not selected, values previously saved will be used.
   
 
-## Overtone Selections (2 & 3)
+## Overtone Selections (2)
 
-- The middle 2 columns offer the user to plot the raw data for any overtone desired, as well as the shifted (baseline corrected) data.
-- In addition to selecting the overtones this is also where you select to plot the interactive plot, either for raw or shifted data.
+- The middle 2 columns offer the user to plot the raw data for any overtone desired, as well as the reference level adjusted data.
+- In addition to selecting the overtones this is also where you select to plot the interactive plot, either for raw or reference level adjusted data.
 	- Interactive plot details in later section
-- **NOTE** all plot options and modeling features require shifted data, raw data's only purpose is visualization, it is not used for anything other than just being plotted.
+- **NOTE** all plot options and modeling features require reference level adjusted data, raw data's only purpose is visualization, it is not used for anything other than just being plotted.
   
 
 ## Plot options (4)
-### Figure 2 - various plot options provided by pyQCM-BraTaDio
 ![Figure 2 - various plot options provided by pyQCM-BraTaDio](https://iili.io/J7434Rf.png)
+### Figure 2 - various plot options provided by pyQCM-BraTaDio
+
 - Users have the following options for plots beyond basic visualization:
-	- Change in frequency as a function of time (plotted by default), Figure 8a.
-	- Normalized change in frequency as a function of time, Figure 8b.
-	- Change in Dissipation as a function of time (plotted by default), Figure 8c.
-	- Multi-axis change in frequency and dissipation as a function of time, Figure 8d.
-	- Multi-axis normalized change in frequency and dissipation as a function of time, Figure 8e.
-	- Temperature as a function of time, Figure 8f.
-	- Change in dissipation as a function of change in frequency, Figure 8g.
-	- Change in dissipation as a function of normalized change in frequency, Figure 8h.
+	- Change in frequency as a function of time (plotted by default), Figure 2a.
+	- Normalized change in frequency as a function of time, Figure 2b.
+	- Change in Dissipation as a function of time (plotted by default), Figure 2c.
+	- Multi-axis change in frequency and dissipation as a function of time, Figure 2d.
+	- Multi-axis normalized change in frequency and dissipation as a function of time, Figure 2e.
+	- Temperature as a function of time, Figure 2f.
+	- Change in dissipation as a function of change in frequency, Figure 2g.
+	- Change in dissipation as a function of normalized change in frequency, Figure 2h.
 	
 		- **NOTE**, when selecting normalization, all plots in this section are normalized, however interactive plot and all modeling plots will NOT be normalized unless the model dictates so.
 		- All plots that are normalized will indicate on the y axis reading (Df/n).
@@ -101,11 +104,11 @@ Tools > Preferences > IPython console > Graphics > Graphics Backend > Apply & OK
 	- Interactive plot (further detailed below).
 	- Modeling/further analysis (further detailed below).  
 
-## Interactive Plot (2 & 3)
+## Interactive Plot (3)
 
-### Figure 3.1 - UI prompting for interactive plot
 ![Figure 3.1 - UI prompting for interactive plot](https://iili.io/J74fOoQ.png)
-
+### Figure 3.1 - UI prompting for interactive plot
+Activating the interactive plot option requires to select an overtone and assign a label or identifier for data mining.
 
 - When checking the interactive plot box, an entry field appears to enter which overtone you would like to visualize in the plot. Enter the number of the overtone to display the data for in the plot.
 
@@ -120,9 +123,9 @@ Tools > Preferences > IPython console > Graphics > Graphics Backend > Apply & OK
 	- i.e. if you select data for range 'x' in file 'data1.csv', but a selection for that was already made and data is already there, even if there are other ranges in the file, only data for range 'x' file 'data1.csv' will be overwritten, and data for range 'y' in 'data1.csv' and range 'x' in 'data2.csv' will remain untouched.
 	- This means if you make an erroneous selection, you can simply make another one and correct it, and you can also make multiple selections from the same data using different identifiers for each selection.
 
-### Figure 3.2 - Interactive plot
 ![Figure 3 - Interactive plot](https://iili.io/J743rHG.png)
-
+### Figure 3.2 - Interactive plot
+(a) Input line for time range selection, (b) change in frequency interactive plot, (c) zoomed-in region from the change in frequency interactive plot and frequency drift, (d) change in dissipation interactive plot, and (e) zoomed-in region from the change in dissipation interactive plot and dissipation drift.
 
 - Selections are made by clicking and dragging anywhere in plots (b) or (d), or inputting the x values into the text field above (a) in the form of XMIN,XMAX and hitting enter.
 	- All 3 of these are grouped. i.e. if you make a selection in one, it'll update the other two with that selection
