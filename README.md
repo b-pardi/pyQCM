@@ -19,7 +19,6 @@
 - Follow these steps to make selection plots open in new window:
 Tools > Preferences > IPython console > Graphics > Graphics Backend > Apply & OK.
 
-### Figure 1 - pyQCM-BraTaDio UI for reference
 ![Figure 1 - pyQCM-BraTaDio UI for reference](https://iili.io/J7rm8Wg.png)
 ### Figure 1 - pyQCM-BraTaDio UI for reference
 (1) Initialization conditions, (2) selection of frequencies and dissipation for data mining, visualization, and modeling, (3) interactive plotting options for data range selection, and (4) selection of plotting options and modeling.
@@ -46,7 +45,7 @@ Tools > Preferences > IPython console > Graphics > Graphics Backend > Apply & OK
 		- OR click a button 'Enter values here' and enter the values into the software directly
 - **Once all information is entered, user can then click 'Submit File Information'.**
 
--  **NOTE** if you are using QSense and do not have the calibration values for your experiment, you are limited to just visualization, no modeling features will work correctly due to the nature of how QSense only records the change in frequency, not the actual values.
+- **NOTE** if you are using QSense or AWSensors and do not have the calibration values for your experiment, you are limited to just visualization, no modeling features will work correctly due to the nature of how QSense only records the change in frequency, not the actual values.
 - **NOTE** if you are using QCM-I or Open QCM-Next, upon selecting 'offset' a label popups up to notify you that entering these values is unnecessary, as these devices record information that QSense and AWSensors do not, so the offset is found computationally.
 
   
