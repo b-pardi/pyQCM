@@ -538,6 +538,30 @@ class calibrationValsFrame(tk.Frame):
             self.qcmi_warning_label.grid(row=4, column=0, columnspan=2, pady=(8,4))
             
 
+class numSensorsFrame(tk.Frame):
+    """class to house frame for indicating 1 or 4 sensors"""
+    def __init__(self, container):
+        super().__init__(container)
+        self.container = container
+        self.num_sensors_label = tk.Label(self, text="Is data from 1 or 4 sensors?\n(Currently 4 sensor support only for QSense)")
+        self.num_sensors_label.grid(row=0, column=0, columnspan=2)
+        self.num_sensors_var = tk.IntVar()
+        self.one_sensor_radio = tk.Radiobutton(self, text="1 sensor", variable=self.num_sensors_var, value=0, command=self.handle_radios)
+        self.one_sensor_radio.grid(row=1, column=0)
+        self.four_sensors_radio = tk.Radiobutton(self, text="4 sensors", variable=self.num_sensors_var, value=1, command=self.handle_radios)
+        self.four_sensors_radio.grid(row=1, column=1)
+
+    def handle_radios(self):
+        # if not qsense selected, gray out 4 sensors, nothing changes
+        # if qsense and 4 sensors, ask to plot only one sensor or all 4
+            # if qsd, and plot only 1 sensor, nothing changes
+            # if qsd and 4 sensors, adjust qsd formatting
+            # if not qsd and 1 sensor, adjust format_QSense to have a column renaming dict read first sensors data
+            # if not qsd and 4 sensors, adjust file formatting to save 4 indv files for each sensor, and adjust analyze.py to run on all 4
+        # if qsense and 1 sensor, nothing changes
+        
+        pass
+
 class absTimeInputFrame(tk.Frame):
     """Frame for input of absolute baseline time"""    
     def __init__(self, container):
@@ -1204,6 +1228,10 @@ class Col1(tk.Frame, App):
 
         self.file_src_frame = srcFileFrame(self)
         self.file_src_frame.grid(row=4, column=0, pady=(16,8))
+
+        self.num_sensors_frame = numSensorsFrame(self)
+        self.num_sensors_frame.grid(row=5, column=0, pady=8)
+
         self.rel_time_input = relTimeInputFrame(self)
         self.abs_time_input = absTimeInputFrame(self)
         self.abs_time_input.grid(row=6, column=0)
