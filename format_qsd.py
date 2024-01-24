@@ -5,17 +5,11 @@ import pandas as pd
 
 from analyze import ordinal
 
+import struct
+import numpy as np
+from matplotlib import pyplot as plt # for demo only: remove otherwise
+
 def read_qsd(filename):
-    """bit manipulation code to open the raw data file output by QSense devices,
-    without need for their proprietary software
-    credit: Jean-Michel
-
-    Args:
-        filename (str): file name and path for the raw .qsd file
-
-    Returns:
-        list of np.Arrays of floats: formatted values of .qsd file
-    """    
     with open(filename, 'rb') as f:
         d = f.read()
 
@@ -31,11 +25,20 @@ def read_qsd(filename):
     
     pointer += 4
     n = struct.unpack('<I', d[pointer:pointer+4])[0]
-    pointer += 1 + (4 * nsensors) + 3
+    pointer += 4     # skip length information
+    pointer += (4 * nsensors)
     if d[pointer] != 0xee:
         raise Exception("Invalid value: != 0xee")
-    
-    pointer += 40
+    pointer += 16
+    newn = struct.unpack('<I', d[pointer:pointer+4])[0]
+    if newn != n+1:
+        raise Exception("Invalid size repetition")
+    pointer += 4     # skip length information
+    if d[pointer] == 0x02:
+        pointer += 8 # added to validate BSA dataset
+    if d[pointer] != 0x01:
+        raise Exception("Invalid value: != 0x01")
+    pointer += 12
     if d[pointer] != 0x0b:
         raise Exception("Invalid value: != 0x0b")
     
@@ -101,7 +104,6 @@ def read_qsd(filename):
         pointer += n*8-1
     return tim, fre, dis, reslen, ns
 
-
 def extract_sensor_data(time,freq,dis,reslen,ns):
     """take the formatted raw qsd file and put it into a dataframe, into a csv for later use
     time, freq, dis are 2d arrs as follows:
@@ -136,13 +138,10 @@ def extract_sensor_data(time,freq,dis,reslen,ns):
     print(df.head)    
     return df
 
-
 if __name__ == '__main__':
-    # demonstrative test purposes
-    
-    [tim,fre,dis,reslen,ns]=read_qsd("sample_generations/2020-02-05-Col-I only with wash.qsd")
-    df = extract_sensor_data(tim,fre,dis,reslen,ns)
-    print(fre.shape, '\n', fre[0], '\n\n', fre[1], '\n\n', fre[2], '\n\n', fre[3])
+    [tim,fre,dis,reslen,ns]=read_qsd("raw_data/qsense_bsa/BSA.1mgml-1.280723.qsd")
+
+    # for demo only: remove for a "useful" application
     plt.subplot(211)
     for k in range(0,min(np.shape(fre))):
         plt.plot(tim[k,:reslen[k]],fre[k,:reslen[k]]-fre[k][0])

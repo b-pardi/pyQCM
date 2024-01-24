@@ -769,7 +769,7 @@ def analyze_data(input):
     analysis = Analysis(input.file) # analysis object contains relevant file/data information
     t0_str = str(input.abs_base_t0).lstrip('0') # baseline time t=0 spec'd by user
     tf_str = str(input.abs_base_tf).lstrip('0') # baseline time t=f spec'd by user
-
+    print(F"ASDFASDFASDF\n\n{input.file}\n\n*********")
     # grab singular file and create dataframe from it
     df = pd.read_csv(analysis.formatted_fn)
     freq_color_map, dis_color_map = map_colors()
