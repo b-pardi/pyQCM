@@ -52,6 +52,7 @@ class Input:
         self.will_plot_temp_v_time = False
         self.will_correct_slope = False
         self.will_calculate_offset = False
+        self.is_qsd = False # True if data file being processed is a raw qsd file
         self.is_relative_time = False # depending on file src input, some machines record time relatively (start at 0) or absolutely (start at current time of day)
         self.file_src_type = '' # different machines output data differently
         self.which_plot = {'raw': {'fundamental_freq': False, 'fundamental_dis': False, '3rd_freq': False, '3rd_dis': False,
@@ -113,6 +114,8 @@ def select_data_file(label):
     global input
     fp = browse_files('raw_data', 'Select data file')
     input.file = fp
+    input.is_qsd = True if os.path.splitext(fp)[1] == '.qsd' else False
+    print(input.is_qsd)
     label.configure(text=f"File selected: {os.path.basename(fp)}")
     print(input.file)
 
@@ -1265,6 +1268,7 @@ class Col1(tk.Frame, App):
     def col_names_submit(self):
         global input
         input.first_run = True
+
         set_input_altered_flag(True)
         input.file_src_type = self.file_src_frame.file_src_type
         if input.is_relative_time:

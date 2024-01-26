@@ -123,12 +123,27 @@ def unnormalize(df):
     #overtones = np.asarray([i if i%2 == 1 else i-1 for i in range(1,15)])
     #overtones = np.insert(overtones, 0,0)
     for col in enumerate(df.columns):
-        if col.__contains__("freq"): # only frequency needs un-normalization
+        if col[1].__contains__("freq"): # only frequency needs un-normalization
             # get number prepending column header
-            overtone_num = extract_num_from_string(col)
-            df.loc[:, col] *= overtone_num
+            overtone_num = extract_num_from_string(col[1])
+            df.loc[:, col[1]] *= overtone_num
 
     return df
+
+def dissipation_magnitude_adjustment(df):
+    """adjust the magnitude of dissipation data to report values on the order of 1e^-6
+
+    Args:
+        df (pd.Dataframe): dataframe containing dissipation data to adjust
+
+    Returns:
+        pd.Dataframe: dissipation magnitude adjusted data
+    """    
+    local_disps = [dissipation in disps for dissipation in df.columns] # account for cols not recorded in df
+    df.loc[:, local_disps] = df.loc[:, local_disps].apply(lambda x: x*1e-6)
+
+    return df
+
 
 def format_QCM_next(df):
     """format data from openQCM-Next to fit BraTaDio execution
@@ -206,8 +221,7 @@ def format_Qsense(df, calibration_df):
         print("Opting for theoretical values, calibration values will NOT be added to data")
         return df
     
-    local_disps = [dissipation in disps for dissipation in df.columns] # account for cols not recorded in df
-    df.loc[:, local_disps] = df.loc[:, local_disps].apply(lambda x: x*1e-6)
+    df = dissipation_magnitude_adjustment(df)    
     df = unnormalize(df)
     df = add_offsets(calibration_df, df)
 
@@ -238,13 +252,43 @@ def format_AWSensors(df, calibration_df):
         print("Opting for theoretical values, calibration values will NOT be added to data")
         return fmt_df
     
-    local_disps = [dissipation in disps for dissipation in fmt_df.columns] # account for cols not recorded in df
-    
-    fmt_df.loc[:, local_disps] = fmt_df.loc[:, local_disps].apply(lambda x: x*1e-6)
+
+    fmt_df = dissipation_magnitude_adjustment(fmt_df)    
     fmt_df = unnormalize(fmt_df)
     fmt_df = add_offsets(calibration_df, fmt_df)
 
     return fmt_df
+
+
+def check_file_previously_formatted(df, ext):
+    """checks column headers to see if it has been previously formatted by software
+    warns user if True
+
+    Args:
+        df (pd.Dataframe): data frame from recently opened file
+        ext (str): data file extension
+
+    Returns:
+        bool: returns True if column headers match BraTaDio fmt, False if not or if qsd
+    """    
+    if ext == '.qsd': # if file is qsd it will not have been preprocessed
+        return False
+
+    column_header_match_flag = False
+    for header in freqs:
+        if header in df.columns:
+            column_header_match_flag = True
+            break
+    
+    if column_header_match_flag:
+        msg = "WARNING: Column headers indicate data file has already been processed by pyQCM.\n" +\
+                "If this is incorrect, please double check the correct file was selected and that it has the original column headers.\n" +\
+                "Otherwise, pyQCM will proceed with file as is."
+        print(msg)
+        Exceptions.warning_popup(msg)
+        return True
+    else:
+        return False
 
 
 def format_raw_data(src_type, data_file, will_use_theoretical_vals):
@@ -264,23 +308,30 @@ def format_raw_data(src_type, data_file, will_use_theoretical_vals):
         return
     
     data_df = open_df_from_file(data_file)
-    print(f"*** Before formatting\n{data_df}")
-    if src_type == 'QCM-d':
-        formatted_df = format_QCM_next(data_df)
-    elif src_type == 'QCM-i':
-        formatted_df = format_QCMi(data_df)
-    elif src_type == 'Qsense' and ext == '.qsd':
-        calibration_df = open_df_from_file("offset_data/COPY-PASTE_OFFSET_VALUES_HERE.csv")
+
+    # check if column headers match BraTaDio fmt
+    is_preformatted = check_file_previously_formatted(data_df, ext)
+    if is_preformatted:
         formatted_df = data_df
-    elif src_type == 'Qsense' or src_type == 'AWSensors':
-        if not will_use_theoretical_vals:
-            calibration_df = open_df_from_file("offset_data/COPY-PASTE_OFFSET_VALUES_HERE.csv")
-        else:
-            calibration_df = pd.DataFrame()
-        formatted_df = format_Qsense(data_df, calibration_df) if src_type == 'Qsense' else format_AWSensors(data_df, calibration_df)
+
     else:
-        print("invalid option selected")
-        sys.exit(1)
+        print(f"*** Before formatting\n{data_df}")
+        if src_type == 'QCM-d':
+            formatted_df = format_QCM_next(data_df)
+        elif src_type == 'QCM-i':
+            formatted_df = format_QCMi(data_df)
+        elif src_type == 'Qsense' and ext == '.qsd':
+            calibration_df = open_df_from_file("offset_data/COPY-PASTE_OFFSET_VALUES_HERE.csv")
+            formatted_df = data_df
+        elif src_type == 'Qsense' or src_type == 'AWSensors':
+            if not will_use_theoretical_vals:
+                calibration_df = open_df_from_file("offset_data/COPY-PASTE_OFFSET_VALUES_HERE.csv")
+            else:
+                calibration_df = pd.DataFrame()
+            formatted_df = format_Qsense(data_df, calibration_df) if src_type == 'Qsense' else format_AWSensors(data_df, calibration_df)
+        else:
+            print("invalid option selected")
+
     
     print(file_name)
     print(f"*** After formatting\n{formatted_df}")
