@@ -7,22 +7,11 @@ format changes:
 - for input altered flag, prompt user with warning message
 
 features:
+- error checking for missing nan values
+    - prompt user with warning that reccomends checking data manually as removing nans may produce unwanted results, but may still proceed with software removing nans
+    - in error catch, remove nans and proceed
 - when selecting files that record less than up to the 13th overtone, gray out those selections in cols 2 and 3
 - customization option for line plot (and other types)
-
-publication/documentation: 
-- for flowchart
-    - add legend
-    - fix squished text
-    - color code different sections
-        - smaller blocks lighter shades
-    - make big squares smaller, small squares bigger
-- flowchart of workflow of software
-    - rough draft on whiteboard
-- more explicit library acknowledgement sections
-- instructions on adding more files to format
-- add to highlighted sections of bratadio paper
-    - file directories and conversion instructions 
 
 optimizations/refactoring: 
 - remove simga calibration vals from get_calibration_values() in modelling.py
@@ -35,6 +24,15 @@ waiting on data:
 - full gordon-kanazawa data
 
 ### CHANGE LOG
+
+1/25
+- added check and warning for if column headers are preformatted and asking user to double check the file and change it or proceed as is
+- added check and warning for missing values
+- changed how na values are dropped
+- fixed bug involving qsense temp v time
+- fixed bug where qsense was not un-normalizing
+- refactored dissipation magnitude adjustment in file formatting to its own function
+- adjust dissipation unit conversion to not occur for qsd files as it's already in correct magnitude
 
 1/8
 - finished documentation overhaul, specifically modelling.py

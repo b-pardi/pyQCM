@@ -769,9 +769,22 @@ def analyze_data(input):
     analysis = Analysis(input.file) # analysis object contains relevant file/data information
     t0_str = str(input.abs_base_t0).lstrip('0') # baseline time t=0 spec'd by user
     tf_str = str(input.abs_base_tf).lstrip('0') # baseline time t=f spec'd by user
-    print(F"ASDFASDFASDF\n\n{input.file}\n\n*********")
     # grab singular file and create dataframe from it
     df = pd.read_csv(analysis.formatted_fn)
+    print(f"AAAA wtf dataframe {df}")
+
+    # check missing values, distinguishing between some values in a row missing and entire rows missing
+    # some missing in a row indicates problematic data
+    # all missing is likely with qsense where there may be more values recorded for temperature
+    threshold_rows_missing = df.shape[1] - 2
+    exists_some_missing = (df.isna().any(axis=1) & (df.isna().sum(axis=1) < threshold_rows_missing)).any()
+    if exists_some_missing:
+        msg = "WARNING: There is missing data in this file. This is likely a few missing values at the start or end, no cause for concern \n" +\
+                "However it could potentially be an issue with the exporting of data or experiment itself.\n"+\
+                "You may proceed with analysis, the software will drop rows with empty values, but proceed cautiously as erroneous results may occur."
+        print(msg)
+        Exceptions.warning_popup(msg)
+
     freq_color_map, dis_color_map = map_colors()
 
     plot_customs = get_plot_preferences()
@@ -791,18 +804,20 @@ def analyze_data(input):
         dis_fig = plt.figure()
         dis_ax = dis_fig.add_subplot(111)            
 
+        if input.file_src_type != 'Qsense':
+            analysis.temp_time_col = analysis.time_col
         if input.will_plot_temp_v_time:
             try:
-                if input.file_src_type != 'Qsense':
-                    analysis.temp_time_col = analysis.time_col
                 temperature_df = df[[analysis.temp_time_col, analysis.temp_col]].copy()
-                temperature_df = temperature_df.dropna(axis=0, how='any', inplace=False)
+                temperature_df.dropna(axis=0, how='any', inplace=True)
+                print(f"***\n\n {df}\n\n{temperature_df}\n\n***")
             except Exception as e:
                 msg = f"Experiment file does not have temperature data, setting temperature values to 0.\nerr: {e}"
                 print(msg)
                 Exceptions.error_popup(msg)
                 temperature_df = df[[analysis.time_col]]
                 temperature_df[analysis.temp_col] = 0
+
 
         # if different num of freq and raw channels, must do equal amount for plotting,
         # but can just not plot the results later; set plot cap for the lesser
@@ -843,10 +858,10 @@ def analyze_data(input):
         
         for i in range(clean_iters):
             # grab data from df and grab only columns we need, then drop nan values
-            data_df = df[[analysis.time_col,clean_freqs[i],clean_disps[i]]]
+            data_df = df[[analysis.time_col,clean_freqs[i],clean_disps[i]]].copy().dropna()
             print(clean_disps,'********\n********', data_df)
             print(f"clean freq ch: {clean_freqs[i]}; clean disp ch: {clean_disps[i]}")
-            data_df = data_df.dropna(axis=0, how='any', inplace=False)
+            print(f"clean freq ch: {clean_freqs[i]}; clean disp ch: {clean_disps[i]}")
             if data_df.empty:
                 print(f"ERROR: there is no data for either {clean_freqs[i]} or {clean_disps[i]}",
                       "\nPlease either uncheck these overtones, or check file for missing data and try again")
@@ -872,7 +887,8 @@ def analyze_data(input):
             
             x_time = data_df[analysis.time_col]
             y_freq = data_df[clean_freqs[i]]
-            data_df[clean_disps[i]] *= 1000000 # unit conversion
+            if not input.is_qsd:
+                data_df[clean_disps[i]] *= 1000000 # unit conversion
             y_dis = data_df[clean_disps[i]]
 
             if input.will_correct_slope:
