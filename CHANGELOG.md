@@ -1,7 +1,6 @@
 ### WIP
 
 bug fixes:
-- thin film liquid error bar breaking the whole damn thing
 
 format changes:
 - remove absolute time from openqcm and stick with relative for consistency
@@ -15,7 +14,6 @@ features:
 - customization option for line plot (and other types)
 
 optimizations/refactoring: 
-- remove simga calibration vals from get_calibration_values() in modelling.py
 - simplify modelling avging and propagating code since it was made to avg across multiple ranges, but it shouldn't actually do that, and currently only ever feed one range/source at a time
 - remove latex features
 - refactor analyze() to put each opt into its own function
@@ -25,6 +23,14 @@ waiting on data:
 - full gordon-kanazawa data
 
 ### CHANGE LOG
+
+1/26: READY TO PUBLISH!
+- certain warnings like file not selected would close software. replace this with warning message
+- removed sigma_calibration_freqs, a vestigial variable made initially to contain error in the offset values, but offset values have no error. bandaid fixing this was causing issues, so it has been removed and functions utilizing it (e.g. thin film air) have been adjusted
+- fixed crystal thickness that broke for literally no reason
+- added warning to crystal to thickness if ydata empty (right before curve fit) to ensure offset values is selected over theoretical, and that raw data channels are selected
+- commented out option for 1 or 4 sensors, will be implemented fully later
+- updated sample generations contents
 
 1/25
 - added check and warning for if column headers are preformatted and asking user to double check the file and change it or proceed as is
