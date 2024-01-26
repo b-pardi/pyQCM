@@ -114,7 +114,7 @@ def rotate_point(x, y, theta):
 def shift_by_slope(x_time, y_data, baseline_df, time_col, freq):
     '''DEPRECATED
     shifts data to counteract drift and maintain a horizontal trend'''
-    from modelling import linear # import in function to avoid circular import
+    from modeling import linear # import in function to avoid circular import
 
     # slope accounted baseline correction
     params, _ = curve_fit(linear, baseline_df[time_col], baseline_df[freq])
@@ -378,7 +378,7 @@ def range_statistics(df, imin, imax, overtone_sel, which_range, which_fmt, fn):
             elif ov.__contains__('dis'): # save dissipation stats to dissipation stat file
                 dis_stat_file.write(f"{ov},{mean_y:.16E},{std_dev_y:.16E},{median_y:.16E},{which_range},{np.min(x_sel)},{np.max(x_sel)},{fn}\n")
         
-        else: # if overtone not selected, save as 0s (necessary for functionality in modelling.py)
+        else: # if overtone not selected, save as 0s (necessary for functionality in modeling.py)
             print(f"\n{ov} not selected\n")
             if ov.__contains__('freq'):
                 rf_stat_file.write(f"{ov},{0:.16E},{0:.16E},{0:.16E},{which_range},{0:.16E},{0:.16E},{fn}\n")
@@ -615,7 +615,7 @@ def update_interactive_plot(spans, int_plot, int_ax1_zoom, int_ax2_zoom, plot_cu
 
     """    
     
-    from modelling import linearly_analyze # import in function to avoid circular import
+    from modeling import linearly_analyze # import in function to avoid circular import
     
     for span in spans:
         if span.active:
