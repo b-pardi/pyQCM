@@ -1,6 +1,7 @@
 ### WIP
 
 bug fixes:
+- thin film liquid error bar breaking the whole damn thing
 
 format changes:
 - remove absolute time from openqcm and stick with relative for consistency
