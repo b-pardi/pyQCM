@@ -8,6 +8,9 @@
 ### Please execute 'install_packages.py' BEFORE running this script
 - Import errors may occur otherwise.
 
+### This software was designed and tested in a WINDOWS environment
+- If using Mac, please be aware that issues may occur
+
 ### When done with program, please click 'Exit' button instead of closing window
 - Can cause terminal to freeze sometimes if just closing windows.
 
