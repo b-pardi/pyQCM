@@ -11,6 +11,9 @@
 ### This software was designed and tested in a WINDOWS environment
 - If using Mac, please be aware that issues may occur
 
+### This software is capable of reading RAW QSENSE files (*.QSD)
+- Simple select your data file and select QSense device, proceeding as follows in the 'File Information' Section
+
 ### When done with program, please click 'Exit' button instead of closing window
 - Can cause terminal to freeze sometimes if just closing windows.
 
