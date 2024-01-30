@@ -49,6 +49,7 @@ Tools > Preferences > IPython console > Graphics > Graphics Backend > Apply & OK
 		- Copy/paste offset values into a file 'offset_data/COPY-PASTE_CALIBRATION_DATA_HERE.csv'
 			- There are populated values in this value already for demonstrative purposes.
 		- OR click a button 'Enter values here' and enter the values into the software directly
+		- **Important note** these values are only necessary for QSense and AWSensors, however these are not required if using QSense with a raw *.qsd file
 - **Once all information is entered, user can then click 'Submit File Information'.**
 
 - **NOTE** if you are using QSense or AWSensors and do not have the calibration values for your experiment, you are limited to just visualization, no modeling features will work correctly due to the nature of how QSense only records the change in frequency, not the actual values.
