@@ -18,7 +18,7 @@ import numpy as np
 import Exceptions
 from analyze import analyze_data, ordinal
 from format_file import format_raw_data
-from modelling import thin_film_liquid_analysis, thin_film_air_analysis, sauerbrey, avgs_analysis, gordon_kanazawa, crystal_thickness
+from modeling import thin_film_liquid_analysis, thin_film_air_analysis, sauerbrey, avgs_analysis, gordon_kanazawa, crystal_thickness
 
 '''Variable Initializations'''
 class Input:
@@ -239,13 +239,15 @@ def err_check():
     '''Verify File Info'''
     # make sure file name was inputted
     if (input.file == ''):
-        print("WARNING: File name not specified")
-        sys.exit(1)
+        msg = "WARNING: No data file was selected"
+        print(msg)
+        Exceptions.warning_popup(msg)
 
     # verify baseline time entered, if only raw data box checked, no need to base time
     if (not input.is_relative_time and input.will_plot_clean_data) and input.abs_base_t0 == time(0,0,0) and input.abs_base_tf == time(0,0,0):
-        print("WARNING: User indicated plot clean data,\ndid not enter baseline time")
-        sys.exit(1)
+        msg = "WARNING: No baseline time was entered"
+        print(msg)
+        Exceptions.warning_popup(msg)
 
     # verify data checks
     # find num channels tested
@@ -1232,8 +1234,8 @@ class Col1(tk.Frame, App):
         self.file_src_frame = srcFileFrame(self)
         self.file_src_frame.grid(row=4, column=0, pady=(16,8))
 
-        self.num_sensors_frame = numSensorsFrame(self)
-        self.num_sensors_frame.grid(row=5, column=0, pady=8)
+        #self.num_sensors_frame = numSensorsFrame(self)
+        #self.num_sensors_frame.grid(row=5, column=0, pady=8)
 
         self.rel_time_input = relTimeInputFrame(self)
         self.abs_time_input = absTimeInputFrame(self)
