@@ -862,10 +862,13 @@ def analyze_data(input):
             print(clean_disps,'********\n********', data_df)
             print(f"clean freq ch: {clean_freqs[i]}; clean disp ch: {clean_disps[i]}")
             print(f"clean freq ch: {clean_freqs[i]}; clean disp ch: {clean_disps[i]}")
-            if data_df.empty:
-                print(f"ERROR: there is no data for either {clean_freqs[i]} or {clean_disps[i]}",
-                      "\nPlease either uncheck these overtones, or check file for missing data and try again")
-                sys.exit(1)
+            
+            if data_df.empty: # check for if data is missing
+                msg = f"ERROR: there is no data for either {clean_freqs[i]} or {clean_disps[i]}"+\
+                      "\nPlease either uncheck these overtones, or check file for missing data and try again"
+                Exceptions.error_popup(msg)
+                print(msg)
+
 
             # normalize by overtone
             if input.will_normalize_F:
