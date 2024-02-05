@@ -37,7 +37,7 @@ affiliations:
    index: 2
  - name: Instituto de Física, Universidad Autónoma de San Luis Potosí, San Luis Potosí 78000, Mexico
    index: 3
-    - name: Health Sciences Research Institute, University of California Merced, Merced, California 95344, United States of America
+ - name: Health Sciences Research Institute, University of California Merced, Merced, California 95344, United States of America
    index: 4
 date: 19 January 2024
 bibliography: paper.bib
@@ -63,7 +63,9 @@ QCM-D has gained popularity in many different scientific fields due to its exper
 
 # Software interaction
 
-![Figure 1. \label{fig:1}](https://iili.io/JaRnM9S.png){ width=70% }
+
+![\label{fig:1}](figs/figure1.png){ width=0.35\textwidth }
+
 
 The interaction with `pyQCM-BraTaDio` is via a GUI, which allows the user to utilize the software with minimal to no console interaction. It operates following the workflow shown in SI figure 2, The main window is organized into four main regions, shown in \autoref{fig:1}. These regions are (1) initialization conditions, (2) selection of frequencies and dissipation for data mining, visualization, and model application purposes, (3) interactive plots for data mining, and (4) selection of plotting options and models.
 
@@ -73,16 +75,16 @@ The interaction with `pyQCM-BraTaDio` is via a GUI, which allows the user to uti
 
 ### Expedited basic visualizations
 
-![Figure 2. \label{fig:2}](https://iili.io/JaRn0F4.png){ width=60% }
+![\label{fig:2}](figs/figure2.png){ width=0.2\textwidth }
 
 As in any experimentally obtained data, visual inspection is crucial for an initial assessment of baseline stability, anomalies, such as presence of undesired air bubbles, leaks, signal loss, among others. Two basic visualization options are implemented in the `pyQCM-BraTaDio` tool: (i) a full data range visualization referred here as raw data, \autoref{fig:2}, and (ii) the experimental data, referred here as reference level adjusted data, \autoref{fig:3}. For these options, the user can select the overtone order(s) to visualize the frequency and dissipation in various plotting formats. \autoref{fig:2}(a) and (b) show the absolute frequency $f_{n}$ and dissipation $D_{n}$ as a function of time $t$ for $n = 1, 3, 5, 7, 9, 11$ and $13$ for a bovine serum albumin (BSA) solution absorbing to a gold substrate. The relevant experimental data can be visualized by selecting the ‘Plot shifted data’ option. For example, change in frequency as a function of time, ${\Delta}f_n$ vs time $t$, \autoref{fig:3}(a), change in normalized frequency as a function of time, ${\Delta}f_n/n$ vs time $t$, \autoref{fig:3}(b), change in dissipation ${\Delta}D_n$ vs time $t$, \autoref{fig:3}(c), combined change in frequency and change in dissipation as a function of time, ${\Delta}f_n$ and ${\Delta}D_n$ vs time $t$, \autoref{fig:3}(d), combined change in normalized frequency and change in dissipation as a function of time, ${\Delta}f_n/n$ and ${\Delta}D_n$ vs time t, \autoref{fig:3}(e), the temperature $T$ as a function of time, $T$ vs $t$, \autoref{fig:3}(f), which is critical to determine any temperature effects in collected data. Finally, change in dissipation as a function of change in frequency, ${\Delta}D_n$ vs ${\Delta}f_n$, \autoref{fig:3}(g), and change in dissipation as a function of change in normalized frequency, ${\Delta}D_n$ vs ${\Delta}f_n/n$, \autoref{fig:3}(h) to obtain qualitative insights of the adsorbed film rigidity. 
 
-![Figure 3. \label{fig:3}](https://iili.io/JaRnUAP.png){ width=60% }
+![\label{fig:3}](figs/figure3.png){ width=0.5\textwidth }
 
 
 ### Data mining via an interactive plot
 
-![Figure 4. \label{fig:4}](https://iili.io/JaRnES2.png){ width=60% }
+![\label{fig:4}](figs/figure4.png){ width=0.2 }
 
 To facilitate the procedure of data mining, that is, selection of frequency and dissipation ranges for time ranges of interest, it is possible to interact with the data via an interactive plot, \autoref{fig:4}. `pyQCM-BraTaDio` will compute the average and standard deviation of the data points contained within the selected range for each overtone selected and display the selection with a linear fit, every time a selection is made. Through the use of user dictated range identifiers, multiple selections can be made without overwriting data. Overwriting only occurs when further selections are made without updating the range identifier *ex ante*.
 
