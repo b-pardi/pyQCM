@@ -24,6 +24,9 @@ waiting on data:
 
 ### CHANGE LOG
 
+1/31
+- adjusted error checking for missing overtone data
+
 1/26: READY TO PUBLISH!
 - certain warnings like file not selected would close software. replace this with warning message
 - removed sigma_calibration_freqs, a vestigial variable made initially to contain error in the offset values, but offset values have no error. bandaid fixing this was causing issues, so it has been removed and functions utilizing it (e.g. thin film air) have been adjusted
