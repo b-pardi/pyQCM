@@ -7,6 +7,14 @@
 
 ### Please execute 'install_packages.py' BEFORE running this script
 - Import errors may occur otherwise.
+- If you get an error with this script,
+    - In a command prompt, (not anaconda terminal) type 'where python' on windows, or in a mac terminal type 'which python'
+    -FCopy and paste the full path that it prints out
+        - On windows it should look something like: 'C:\<some path stuff>\Python\Python310\python.exe'
+        - In spider, go to tools > preferences > python interpreter
+        - Select 'Use the following Python interpreter:'
+        - Paste in the path you copied earlier from the terminal
+        - Click apply and ok, and restart spyder for changes to take effect
 
 ### This software was designed and tested in a WINDOWS environment
 - If using Mac, please be aware that issues may occur
