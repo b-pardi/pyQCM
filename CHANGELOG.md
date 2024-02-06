@@ -3,8 +3,9 @@
 bug fixes:
 
 format changes:
-- remove absolute time from openqcm and stick with relative for consistency
+- for missing data warning, specify which overtones have missing data
 - for input altered flag, prompt user with warning message
+- version numbers for requirements.txt
 
 features:
 - error checking for missing nan values
