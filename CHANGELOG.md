@@ -5,7 +5,6 @@ bug fixes:
 format changes:
 - for missing data warning, specify which overtones have missing data
 - for input altered flag, prompt user with warning message
-- version numbers for requirements.txt
 
 features:
 - error checking for missing nan values
@@ -24,6 +23,12 @@ waiting on data:
 - full gordon-kanazawa data
 
 ### CHANGE LOG
+
+2/11
+- 
+
+2/6
+- updated readme and added versions to requirements.txt
 
 1/31
 - adjusted error checking for missing overtone data
