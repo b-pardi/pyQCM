@@ -25,7 +25,7 @@ waiting on data:
 ### CHANGE LOG
 
 2/11
-- 
+- adjusted warning label for missing data to show if >0.1% of entries missing, and notify of what overtones data is missing
 
 2/6
 - updated readme and added versions to requirements.txt
