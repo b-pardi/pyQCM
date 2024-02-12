@@ -776,12 +776,14 @@ def analyze_data(input):
     # check missing values, distinguishing between some values in a row missing and entire rows missing
     # some missing in a row indicates problematic data
     # all missing is likely with qsense where there may be more values recorded for temperature
-    threshold_rows_missing = df.shape[1] - 2
-    exists_some_missing = (df.isna().any(axis=1) & (df.isna().sum(axis=1) < threshold_rows_missing)).any()
+    threshold_rows_missing = df.shape[0] * 0.001 # threshold missing rows
+    exists_some_missing = (df.isna().sum(axis=1) > threshold_rows_missing).any()
     if exists_some_missing:
+        columns_with_missing = df.columns[df.isna().any()].tolist()
         msg = "WARNING: There is missing data in this file. This is likely a few missing values at the start or end, no cause for concern \n" +\
                 "However it could potentially be an issue with the exporting of data or experiment itself.\n"+\
-                "You may proceed with analysis, the software will drop rows with empty values, but proceed cautiously as erroneous results may occur."
+                "You may proceed with analysis, the software will drop rows with empty values, but proceed cautiously as erroneous results may occur."+\
+                f"\n\nMISSING COLUMNS:\n{columns_with_missing}"
         print(msg)
         Exceptions.warning_popup(msg)
 
