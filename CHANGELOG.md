@@ -3,7 +3,6 @@
 bug fixes:
 
 format changes:
-- for missing data warning, specify which overtones have missing data
 - for input altered flag, prompt user with warning message
 
 features:
@@ -14,7 +13,6 @@ features:
 - customization option for line plot (and other types)
 
 optimizations/refactoring: 
-- simplify modelling avging and propagating code since it was made to avg across multiple ranges, but it shouldn't actually do that, and currently only ever feed one range/source at a time
 - remove latex features
 - refactor analyze() to put each opt into its own function
 
