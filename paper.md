@@ -8,28 +8,28 @@ tags:
   - thin film in liquid
 authors:
   - name: Brandon Pardi
-orcid: 0000-0001-6483-9858
-equal-contrib: true
-affiliation: 1
+    orcid: 0000-0001-6483-9858
+    equal-contrib: true
+    affiliation: 1
   - name: Syeda Tajin Ahmed
-orcid: 0000-0002-2719-9641
-equal-contrib: true
-affiliation: 1
+	  orcid: 0000-0002-2719-9641
+    equal-contrib: true
+    affiliation: 1
   - name: Silvia Jonguitud Flores
-orcid: 0009-0005-4841-4901
-affiliation: 3
+	  orcid: 0009-0005-4841-4901
+    affiliation: 3
   - name: Warren Flores
-orcid: 0009-0001-1462-4688
-affiliation: 1
+	  orcid: 0009-0001-1462-4688
+    affiliation: 1
   - name:  Laura L.E. Mears
-orcid: 0000-0001-7558-9399
-affiliation: 2
+	  orcid: 0000-0001-7558-9399
+    affiliation: 2
   - name: Bernardo Yáñez Soto 
-orcid: 0000-0002-4273-6513
-affiliation: 3
+	  orcid: 0000-0002-4273-6513
+    affiliation: 3
   - name: Roberto C. Andresen Eguiluz
-  corresponding: true
-  affiliation: "1,4"
+    corresponding: true
+    affiliation: "1,4"
 affiliations:
   - name: Department of Materials Science and Engineering, University of California Merced, Merced, California 95344, United States of America
     index: 1
