@@ -12,20 +12,20 @@ authors:
     equal-contrib: true
     affiliation: 1
   - name: Syeda Tajin Ahmed
-	  orcid: 0000-0002-2719-9641
+    orcid: 0000-0002-2719-9641
     equal-contrib: true
     affiliation: 1
   - name: Silvia Jonguitud Flores
-	  orcid: 0009-0005-4841-4901
+    orcid: 0009-0005-4841-4901
     affiliation: 3
   - name: Warren Flores
-	  orcid: 0009-0001-1462-4688
+    orcid: 0009-0001-1462-4688
     affiliation: 1
   - name:  Laura L.E. Mears
-	  orcid: 0000-0001-7558-9399
+    orcid: 0000-0001-7558-9399
     affiliation: 2
   - name: Bernardo Yáñez Soto 
-	  orcid: 0000-0002-4273-6513
+    orcid: 0000-0002-4273-6513
     affiliation: 3
   - name: Roberto C. Andresen Eguiluz
     corresponding: true
@@ -64,7 +64,7 @@ QCM-D has gained popularity in many different scientific fields due to its exper
 # Software interaction
 
 
-![\label{fig:1}](figs/figure1.png){ width=0.35\textwidth }
+![Figure 1](figs/figure1.png){ width=0.35\textwidth \label{fig:1} }
 
 
 The interaction with `pyQCM-BraTaDio` is via a GUI, which allows the user to utilize the software with minimal to no console interaction. It operates following the workflow shown in SI figure 2, The main window is organized into four main regions, shown in \autoref{fig:1}. These regions are (1) initialization conditions, (2) selection of frequencies and dissipation for data mining, visualization, and model application purposes, (3) interactive plots for data mining, and (4) selection of plotting options and models.
@@ -75,16 +75,16 @@ The interaction with `pyQCM-BraTaDio` is via a GUI, which allows the user to uti
 
 ### Expedited basic visualizations
 
-![\label{fig:2}](figs/figure2.png){ width=0.2\textwidth }
+![Figure 2](figs/figure2.png){ width=0.2\textwidth \label{fig:2} }
 
 As in any experimentally obtained data, visual inspection is crucial for an initial assessment of baseline stability, anomalies, such as presence of undesired air bubbles, leaks, signal loss, among others. Two basic visualization options are implemented in the `pyQCM-BraTaDio` tool: (i) a full data range visualization referred here as raw data, \autoref{fig:2}, and (ii) the experimental data, referred here as reference level adjusted data, \autoref{fig:3}. For these options, the user can select the overtone order(s) to visualize the frequency and dissipation in various plotting formats. \autoref{fig:2}(a) and (b) show the absolute frequency $f_{n}$ and dissipation $D_{n}$ as a function of time $t$ for $n = 1, 3, 5, 7, 9, 11$ and $13$ for a bovine serum albumin (BSA) solution absorbing to a gold substrate. The relevant experimental data can be visualized by selecting the ‘Plot shifted data’ option. For example, change in frequency as a function of time, ${\Delta}f_n$ vs time $t$, \autoref{fig:3}(a), change in normalized frequency as a function of time, ${\Delta}f_n/n$ vs time $t$, \autoref{fig:3}(b), change in dissipation ${\Delta}D_n$ vs time $t$, \autoref{fig:3}(c), combined change in frequency and change in dissipation as a function of time, ${\Delta}f_n$ and ${\Delta}D_n$ vs time $t$, \autoref{fig:3}(d), combined change in normalized frequency and change in dissipation as a function of time, ${\Delta}f_n/n$ and ${\Delta}D_n$ vs time t, \autoref{fig:3}(e), the temperature $T$ as a function of time, $T$ vs $t$, \autoref{fig:3}(f), which is critical to determine any temperature effects in collected data. Finally, change in dissipation as a function of change in frequency, ${\Delta}D_n$ vs ${\Delta}f_n$, \autoref{fig:3}(g), and change in dissipation as a function of change in normalized frequency, ${\Delta}D_n$ vs ${\Delta}f_n/n$, \autoref{fig:3}(h) to obtain qualitative insights of the adsorbed film rigidity. 
 
-![\label{fig:3}](figs/figure3.png){ width=0.5\textwidth }
+![Figure 3](figs/figure3.png){ width=0.5\textwidth \label{fig:3} }
 
 
 ### Data mining via an interactive plot
 
-![\label{fig:4}](figs/figure4.png){ width=0.2 }
+![Figure 4](figs/figure4.png){ width=0.2\textwidth \label{fig:4} }
 
 To facilitate the procedure of data mining, that is, selection of frequency and dissipation ranges for time ranges of interest, it is possible to interact with the data via an interactive plot, \autoref{fig:4}. `pyQCM-BraTaDio` will compute the average and standard deviation of the data points contained within the selected range for each overtone selected and display the selection with a linear fit, every time a selection is made. Through the use of user dictated range identifiers, multiple selections can be made without overwriting data. Overwriting only occurs when further selections are made without updating the range identifier *ex ante*.
 
@@ -95,7 +95,7 @@ Matching QCM-D experimental data to models that provide physical interpretation 
 
 # Conclusions
 
-`pyQCM-BraTaDio` is a Python software implemented ad hoc to expedite the process of data mining and analysis of QCM-D experimental data. Beginning  with a Tkinter GUI for metadata collection, the inputs and data are fed to several routines to mine and reference level adjust data with the Pandas and NumPy libraries. The user is able to interact with QCM-D data in a novel way via a MatPlotLib interactive plot widget towards the end of the workflow. This interaction offers the user to apply several models such as Sauerbrey, thin film in liquid, thin film in air, and crystal thickness. This tool is key for efficient data analysis in preference over laborious spreadsheet evaluation.
+pyQCM-BraTaDio is a Python software implemented ad hoc to expedite the process of data mining and analysis of QCM-D experimental data. Beginning  with a Tkinter GUI for metadata collection, the inputs and data are fed to several routines to mine and reference level adjust data with the Pandas and NumPy libraries. The user is able to interact with QCM-D data in a novel way via a MatPlotLib interactive plot widget towards the end of the workflow. This interaction offers the user to apply several models such as Sauerbrey, thin film in liquid, thin film in air, and crystal thickness. This tool is key for efficient data analysis in preference over laborious spreadsheet evaluation.
 
 ---
 
