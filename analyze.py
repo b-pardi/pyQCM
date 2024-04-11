@@ -771,7 +771,7 @@ def analyze_data(input):
     tf_str = str(input.abs_base_tf).lstrip('0') # baseline time t=f spec'd by user
     # grab singular file and create dataframe from it
     df = pd.read_csv(analysis.formatted_fn)
-    print(f"AAAA wtf dataframe {df}")
+    print(f"dataframe {df}")
 
     # check missing values, distinguishing between some values in a row missing and entire rows missing
     # some missing in a row indicates problematic data
