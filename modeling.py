@@ -759,6 +759,8 @@ def sauerbrey_avgs(mu_Df, delta_mu_Df, C, overtones, label, fig_format, dpi):
 
     """   
     # method 2 avg rf * C for each overtone
+    print('apples***',type(mu_Df[0]), type(C), type(overtones[0]))
+    mu_Df = np.array(mu_Df)
     mu_Dm = mu_Df * C / overtones
     delta_mu_Dm = np.abs(delta_mu_Df * C / overtones)
 
@@ -798,7 +800,7 @@ def sauerbrey_fit(df, overtones, label, C, fig_format, dpi):
     # grabbing data from df
     df_range = df.loc[df['range_name'] == label]
     # method 1 of Sauerbrey mass (linear fit slope * C)
-    mu_Df = df_range['Dfreq_average'].values # average change in frequency (y)
+    mu_Df = df_range['Dfreq_average'].values.astype(np.float32) # average change in frequency (y)
     delta_mu_Df = df_range['Dfreq_std_dev'].values # std dev of y
     print('***',mu_Df,delta_mu_Df)
 
@@ -807,6 +809,8 @@ def sauerbrey_fit(df, overtones, label, C, fig_format, dpi):
     
     # plotting average frequencies
     data_label, x_label, y_label, title = get_labels(label, 'sauerbrey', 'fit')
+    # weird bug made ydata list of strings in certain dataset
+    mu_Df = [float(y) for y in mu_Df]
     avg_Df_fig, avg_Df_ax = plot_data(overtones, mu_Df, None, delta_mu_Df, data_label, True)
 
     # take care of all linear fitting analysis    
