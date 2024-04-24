@@ -806,6 +806,14 @@ def analyze_data(input):
         dis_fig = plt.figure()
         dis_ax = dis_fig.add_subplot(111)            
 
+        if input.will_plot_dD_v_dF:
+            disVfreq_fig = plt.figure()
+            disVfreq_ax = disVfreq_fig.add_subplot(111)
+
+        if input.will_plot_dF_dD_together:
+            mult_fig, mult_ax1 = plt.subplots()
+            mult_ax2 = mult_ax1.twinx()
+
         if input.file_src_type != 'Qsense':
             analysis.temp_time_col = analysis.time_col
         if input.will_plot_temp_v_time:
@@ -893,7 +901,7 @@ def analyze_data(input):
             x_time = data_df[analysis.time_col]
             y_freq = data_df[clean_freqs[i]]
             if not input.is_qsd:
-                data_df[clean_disps[i]] *= 1000000 # unit conversion
+                data_df[clean_disps[i]] *= 1000000 # magnitude conversion
             y_dis = data_df[clean_disps[i]]
 
             if input.will_correct_slope:
@@ -922,14 +930,10 @@ def analyze_data(input):
 
             # plotting change in disp vs change in freq
             if input.will_plot_dD_v_dF:
-                disVfreq_fig = plt.figure()
-                disVfreq_ax = disVfreq_fig.add_subplot(111)
                 disVfreq_ax.plot(y_freq[::points_idx], y_dis[::points_idx], '.', markersize=1, label=ordinal(get_num_from_string(clean_freqs[i])))
             
             # multi axis plot for change in freq and change in dis vs time
             if input.will_plot_dF_dD_together:
-                mult_fig, mult_ax1 = plt.subplots()
-                mult_ax2 = mult_ax1.twinx()
                 plot_multiaxis(input, (x_time_freq, x_time_dis), y_freq, y_dis,
                                ordinal(get_num_from_string(clean_freqs[i])),
                                ordinal(get_num_from_string(clean_disps[i])),
