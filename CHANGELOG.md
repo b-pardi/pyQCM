@@ -22,6 +22,13 @@ waiting on data:
 
 ### CHANGE LOG
 
+4/24
+- fixed bug where multiaxis and dissipation v frequency would only plot last selected overtone
+
+4/10
+- fixed bug where (only for 1 specific dataset) when using Sauerbrey mass analysis it loaded the interactive plot output stats file data as strings???
+    - ensured a typecast of data loaded from that file
+
 2/11
 - adjusted warning label for missing data to show if >0.1% of entries missing, and notify of what overtones data is missing
 
