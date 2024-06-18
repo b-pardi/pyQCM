@@ -1,3 +1,7 @@
+'''
+THIS SCRIPT IS A WORK IN PROGRESS PLEASE DO NOT RUN YET IT WILL FAIL
+'''
+
 import unittest
 import pandas as pd
 import numpy as np
@@ -6,7 +10,6 @@ import sys
 import re
 from unittest.mock import patch, MagicMock, mock_open
 
-# Assuming the script provided is in a file named `data_formatter.py`
 from format_file import (
     open_df_from_file, extract_num_from_string, rename_cols,
     add_offsets, unnormalize, dissipation_magnitude_adjustment,
