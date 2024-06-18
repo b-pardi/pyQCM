@@ -12,7 +12,12 @@ def allowed_file(filename):
     else:
         return False
 
-@app.route('/', methods=['GET', 'POST'])
+
+@app.route('/')
+def index():
+    return render_template("index.html")
+
+'''@app.route('/upload_file', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
         # Check if the post request has the file part
@@ -34,7 +39,7 @@ def upload_file():
             # Then you can redirect to another page or process the data
             # For simplicity, we'll just render the same page with a message
             return 'File successfully uploaded and being processed'
-    return render_template('upload.html')
+    return render_template('upload.html')'''
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -759,7 +759,6 @@ def sauerbrey_avgs(mu_Df, delta_mu_Df, C, overtones, label, fig_format, dpi):
 
     """   
     # method 2 avg rf * C for each overtone
-    print('apples***',type(mu_Df[0]), type(C), type(overtones[0]))
     mu_Df = np.array(mu_Df)
     mu_Dm = mu_Df * C / overtones
     delta_mu_Dm = np.abs(delta_mu_Df * C / overtones)

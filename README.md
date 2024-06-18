@@ -1,24 +1,18 @@
 
 # py-QCM-BraTaDio README
 
-  
+## Statement of Need
+
+QCM-D has gained popularity in many different scientific fields due to its experimental simplicity and versatility. QCM-D (or just QCM if not quantifying energy losses) can be combined with a variety of instruments for in situ complementary measurements, such as atomic force microscopy (AFM),[@Friedt:2003] microtribometry,[@Borovsky:2019] surface plasmon resonance (SPR),[@Bailey:2002] or electrochemistry,[@Levi:2016] among others. However, one drawback rests in that any QCM-D experiment, real-time monitoring of sensor surface-environment generates large volumes of data entries, and packages used to collect data do not typically possess straightforward data visualization, data mining capabilities, and basic model applications. Furthermore, programs associated with QCM-D data collection and analysis are often proprietary with limited access. There exists other open-source packages, such as RheoQCM[@Shull:2020] and pyQTM[@Johannsmann:2023], however, they focus on more complex data modeling rather than data mining. `pyQCM-BraTaDio` can serve as a complement to these two packages Here, we present an intuitive Python-based, open-source software that is QCM-D manufacturer agnostic of multi-harmonic collecting systems for (1) simple and fast data visualization and interaction, (2) data mining and reduction, and (3) basic model applications. The supported models include (i) Sauerbrey, for rigid thin films, (ii) viscoelastic thin film in a Newtonian liquid, (iii) viscoelastic thin film in air, and (iv) quartz crystal thickness determination. 
+
+Please continue below for instructions on using the software.
 
 ## Important Notes before Starting
-
-### Please execute 'install_packages.py' BEFORE running this script
-- Import errors may occur otherwise.
-- If you get an error with this script,
-	- Have python 3.10.x installed on your computer (not via spyder, from https://www.python.org/downloads/)
-    - In a command prompt, (not anaconda terminal) type 'where python' on windows, or in a mac terminal type 'which python'
-    - Copy and paste the full path that it prints out
-        - On windows it should look something like: 'C:\<some path stuff>\Python\Python310\python.exe'
-        - In spider, go to tools > preferences > python interpreter
-        - Select 'Use the following Python interpreter:'
-        - Paste in the path you copied earlier from the terminal
-        - Click apply and ok, and restart spyder for changes to take effect
-
 ### This software was designed and tested in a WINDOWS environment
 - If using Mac, please be aware that issues may occur
+
+### The only verified Python version this software has been fully tested on is 3.10.x
+- Others will likely work, but cannot be verified at this time
 
 ### This software is capable of reading RAW QSENSE files (*.QSD)
 - Simple select your data file and select QSense device, proceeding as follows in the 'File Information' Section
@@ -28,11 +22,46 @@
 
 ### 'sample_generations' folder contains sample data to test with software, as well as figures output by that sample data
 
-### IF USING SPYDER
+### Clicking submit after giving required information to the UI will generate a variable number of plots based on what analysis is desired
 
+### IF USING SPYDER
 - By default, plt will show plots in console box and span selector will not work.
 - Follow these steps to make selection plots open in new window:
 Tools > Preferences > IPython console > Graphics > Graphics Backend > Apply & OK.
+
+## Getting Started
+There are two methods for downloading the package.
+### For developers or those who may want to contribute in some fashion
+- Clone the repository into a directory of your choosing
+	- In a terminal, create or navigate to the folder you want to download the code to
+	- Run the command `git clone https://github.com/b-pardi/BraTaDio.git`
+	- You should now have all the required files
+### For those without programming experience that simply want to use the software
+- Download the zip file
+	- In the webpage for this repository, click the button that says 'code' (1)
+	- At the bottom of the drop down, click the 'Download ZIP' button (2)
+	- Extract the zip file to a folder of your choice
+
+![Github repository page for BraTaDio. (1) First button to click to drop down the menu to download the zip file. (2) Download ZIP file button](figs/zip_file_loc.png){ width=50% }
+
+### Once downloaded, the remaining steps apply to both cases
+- If you are in a terminal, make sure you are in the parent directory of the code
+	- Your current path should look like: `C:\path\to\directory\BraTaDio` with the key component being that the directory ends with 'BraTaDio'
+- Install package dependencies
+	- Either run the appropriate script as follows: `python install_packages.py`
+	- Or install with pip using the requirements file: `pip install -r requirements.txt`
+	- If you get an error with this script,
+		- Have python 3.10.x installed on your computer (not via spyder, from https://www.python.org/downloads/)
+		- In a command prompt, (not anaconda terminal) type 'where python' on windows, or in a mac terminal type 'which python'
+		- Copy and paste the full path that it prints out
+			- On windows it should look something like: 'C:\<some path stuff>\Python\Python310\python.exe'
+			- In spider, go to tools > preferences > python interpreter
+			- Select 'Use the following Python interpreter:'
+			- Paste in the path you copied earlier from the terminal
+			- Click apply and ok, and restart spyder for changes to take effect
+- Run main.py to get started
+	- **NOTE** main.py is the ONLY python file that should ever be executed. The other scripts are dependend on main.py for UI inputs.
+
 
 ![Figure 1 - pyQCM-BraTaDio UI for reference](https://iili.io/J7rm8Wg.png)
 ### Figure 1 - pyQCM-BraTaDio UI for reference
@@ -94,7 +123,7 @@ Tools > Preferences > IPython console > Graphics > Graphics Backend > Apply & OK
 - In addition to selecting the overtones this is also where you select to plot the interactive plot, either for raw or reference level adjusted data.
 	- Interactive plot details in later section
 - **NOTE** all plot options and modeling features require reference level adjusted data, raw data's only purpose is visualization, it is not used for anything other than just being plotted.
-  
+- It is at this point having filled out the file information columnm, and selecting which overtones you'd like to plot, that you have given the software the minimum amount of information to generate plots. Continue below for more plots and analysis that can be done.
 
 ## Plot options (4)
 ![Figure 2 - various plot options provided by pyQCM-BraTaDio](https://iili.io/J7434Rf.png)
@@ -171,24 +200,104 @@ Activating the interactive plot option requires to select an overtone and assign
 - Known errors (originating from erroneous user input) will be displayed in a popup window when encountered
 - The software does not close when this occurs, and the user is able to correct the error and resume processing.
 
-## Bugs
+# Testing
+## Manual Testing
 
-### Determining a Bug
+To ensure the software is functioning correctly, please follow the manual testing instructions below.
 
-- If you catch an error or something runs but it gives an unexpected output, here are the steps to generate a bug report:
+### Functionality Testing
 
-1. Check the README.md and ensure steps were followed correctly.
+1. **Open the Application:**
+	- Run main.py script to open the Tkinter window.
+	- Ensure the window opens without errors.
+	- Ensure all checkboxes and radio buttons are selectable.
 
-2. Check the terminal or error popup (if applicable) and see if this exception was caught.
+2. **File Formatting:**
+	- Click the "Select File" button.
+	- Use the file dialog to select a QCM-D data file.
+	- Verify that the selected file path is displayed in the UI.
+	- Inputting file information outlined in "File Information (1)".
+	- Click 'Submit file information'.
+	- Ensure there is a label that briefly appears just below the 'Clear entries' button (will remain for 5 seconds and disappear).
+	- Verify that there is a csv file in the 'raw_data' folder called 'Formatted-<your-original-filename>.csv.
 
-3. Attempt to replicate steps and ensure the bug is reproducible.
+3. **Basic Visualizations:**
+	- Ensure file information is already filled out and the 'Submit file information' has been clicked.
+		- If file formatting isn't working this test won't work either.
+	- Select the top middle checboxes for 'Raw Data Overtone Selection' and 'Shifted Data Overtone Selection'.
+	- Select any number of overtones in each category.
+	- Click 'Submit' in the fourth column.
+	- Verify 4 plots generated in the 'qcmd-plots' folder.
+		- These should be:
+		- 'dissipation_plot' figure 2c
+		- 'frequency_plot' figure 2a
+		- 'RAW-dissipation_plot'
+		- 'RAW-frequency_plot'
+	- The raw figures should look like nearly horizontal lines
+	- Ensure that the overtones selected in the UI correspond to the overtones plotted in the figures generated
 
-4. If the caught error and/or README don't solve the error, this bug needs to be reported.
+4. **Analysis Options:**
+	- With file information filled out and submitted, and overtones selected, select (one at a time) options for plots in the 4th column and verify results. The options are as follows:
+	- 'Plot ${\Delta}f$ and ${\Delta}D$ together' should generated a multiaxis plot of the shifted data. The data should look similar to the individual plots shown in the previous test, just plotted together. The file is called: 'freq_dis_V_time' shown in figure 2d.
+	- 'Plot ${\Delta}D$ vs ${\Delta}f$' should generate a plot of change in dissipation on the y axis, and change in frequency on the x axis showin in figure 2g.
+	- 'Plot temperature vs time' will generate a plot with temperature on the y axis, and time on the x axis called 'temp_vs_time_plot' shown in figure 2f.
+	- 'Normalize ${\Delta}f$ with its respective overtone can be selected along with any other or no other options, it will output plots with the same file names, but any plots with frequency, the axis will now have '${\Delta}f_n/n$' as opposed to just '${\Delta}f_n$'.
+	- Interactive plot is more extensive and will be discussed in the next section.
 
-  
+5. **Interactive Plot and Modelling:**
+	- Ensure file options are filled (selecting offset peak frequency values) and submitted, uncheck the 'Raw data overtone selection', select ALL overtones in the shifted data section, and uncheck all analysis options before proceeding.
+	- Select the radio button for 'Interactive plot' at the bottom of the Shifted data column.
+	- Input a number indicating which overtone will be visualized in the first text field that just displayed. This is any number selected in the checkboxes, however in practive typically 3 or 5 are chosen as they have the least noise/variation experimentally.
+	- Enter a range identifier in the next box. This can be any string of your choosing. 'test', for example.
+	- Click confirm range.
+	- Select the checkbox 'Enable interactive plot' in the far right column.
+	- Click 'Clear saved range data' in the far right column
+	- Click submit in the far right column.
+	- Verify a new window opens with a 2x2 grid of plots.
+	- Click and drag anywhere in either of the left 2 plots.
+	- Verify that if a selection is made in the top left, that the bottom left plot automatically updates to match the selection made, and vice versa.
+	- Verify the right 2 plots update, showing a zoomed in plot of the selection just made, as well as a linear regression fit indicating the 'drift' of the data in the selections.
+	- Verify 'clean_all_stats_rf.csv' and 'clean_all_stats_dis.csv' in the 'selected_ranges' folder were updated upon selection.
+	- Select a small portion of the end of the data (as similar as possible to figure 3.2)
+	- Close the plot window and click the 'Modelling' button in the far right column.
+	- Ensure a new small window opens with various models to apply to the selection just made.
+	- Click the 'Plot average ${\Delta}f$ and ${\Delta}D$.
+	- Verify two plots generated with the range identifier from earlier in the file name: 'Avg_Dd_range_<test_label>', 'Avg_Df_range_<test_label>'. These plots should show the average change in dissipation and change in frequency values (respectively) of each overtone.
+	- Click the 'Run Sauerbrey mass analysis'.
+	- Verify two plots generated, one plotting average Sauerbrey mass for each overtone ('Sauerbrey_avgs_range_<test_label>'), and one with a linear fit of the average change in frequency of each overtone, reporing the found mass in the plot legend (Sauerbrey_fit_range_<test_label>).
+	- Click the 'Run analysis of thin film in liquid' button.
+	- Verify a plot generated named 'thin_film_liquid_<test_label>', with a linear fit reporting shear dependent compliance.
+	- Click the 'Run analysis of thin film in air' button.
+	- Verify 2 plots generated 'thin_film_air_FREQ_<test_label>' 'thin_film_air_GAMMA_<test_label>'. They should each show linear fits, they will not make much sense with the experimental data in the sample generations folder, as this model is for different experimental data. However for the purposes of testing, we simply want to verify the plot generates.
+	- Back in the main UI window, select 'Raw Data Overtone Selection' and select all overtones in that column.
+	- In the modelling window, click the 'Run crystal thickness' button.
+	- Verify a plot file is generated named 'crystal_thickness' that reports the thickness of the crystal used to attain this data in the plot legend.
 
-## Reporting the Bug
-If you are proficient with github, please open an issue in the repository.
-For those who are not, there is an included 'BraTaDio_example_bug_report.docx' in the repository. This can be filled out and emailed to the developer. **Please Be explicit and pedantic** 
+### Usability Testing
 
- ----------------------------------------------------------
+1. **UI Layout:**
+	- Check that all UI elements (buttons, sliders, input fields) are properly aligned and accessible (see figure 1 for reference).
+		- Note that some options are only visibile when other options are checked, ensure all the check/radio buttons in your UI match figure 1
+	- Ensure the 'Customize plot options' button and 'Modelling' button open new windows.
+
+2. **Error Messages:**
+	- Trigger common errors (e.g., clicking 'submit file information' before selecting a data file) and verify that appropriate error messages are displayed.
+
+### Checklist
+
+- [ ] Open the application without errors.
+- [ ] Check various boxes and select various radio buttons without issue.
+- [ ] Select a QCM-D data file and have it show the filename in the UI.
+- [ ] Successfully format a data file.
+- [ ] Generate the four basic visualization plots
+- [ ] Perform and verify all analysis options.
+- [ ] Generate and display the interactive plot.
+- [ ] Make selections and have all facets of the plot update accordingly (including selected data csv files).
+- [ ] Plot all the available model applications successfully.
+- [ ] Verify UI layout and button functionality.
+- [ ] Check error messages for common errors.
+
+Please report any issues or unexpected behavior during the testing process.
+
+
+------------------------------

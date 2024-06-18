@@ -1470,7 +1470,7 @@ class Col4(tk.Frame):
         self.plot_temp_v_time_check.grid(row=5, column=4)
         self.correct_slope_var = tk.IntVar()
         self.correct_slope_check = tk.Checkbutton(self, text="Drift correction", variable=self.correct_slope_var, onvalue=1, offvalue=0, command=self.receive_optional_checkboxes)
-        self.correct_slope_check.grid(row=6, column=4)
+        #self.correct_slope_check.grid(row=6, column=4)
         self.enable_interactive_plot_var = tk.IntVar()
         self.enable_interactive_plot_check = tk.Checkbutton(self, text="Enable interactive plot", variable=self.enable_interactive_plot_var, onvalue=1, offvalue=0, command=self.receive_optional_checkboxes)
         self.enable_interactive_plot_check.grid(row=7, column=4)

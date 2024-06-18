@@ -1,3 +1,5 @@
+__pycache__/
+
 qcmd-plots/*.png
 qcmd-plots/*.tiff
 qcmd-plots/*.pdf
