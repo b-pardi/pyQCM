@@ -879,7 +879,6 @@ def analyze_data(input):
                 Exceptions.error_popup(msg)
                 print(msg)
 
-
             # normalize by overtone
             if input.will_normalize_F:
                 overtone = get_num_from_string(clean_freqs[i])
@@ -887,8 +886,13 @@ def analyze_data(input):
                 baseline_df[clean_freqs[i]] /= overtone
 
             # compute average of rf and dis
+            if baseline_df[clean_freqs[i]].values.size == 0 or baseline_df[clean_disps[i]].values.size == 0:
+                msg = f"ERROR: Found no datapoints between {input.rel_t0} and {input.rel_tf} seconds.\nPlease adjust baseline time range."
+                Exceptions.error_popup(msg)
+                break
             rf_base_avg = baseline_df[clean_freqs[i]].mean() # baseline correction
             dis_base_avg = baseline_df[clean_disps[i]].mean() # baseline correction
+
 
             # lower rf curve s.t. baseline is approx at y=0
             data_df[clean_freqs[i]] -= rf_base_avg # baseline correction
