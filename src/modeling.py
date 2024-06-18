@@ -9,8 +9,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit, least_squares
 
-import Exceptions
-from analyze import get_plot_preferences, get_num_from_string, prepare_stats_file, range_statistics
+import src.Exceptions as Exceptions
+from src.analyze import get_plot_preferences, get_num_from_string, prepare_stats_file, range_statistics
 
 PI = np.pi
 

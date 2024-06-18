@@ -3,7 +3,7 @@ import numpy as np
 from matplotlib import pyplot as plt # for demo only: remove otherwise
 import pandas as pd
 
-from analyze import ordinal
+from src.analyze import ordinal
 
 import struct
 import numpy as np

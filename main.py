@@ -15,10 +15,10 @@ import json
 import pandas as pd
 import numpy as np
 
-import Exceptions
-from analyze import analyze_data, ordinal
-from format_file import format_raw_data
-from modeling import thin_film_liquid_analysis, thin_film_air_analysis, sauerbrey, avgs_analysis, gordon_kanazawa, crystal_thickness
+import src.Exceptions as Exceptions
+from src.analyze import analyze_data, ordinal
+from src.format_file import format_raw_data
+from src.modeling import thin_film_liquid_analysis, thin_film_air_analysis, sauerbrey, avgs_analysis, gordon_kanazawa, crystal_thickness
 
 '''Variable Initializations'''
 class Input:

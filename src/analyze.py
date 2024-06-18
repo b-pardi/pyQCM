@@ -22,7 +22,7 @@ from scipy.optimize import curve_fit
 import sys
 import json
 
-import Exceptions
+import src.Exceptions as Exceptions
 
 ''' ANALYSIS VARIABLES '''
 class Analysis:
@@ -114,7 +114,7 @@ def rotate_point(x, y, theta):
 def shift_by_slope(x_time, y_data, baseline_df, time_col, freq):
     '''DEPRECATED
     shifts data to counteract drift and maintain a horizontal trend'''
-    from modeling import linear # import in function to avoid circular import
+    from src.modeling import linear # import in function to avoid circular import
 
     # slope accounted baseline correction
     params, _ = curve_fit(linear, baseline_df[time_col], baseline_df[freq])
@@ -615,7 +615,7 @@ def update_interactive_plot(spans, int_plot, int_ax1_zoom, int_ax2_zoom, plot_cu
 
     """    
     
-    from modeling import linearly_analyze # import in function to avoid circular import
+    from src.modeling import linearly_analyze # import in function to avoid circular import
     
     for span in spans:
         if span.active:

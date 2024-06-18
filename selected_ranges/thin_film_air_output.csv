@@ -1,8 +1,0 @@
-sq_overtones,delta_gamma_norm,delta_gamma_norm_fit,delta_freqs_norm,delta_freq_norm_fit,range_name,data_source
-1,4.13672696E-01,1.24863467E+00,4.13672696E-01,1.24863467E+00,test,raw_data/Formatted-QSM-I-BSA_1mgpml.csv
-9,1.44727620E+00,1.42379651E+00,1.44727620E+00,1.42379651E+00,test,raw_data/Formatted-QSM-I-BSA_1mgpml.csv
-25,1.99957478E+00,1.77412019E+00,1.99957478E+00,1.77412019E+00,test,raw_data/Formatted-QSM-I-BSA_1mgpml.csv
-49,2.79265104E+00,2.29960571E+00,2.79265104E+00,2.29960571E+00,test,raw_data/Formatted-QSM-I-BSA_1mgpml.csv
-81,3.38133433E+00,3.00025308E+00,3.38133433E+00,3.00025308E+00,test,raw_data/Formatted-QSM-I-BSA_1mgpml.csv
-121,4.11253749E+00,3.87606228E+00,4.11253749E+00,3.87606228E+00,test,raw_data/Formatted-QSM-I-BSA_1mgpml.csv
-169,4.40245923E+00,4.92703333E+00,4.40245923E+00,4.92703333E+00,test,raw_data/Formatted-QSM-I-BSA_1mgpml.csv
