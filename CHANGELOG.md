@@ -3,14 +3,10 @@
 bug fixes:
 
 format changes:
+- matplotlib, use font family, not fontname
 - for input altered flag, prompt user with warning message
 
 features:
-- error checking for missing nan values
-    - prompt user with warning that reccomends checking data manually as removing nans may produce unwanted results, but may still proceed with software removing nans
-    - in error catch, remove nans and proceed
-- when selecting files that record less than up to the 13th overtone, gray out those selections in cols 2 and 3
-- customization option for line plot (and other types)
 
 optimizations/refactoring: 
 - remove latex features
