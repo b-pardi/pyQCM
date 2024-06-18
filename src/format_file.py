@@ -3,9 +3,9 @@ import numpy as np
 import os
 import sys
 import re
-import Exceptions
+import src.Exceptions as Exceptions
 
-from format_qsd import read_qsd, extract_sensor_data
+from src.format_qsd import read_qsd, extract_sensor_data
 
 '''lists of col names for frequency and dissipation to be formatted to'''
 freqs = ['fundamental_freq', '3rd_freq', '5th_freq', '7th_freq', '9th_freq', '11th_freq', '13th_freq']
