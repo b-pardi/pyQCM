@@ -22,6 +22,15 @@ waiting on data:
 
 ### CHANGE LOG
 
+6/17
+- added to readme:
+    - statement of need
+    - more detailed installation instr
+    - other minor details
+- added error checking to ensure baseline time range given was large enough to find frequency and dissipation data for an average
+- removed drift correction
+- removed deprecated files
+
 4/24
 - fixed bug where multiaxis and dissipation v frequency would only plot last selected overtone
 
