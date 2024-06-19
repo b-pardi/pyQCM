@@ -1,5 +1,6 @@
 '''
-THIS SCRIPT IS A WORK IN PROGRESS PLEASE DO NOT RUN YET IT WILL FAIL
+THIS SCRIPT IS A WORK IN PROGRESS
+Currently only tests UI, will implement others soon
 '''
 
 import pytest
@@ -66,21 +67,45 @@ def test_ui_spawns(app):
     assert isinstance(col2, Col2)
     assert col2.is_visible == True
     assert col2.col_position == 1
-    assert col2.file_name_label.cget('text') == "Enter Data File Information"
+    assert col2.which_raw_channels_label.cget('text') == "Select overtones for full data"
     
+    # Simulate checkbox click and check if other boxes show
+    assert isinstance(col2.plot_raw_data_check, tk.Checkbutton)
+    assert col2.plot_raw_data_check.cget('text') == 'Raw Data Overtone Selection\n(f and D)'
+    col2.plot_raw_data_var.set(True)
+    assert col2.raw_checks[0].checkbutton.cget('text') == '1st frequency'
+
+
     # Check if Col3 is correctly initialized
     col3 = app.frames[Col3]
     assert isinstance(col3, Col3)
     assert col3.is_visible == True
     assert col3.col_position == 2
-    assert col3.label.cget('text') == "Col3 Label"
+    assert col3.which_clean_channels_label.cget('text') == "Select overtones for\nbaseline corrected data"
+    
+    # Simulate checkbox click and check if other boxes show
+    assert isinstance(col3.plot_clean_data_check, tk.Checkbutton)
+    assert col3.plot_clean_data_check.cget('text') == 'Shifted Data Overtone Selection\n(Δf and ΔD)'
+    col3.plot_clean_data_var.set(True)
+    assert col3.clean_checks[0].checkbutton.cget('text') == '1st frequency'
+
     
     # Check if Col4 is correctly initialized
     col4 = app.frames[Col4]
     assert isinstance(col4, Col4)
     assert col4.is_visible == True
     assert col4.col_position == 3
-    assert col4.label.cget('text') == "Col4 Label"
+    assert col4.plot_options_label.cget('text') == "Options For Plots"
+    assert isinstance(col4.plot_temp_v_time_check, tk.Checkbutton)
+    assert col4.plot_temp_v_time_check.cget('text') == "Plot temperature vs time"
+    assert isinstance(col4.open_model_window_button, tk.Button)
+    assert col4.open_model_window_button.cget('text') == "Modelling"
+
+    # test button opens new window
+    col4.open_model_window_button.invoke()
+    col4.update()
+    col4.parent.test_model_window # will fail if modelling window didn't open
+
 
 if __name__ == "__main__":
     pytest.main()
