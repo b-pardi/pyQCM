@@ -1548,6 +1548,6 @@ class Col4(tk.Frame):
             file.close()
 
 
-
-menu = App()
-menu.mainloop()
+if __name__ == '__main__':
+    menu = App()
+    menu.mainloop()
