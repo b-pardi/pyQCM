@@ -38,8 +38,6 @@ def clear_plots(plot_dir):
 def plots_are_similar(sample_plot, generated_plot, thresh=0.01):
     sample_img = Image.open(sample_plot).convert('RGB')
     generated_img = Image.open(generated_plot).convert('RGB')
-    sample_img.show()
-    generated_img.show()
     
     diff = list(ImageChops.difference(sample_img, generated_img).getdata())
     num_diff_pixels = sum(sum(rgb_pixel) for rgb_pixel in diff)
