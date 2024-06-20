@@ -306,7 +306,10 @@ class App(tk.Tk):
         super().__init__() # initialize parent class for the child
 
         self.title('BraTaDio - pyQCM-D Analyzer')
-        self.iconphoto(False, tk.PhotoImage(file="res/m3b_comp.png"))
+        try:
+            self.iconphoto(False, tk.PhotoImage(file="res/m3b_comp.png"))
+        except:
+            pass
         self.geometry("1200x800")
         #self.configure(bg=DARKEST)
         #self.tk_setPalette(background=DARKEST, foreground=WHITE)

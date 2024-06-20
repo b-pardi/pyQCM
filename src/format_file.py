@@ -3,7 +3,7 @@ import numpy as np
 import os
 import sys
 import re
-import src.Exceptions as Exceptions
+from . import Exceptions
 
 from src.format_qsd import read_qsd, extract_sensor_data
 
@@ -130,7 +130,7 @@ def unnormalize(df):
 
     return df
 
-def dissipation_magnitude_adjustment(df):
+def dissipation_magnitude_adjustment(df, full_columns=False):
     """adjust the magnitude of dissipation data to report values on the order of 1e^-6
 
     Args:
@@ -139,7 +139,10 @@ def dissipation_magnitude_adjustment(df):
     Returns:
         pd.Dataframe: dissipation magnitude adjusted data
     """    
-    local_disps = [dissipation in disps for dissipation in df.columns] # account for cols not recorded in df
+    if not full_columns:
+        local_disps = [dissipation in disps for dissipation in df.columns] # account for cols not recorded in df
+    else:
+        local_disps = disps
     df.loc[:, local_disps] = df.loc[:, local_disps].apply(lambda x: x*1e-6)
 
     return df
@@ -192,7 +195,7 @@ def format_QCMi(df):
 
     return fmt_df
 
-def format_Qsense(df, calibration_df):
+def format_Qsense(df, calibration_df=pd.DataFrame({})):
     """format data from QSense to fit BraTaDio execution
     renames columns, converts dissipation magnitude, unnormalizes, adds offsets
     

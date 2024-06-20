@@ -18,6 +18,27 @@ waiting on data:
 
 ### CHANGE LOG
 
+6/18
+- added tests for reading qsense and qcmi data
+    - test if files can be read in df
+    - test if files can be read and formatted accordingly
+    - test if qsd files can be read
+- added tests for plot generation for qsense and qcmi data
+    - given sample qcmi input test if plots are generated
+    - test if plots are within < 1% difference of those in sample generation
+- more documentation updating
+- cited python packages in paper
+- updated file structure
+- automated ui test code checking
+    - ui opened
+    - intvar init correctly
+    - main container exists
+    - scrollbars exist
+    - all columns initialized
+    - browse file button works
+    - col 2 and 3 drop overtone checkboxes when top checkbox clicked
+    - modelling window opens when button clicked
+
 6/17
 - added to readme:
     - statement of need

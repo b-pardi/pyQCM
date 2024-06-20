@@ -211,6 +211,13 @@ Activating the interactive plot option requires to select an overtone and assign
 - The software does not close when this occurs, and the user is able to correct the error and resume processing.
 
 # Testing
+
+## Automated Testing
+**Warning:** Before testing, make sure any data and plots are saved elsewhere, as tests will overwrite data/plots.
+
+3 test scripts are available. To run them, ensure you have pytest and pillow installed first: `pip install pytest==8.1.1 pillow==10.3.0`. Pillow is used for checking plot generations against verified sample plots.
+To test the suite, from the BraTaDio root directory use: `pytest src/test/`.
+
 ## Manual Testing
 
 To ensure the software is functioning correctly, please follow the manual testing instructions below.

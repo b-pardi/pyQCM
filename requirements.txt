@@ -5,4 +5,4 @@ pathlib==1.0.1
 scipy==1.9.3
 datetime==4.7
 xlrd==2.0.1
-pytest==8.1.1
+openpyxl==3.1.4

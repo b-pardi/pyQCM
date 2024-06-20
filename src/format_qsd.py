@@ -5,10 +5,6 @@ import pandas as pd
 
 from src.analyze import ordinal
 
-import struct
-import numpy as np
-from matplotlib import pyplot as plt # for demo only: remove otherwise
-
 def read_qsd(filename):
     with open(filename, 'rb') as f:
         d = f.read()
