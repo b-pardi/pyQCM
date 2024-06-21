@@ -13,7 +13,6 @@ authors:
     affiliation: 1
   - name: Syeda Tajin Ahmed
     orcid: 0000-0002-2719-9641
-    equal-contrib: true
     affiliation: 1
   - name: Silvia Jonguitud Flores
     orcid: 0009-0005-4841-4901
@@ -33,6 +32,7 @@ authors:
   - name: Roberto C. Andresen Eguiluz
     corresponding: true
     affiliation: "1,4"
+    orcid: 0000-0002-5209-4112
 affiliations:
   - name: Department of Materials Science and Engineering, University of California Merced, Merced, California 95344, United States of America
     index: 1

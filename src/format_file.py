@@ -39,7 +39,6 @@ def open_df_from_file(file):
             df = extract_sensor_data(*read_qsd(file))
         else:
             print("invalid file format or path, please use either .csv, .xls, .xlsx, or .txt (with tab delimiter)")
-            sys.exit(-1)
     except AssertionError as ae:
         msg = f"Error occurred, ensure data file is not protected, and that it is less than 1 million rows.\n"+\
               "if file is protected, create new file and copy data to it"

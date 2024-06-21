@@ -100,7 +100,7 @@ def test_ui_spawns(app):
     # test button opens new window
     col4.open_model_window_button.invoke()
     col4.update()
-    col4.parent.test_model_window() # will fail if modelling window didn't open
+    col4.modelling_window.test_modelling_window() # will fail if modelling window didn't open
 
 
 if __name__ == "__main__":

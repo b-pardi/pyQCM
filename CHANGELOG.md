@@ -18,7 +18,20 @@ waiting on data:
 
 ### CHANGE LOG
 
-6/18
+6/20
+- added an orcid to paper
+- changed int plot options of ui so opts just appear in col4 instead of in col 2 and 3 below overtones
+- added popup msg box to indicate plots have been generated
+- added same popup box to modelling plots
+    - refactored modelling class to not be instantiated in main app class
+    - instead of calling analysis function directly, model btns call class funcs that wrap the modelling functions in a try-except
+- changed number only entries to spin boxes
+    - validation functions to check if integer entered
+    - entries requiring overtone numbers have validation cmds to check if odd number 1-13
+- program no longer closes if invalid file entered, just shows err msg
+
+6/19
+- added rowcon and colcon to ui col frames to set weights to fill empty space
 - added tests for reading qsense and qcmi data
     - test if files can be read in df
     - test if files can be read and formatted accordingly
@@ -39,7 +52,7 @@ waiting on data:
     - col 2 and 3 drop overtone checkboxes when top checkbox clicked
     - modelling window opens when button clicked
 
-6/17
+6/18
 - added to readme:
     - statement of need
     - more detailed installation instr
