@@ -18,6 +18,10 @@ waiting on data:
 
 ### CHANGE LOG
 
+6/24
+- added author credits file: credit.txt
+- removed equal contribution author
+
 6/20
 - added an orcid to paper
 - changed int plot options of ui so opts just appear in col4 instead of in col 2 and 3 below overtones

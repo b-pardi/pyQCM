@@ -9,7 +9,6 @@ tags:
 authors:
   - name: Brandon Pardi
     orcid: 0000-0001-6483-9858
-    equal-contrib: true
     affiliation: 1
   - name: Syeda Tajin Ahmed
     orcid: 0000-0002-2719-9641
