@@ -18,6 +18,10 @@ waiting on data:
 
 ### CHANGE LOG
 
+7/2
+- Small fmt changes to paper
+- Moved credit.txt to actual paper
+
 6/24
 - added author credits file: credit.txt
 - removed equal contribution author
