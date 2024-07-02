@@ -22,6 +22,7 @@ waiting on data:
 - Small fmt changes to paper
 - Moved credit.txt to actual paper
 - fixed issue when clicking X on toolbar to close window it would crash
+- added to readme regarding font types in plot customization
 
 6/24
 - added author credits file: credit.txt

@@ -103,8 +103,6 @@ There are two methods for downloading the package.
 - **NOTE** if you are using QSense or AWSensors and do not have the calibration values for your experiment, you are limited to just visualization, no modeling features will work correctly due to the nature of how QSense only records the change in frequency, not the actual values.
 - **NOTE** if you are using QCM-I or Open QCM-Next, upon selecting 'offset' a label popups up to notify you that entering these values is unnecessary, as these devices record information that QSense and AWSensors do not, so the offset is found computationally.
 
-  
-
 ## Plot Customization (1.1)
 
 - At the bottom of the data file column, there is a 'customize plot options button', Here you can specify the following:
@@ -125,6 +123,8 @@ There are two methods for downloading the package.
 - When selections are confirmed, they are saved for all future executions of the program.
 - There is also the option to load default values.
 - If selections are confirmed and there are entries not selected, values previously saved will be used.
+- **Note** The default font used is 'Arial'. If your system does not have this font, you can specify a generic font family in the font type entry of this window
+	- i.e. put 'sans serif' or 'serif' in the the font type section, (without the quotes)
   
 
 ## Overtone Selections (2)
