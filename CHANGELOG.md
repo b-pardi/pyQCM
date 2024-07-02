@@ -21,6 +21,7 @@ waiting on data:
 7/2
 - Small fmt changes to paper
 - Moved credit.txt to actual paper
+- fixed issue when clicking X on toolbar to close window it would crash
 
 6/24
 - added author credits file: credit.txt

@@ -320,10 +320,6 @@ def err_check():
         print(msg)
         Exceptions.error_popup(msg)
 
-def exit():
-    sys.exit()
-
-
 class App(tk.Tk):
     """parent class of the UI
 
@@ -368,6 +364,9 @@ class App(tk.Tk):
         self.inner_frame.bind("<Enter>", self.bind_app_mousewheel)
         self.inner_frame.bind("<Leave>", self.unbind_app_mousewheel)
         
+        # properly handle window closing
+        self.protocol("WM_DELETE_WIDNOW", self.on_exit)
+
         # initializing frames
         self.frames = {}
         self.col1 = Col1 # file input information
@@ -406,6 +405,10 @@ class App(tk.Tk):
                 frame.grid(row=0, column=frame.col_position, sticky = 'nsew')
             else:
                 frame.grid_forget()
+
+    def on_exit(self):
+        self.quit()
+        self.destroy()
 
     def bind_app_mousewheel(self, event):
         self.app_canvas.bind_all("<MouseWheel>", self.on_app_mousewheel)
@@ -1568,7 +1571,7 @@ class Col4(tk.Frame):
         self.clear_range_data_button = tk.Button(self, text="Clear saved range data", padx=8, pady=6, width=20, command=self.clear_range_data)
         self.clear_range_data_button.grid(row=21, column=4, pady=4)
 
-        self.exit_button = tk.Button(self, text="Exit", padx=8, pady=6, width=20, command=exit)
+        self.exit_button = tk.Button(self, text="Exit", padx=8, pady=6, width=20, command=self.parent.on_exit)
         self.exit_button.grid(row=23, column=4, pady=4)
 
     def receive_optional_checkboxes(self):
