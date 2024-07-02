@@ -365,7 +365,7 @@ class App(tk.Tk):
         self.inner_frame.bind("<Leave>", self.unbind_app_mousewheel)
         
         # properly handle window closing
-        self.protocol("WM_DELETE_WIDNOW", self.on_exit)
+        self.protocol("WM_DELETE_WINDOW", self.on_exit)
 
         # initializing frames
         self.frames = {}
@@ -407,8 +407,10 @@ class App(tk.Tk):
                 frame.grid_forget()
 
     def on_exit(self):
+        print("ASDF)")
         self.quit()
         self.destroy()
+        sys.exit()
 
     def bind_app_mousewheel(self, event):
         self.app_canvas.bind_all("<MouseWheel>", self.on_app_mousewheel)
