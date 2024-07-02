@@ -23,6 +23,10 @@ waiting on data:
 - Moved credit.txt to actual paper
 - fixed issue when clicking X on toolbar to close window it would crash
 - added to readme regarding font types in plot customization
+- fixed test_analyze
+    - formatted file was not being put in raw_data directory
+    - When testing this code, formatted files were already in there so they passed
+    - now sample generations' formatted files are copied to raw_data directory where analyze_data reads files from, and clears them out after
 
 6/24
 - added author credits file: credit.txt

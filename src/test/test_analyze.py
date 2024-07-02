@@ -12,6 +12,7 @@ So for now please forgive my subpar coding practices in this early project of mi
 # Add the parent directory to the system path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
 from src.analyze import analyze_data
+from src.format_file import format_raw_data
 from main import Input
 
 QCMI_FP = "sample_generations/qcmi-bsa-after/QSM-I-BSA_1mgpml.csv"
@@ -29,11 +30,35 @@ plot_filenames = [
     'temp_vs_time_plot.png'
 ]
 
+def copy_file(src_fp, dest_fp):
+    try:
+        with open(src_fp, 'rb') as src_file:
+            with open(dest_fp, 'wb') as dest_file:
+                dest_file.write(src_file.read())
+    except IOError as e:
+        print(f"Unable to copy file. {e}")
+
 def clear_plots(plot_dir):
     for existing_plot_fn in os.listdir(plot_dir):
         fp = os.path.join(plot_dir, existing_plot_fn)
         if os.path.isfile(fp) and any(existing_plot_fn.endswith(ext) for ext in img_exts):
             os.remove(fp)
+
+def clear_data_files(data_dir):
+    # List all files in the directory
+    files = os.listdir(data_dir)
+    
+    # Loop through the files
+    for file_name in files:
+        # Check if the file contains the substring
+        if 'Formatted-' in file_name:
+            # Construct the full file path
+            file_path = os.path.join(data_dir, file_name)
+            
+            # Remove the file
+            os.remove(file_path)
+            print(f"Removed file: {file_path}")
+
 
 def plots_are_similar(sample_plot, generated_plot, thresh=0.01):
     sample_img = Image.open(sample_plot).convert('RGB')
@@ -64,9 +89,12 @@ def init_qcmi_input_data():
         qcmi_input.which_plot['clean'][key] = True
 
     plot_dir = os.path.join(os.getcwd(), 'qcmd-plots/')
+    data_dir = os.path.join(os.getcwd(), 'raw_data/')
     clear_plots(plot_dir)
+    clear_data_files(data_dir)
     yield plot_dir, qcmi_input
     clear_plots(plot_dir)
+    clear_data_files(data_dir)
 
 @pytest.fixture
 def init_qsense_input_data():
@@ -87,14 +115,19 @@ def init_qsense_input_data():
             qsense_input.which_plot['clean'][key] = True
 
     plot_dir = os.path.join(os.getcwd(), 'qcmd-plots/')
+    data_dir = os.path.join(os.getcwd(), 'raw_data/')
     clear_plots(plot_dir)
+    clear_data_files(data_dir)
     yield plot_dir, qsense_input
     clear_plots(plot_dir)
+    clear_data_files(data_dir)
 
 def test_qcmi_plots(init_qcmi_input_data):
     # ensure plot dir clear before running
     plot_dir, qcmi_input = init_qcmi_input_data
-    plot_dir = os.path.join(os.getcwd(), 'qcmd-plots/')
+
+    # copy the formatted file from sample_generations to directory that analyze data reads files from
+    copy_file("sample_generations/qcmi-bsa-after/Formatted-QSM-I-BSA_1mgpml.csv", "raw_data/Formatted-QSM-I-BSA_1mgpml.csv")
 
     analyze_data(qcmi_input)
 
@@ -114,7 +147,9 @@ def test_qcmi_plots(init_qcmi_input_data):
 def test_qsense_plots(init_qsense_input_data):
     # ensure plot dir clear before running
     plot_dir, qsense_input = init_qsense_input_data
-    plot_dir = os.path.join(os.getcwd(), 'qcmd-plots/')
+
+    # copy the formatted file from sample_generations to directory that analyze data reads files from
+    copy_file("sample_generations/qsense-bsa-after/Formatted-BSA.1mgml-1.280723-unprotected.csv", "raw_data/Formatted-BSA.1mgml-1.280723-unprotected.csv")
 
     analyze_data(qsense_input)
 

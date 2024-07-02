@@ -407,7 +407,6 @@ class App(tk.Tk):
                 frame.grid_forget()
 
     def on_exit(self):
-        print("ASDF)")
         self.quit()
         self.destroy()
         sys.exit()
