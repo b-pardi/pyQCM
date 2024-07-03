@@ -2,6 +2,7 @@ import pytest
 from PIL import Image, ImageChops
 import sys
 import os
+import json
 
 ''' Note to reviewers
 As this is my first big project, I know I handled ui/backend interaction in a less than optimal way,
@@ -59,6 +60,12 @@ def clear_data_files(data_dir):
             os.remove(file_path)
             print(f"Removed file: {file_path}")
 
+def set_default_plot_opts():
+    with open('plot_opts/default_opts.json', 'r') as fp:
+        default_opts = json.load(fp)
+
+    with open('plot_opts/plot_customizations.json', 'w') as fp:
+        json.dump(default_opts, fp, indent=4)
 
 def plots_are_similar(sample_plot, generated_plot, thresh=0.01):
     sample_img = Image.open(sample_plot).convert('RGB')
@@ -126,6 +133,9 @@ def test_qcmi_plots(init_qcmi_input_data):
     # ensure plot dir clear before running
     plot_dir, qcmi_input = init_qcmi_input_data
 
+    # set plot customizations to default to accurately compare with sample gens
+    set_default_plot_opts()
+
     # copy the formatted file from sample_generations to directory that analyze data reads files from
     copy_file("sample_generations/qcmi-bsa-after/Formatted-QSM-I-BSA_1mgpml.csv", "raw_data/Formatted-QSM-I-BSA_1mgpml.csv")
 
@@ -147,6 +157,9 @@ def test_qcmi_plots(init_qcmi_input_data):
 def test_qsense_plots(init_qsense_input_data):
     # ensure plot dir clear before running
     plot_dir, qsense_input = init_qsense_input_data
+
+    # set plot customizations to default to accurately compare with sample gens
+    set_default_plot_opts()
 
     # copy the formatted file from sample_generations to directory that analyze data reads files from
     copy_file("sample_generations/qsense-bsa-after/Formatted-BSA.1mgml-1.280723-unprotected.csv", "raw_data/Formatted-BSA.1mgml-1.280723-unprotected.csv")

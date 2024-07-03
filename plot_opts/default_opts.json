@@ -8,7 +8,7 @@
         "ov11": "aqua",
         "ov13": "pink"
     },
-    "font": "Arial",
+    "font": "sans serif",
     "label_text_size": "16",
     "title_text_size": "16",
     "value_text_size": "14",

@@ -7,6 +7,10 @@ QCM-D has gained popularity in many different scientific fields due to its exper
 
 Please continue below for instructions on using the software.
 
+## Video Demo
+
+[![pQCM-BraTaDio Video Demo](https://img.youtube.com/vi/j6H9xrnw8Ms/0.jpg)](https://www.youtube.com/watch?v=j6H9xrnw8Ms)
+
 ## Important Notes before Starting
 ### This software was designed and tested in a WINDOWS environment
 - If using Mac, please be aware that issues may occur
@@ -51,7 +55,7 @@ There are two methods for downloading the package.
 		- If you cloned the repository, you only need to move one directory: `cd BraTaDio`
 		- If you extracted the ZIP file, use your file explorer to find the code you extracted and enter the BraTaDio folder
 		- Then copy the folder path
-		- In a terminal, type: `cd "<pasete your path here"` ensuring you have the quotes
+		- In a terminal, type: `cd "<paste your path here>"` ensuring you have the quotes
 - Setup virtual environment (optional but reccommended)
 	- Create the virtual environment: `python -m venv .venv`
 	- Activate it

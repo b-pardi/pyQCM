@@ -30,7 +30,7 @@ class Analysis:
         file_name, _ = os.path.splitext(fn)
         file_name = os.path.basename(file_name)
         if fn.__contains__("Formatted"):
-            self.formatted_fn = f"raw_data/{file_name}.csv"
+            self.formatted_fn = fn
         else:
             self.formatted_fn = f"raw_data/Formatted-{file_name}.csv"
         

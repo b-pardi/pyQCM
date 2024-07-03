@@ -1275,7 +1275,7 @@ class PlotOptsWindow():
             warned_flag = False
 
         with open('plot_opts/plot_customizations.json', 'w') as fp:
-            json.dump(self.options, fp)
+            json.dump(self.options, fp, indent=4)
 
 
 class Col1(tk.Frame, App):
@@ -1503,6 +1503,7 @@ class Col4(tk.Frame):
     def __init__(self, parent, container):
         super().__init__(container)
 
+        self.finished_window = None
         self.col_position = 3
         self.model_window_open_flag = False
         self.is_visible = True
@@ -1615,17 +1616,20 @@ class Col4(tk.Frame):
             self.modelling_window.open_modeling_window()
 
     def show_path_box(self):
-        window = tk.Toplevel(self)
-        window.title("Folder link")
-        window.geometry("400x200")
+        if self.finished_window and self.finished_window.winfo_exists():
+            self.finished_window.lift()
+        else:
+            self.finished_window = tk.Toplevel(self)
+            self.finished_window.title("Finished Generating Plots")
+            self.finished_window.geometry("400x200")
 
-        plot_dir = Path(os.path.join(os.getcwd(), 'qcmd-plots/'))
-        
-        link_label = tk.Label(window, text="Plots Generated!\nPress the button to view them.", font=('TkDefaultFont', 10, 'bold'))
-        link_label.pack(pady=20)
+            plot_dir = Path(os.path.join(os.getcwd(), 'qcmd-plots/'))
+            
+            link_label = tk.Label(self.finished_window, text="Plots Generated!\nPress the button to view them.", font=('TkDefaultFont', 10, 'bold'))
+            link_label.pack(pady=20)
 
-        open_folder_btn = tk.Button(window, text="Open plots folder", command=lambda: open_folder(plot_dir))
-        open_folder_btn.pack(pady=20)
+            open_folder_btn = tk.Button(self.finished_window, text="Open plots folder", command=lambda: open_folder(plot_dir))
+            open_folder_btn.pack(pady=20)
 
     def submit(self):
         global input

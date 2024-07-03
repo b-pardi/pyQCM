@@ -27,6 +27,12 @@ waiting on data:
     - formatted file was not being put in raw_data directory
     - When testing this code, formatted files were already in there so they passed
     - now sample generations' formatted files are copied to raw_data directory where analyze_data reads files from, and clears them out after
+- added demo video to readme
+- changed default font to sans serif
+- ensure that in analyze testing, default plot options are set so that fonts and font sizes don't skew plot differences
+- updated sample generations to be plotted with the new default values for accurate comparison in testing
+- fixed bug where if preformatted file exists is selected by user and is not in raw_data directory it cannot find the file
+- fixed bug where window to open figures folder would open new window each time
 
 6/24
 - added author credits file: credit.txt
