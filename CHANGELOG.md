@@ -18,6 +18,9 @@ waiting on data:
 
 ### CHANGE LOG
 
+7/3
+- added FAQ to readme
+
 7/2
 - Small fmt changes to paper
 - Moved credit.txt to actual paper

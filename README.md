@@ -13,16 +13,14 @@ Please continue below for instructions on using the software.
 
 ## Important Notes before Starting
 ### This software was designed and tested in a WINDOWS environment
-- If using Mac, please be aware that issues may occur
+- If using Mac or Linux, please be aware that issues may occur
+- Create a new issue in git if there is an incompatibility
 
 ### The only verified Python version this software has been fully tested on is 3.10.x
 - Others will likely work, but cannot be verified at this time
 
-### This software is capable of reading RAW QSENSE files (*.QSD)
-- Simple select your data file and select QSense device, proceeding as follows in the 'File Information' Section
-
-### When done with program, please click 'Exit' button instead of closing window
-- Can cause terminal to freeze sometimes if just closing windows.
+### This software is capable of reading RAW QSENSE files (*.qsd)
+- Simply select your data file and select QSense device, proceeding as follows in the 'File Information' Section
 
 ### 'sample_generations' folder contains sample data to test with software, as well as figures output by that sample data
 
@@ -209,10 +207,15 @@ Activating the interactive plot option requires to select an overtone and assign
 
  - **NOTE** while you can make multiple selections from multiple data files and have them all saved without overwriting, it is *highly* recommended to 'Clear saved range data' between experiments, as the modelling functions will not work correctly across multiple files.  
 
-## Errors
+## Errors / FAQ
 
-- Known errors (originating from erroneous user input) will be displayed in a popup window when encountered
-- The software does not close when this occurs, and the user is able to correct the error and resume processing.
+Known errors (originating from erroneous user input) will be displayed in a popup window when encountered. The software does not close when this occurs, and the user is able to correct the error and resume processing. Here are some frequently encountered errors and how to remedy them.
+
+- ShapeMismatchException: This occurs when the software tries to apply a model to the interactive plot selection but there are a different number of overtones found in the selection data than there are selected in the UI
+	- Solution 1: Make sure the overtones selected in the ui match the overtones that were selected in the interactive selection was made.
+	- Solution 2: Sometimes data from a previous experiment's interactive plot selection can interfere with a new one. It's best practive to always click the 'Clear saved ranges' button before making interactive plot selection for a new experiment. This will prevent conflicts of overtone data with other experiments.
+	- Solution 3 (Using crystal thickness model): Unlike all the other models, crystal thickness uses the RAW overtone selection, so make sure the overtones you want to analyze the crystal thickness of, are selected in the raw data overtones column.
+
 
 # Testing
 
