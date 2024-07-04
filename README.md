@@ -44,7 +44,7 @@ There are two methods for downloading the package.
 	- At the bottom of the drop down, click the 'Download ZIP' button (2)
 	- Extract the zip file to a folder of your choice
 
-![Github repository page for BraTaDio. (1) First button to click to drop down the menu to download the zip file. (2) Download ZIP file button](figs/zip_file_loc.png){ width=50% }
+![Github repository page for BraTaDio. (1) First button to click to drop down the menu to download the zip file. (2) Download ZIP file button](figs/zip_file_loc.png)
 
 ### Once downloaded, the remaining steps apply to both cases
 - In a terminal, make sure you are in the parent directory of the code
@@ -54,6 +54,7 @@ There are two methods for downloading the package.
 		- If you extracted the ZIP file, use your file explorer to find the code you extracted and enter the BraTaDio folder
 		- Then copy the folder path
 		- In a terminal, type: `cd "<paste your path here>"` ensuring you have the quotes
+	- **Note for Spyder**: you can open a terminal by going to `menu > View > Panes > Terminal`
 - Setup virtual environment (optional but reccommended)
 	- Create the virtual environment: `python -m venv .venv`
 	- Activate it
@@ -62,7 +63,7 @@ There are two methods for downloading the package.
 	- You can also use conda if preferred
 - Install package dependencies
 	- Install with pip using the requirements file: `pip install -r requirements.txt`
-	- If you get an error with this script,
+	- If you get an error with this command,
 		- Have python 3.10.x installed on your computer (not via spyder, from https://www.python.org/downloads/)
 		- In a command prompt, (not anaconda terminal) type 'where python' on windows, or in a mac terminal type 'which python'
 		- Copy and paste the full path that it prints out
