@@ -18,6 +18,13 @@ waiting on data:
 
 ### CHANGE LOG
 
+7/5
+- paper adjustments
+    - spaces between text and citations
+    - italicized math symbols in fig captions
+    - fixed missing period
+    - fixed 'MatPlotLib' -> 'Matplotlib'
+
 7/3
 - added FAQ to readme
 
