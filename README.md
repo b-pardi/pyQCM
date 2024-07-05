@@ -63,7 +63,7 @@ There are two methods for downloading the package.
 	- You can also use conda if preferred
 - Install package dependencies
 	- Install with pip using the requirements file: `pip install -r requirements.txt`
-	- If you get an error with this command,
+	- If you get an error with this command in Spyder,
 		- Have python 3.10.x installed on your computer (not via spyder, from https://www.python.org/downloads/)
 		- In a command prompt, (not anaconda terminal) type 'where python' on windows, or in a mac terminal type 'which python'
 		- Copy and paste the full path that it prints out
