@@ -4,6 +4,7 @@ tags:
   - Python
   - Quartz Crystal Microbalance with Dissipation
   - QCM-D
+  - Crystal resonators
   - Sauerbray
   - thin film in liquid
 authors:
