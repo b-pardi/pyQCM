@@ -58,7 +58,7 @@ There are two methods for downloading the package.
 - Setup virtual environment (optional but reccommended)
 	- Create the virtual environment: `python -m venv .venv`
 	- Activate it
-		- Windows: `\.venv\Scripts\activate`
+		- Windows: `.venv\Scripts\activate`
 		- Mac/Linux: `source .venv/bin/activate`
 	- You can also use conda if preferred
 - Install package dependencies
