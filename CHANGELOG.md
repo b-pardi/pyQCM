@@ -18,6 +18,9 @@ waiting on data:
 
 ### CHANGE LOG
 
+7/29
+- ensure that qcmd-plots/modeling exists and create it if not
+
 7/5
 - paper adjustments
     - spaces between text and citations

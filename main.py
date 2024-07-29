@@ -1634,6 +1634,9 @@ class Col4(tk.Frame):
     def submit(self):
         global input
         print("***FINAL",input.which_plot)
+        # make sure modelling output folder exists
+        if not os.path.exists('qcmd-plots/modeling/'):
+            os.makedirs('qcmd-plots/modeling/')
         err_check()
         try:
             input.interactive_plot_overtone['clean'] = int(self.interactive_plot_overtone_select.get())
