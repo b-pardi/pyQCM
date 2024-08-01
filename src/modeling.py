@@ -469,7 +469,7 @@ def process_bandwidth_calculations_for_linear_regression(which_plot, sources, rf
     
 
 
-def thin_film_liquid_analysis(user_input):
+def thin_film_liquid_analysis(which_plot, use_theoretical_vals, latex_installed):
     """application of thin film in liquid model
     works for multiple range selections at a time, as long as from same data file
 
@@ -483,7 +483,6 @@ def thin_film_liquid_analysis(user_input):
     Raises:
         Exceptions.ShapeMismatchException: raises when there is a different number of overtones selected in ui than found in stats file
     """    
-    which_plot, use_theoretical_vals, latex_installed = user_input
     plot_customs = get_plot_preferences()
     fig_format = plot_customs['fig_format']
     dpi = plot_customs['fig_dpi']
@@ -530,7 +529,7 @@ def thin_film_liquid_analysis(user_input):
         print("Thin film in liquid analysis complete")
         plt.rc('text', usetex=False)
 
-def thin_film_air_analysis(user_input):
+def thin_film_air_analysis(which_plot, use_theoretical_vals, latex_installed):
     """application of thin film in air model
     works for multiple range selections at a time, as long as from same data file
     similar process to thin film in liquid, but a few extra steps
@@ -545,7 +544,6 @@ def thin_film_air_analysis(user_input):
     Raises:
         Exceptions.ShapeMismatchException: raises when there is a different number of overtones selected in ui than found in stats file
     """   
-    which_plot, use_theoretical_vals, latex_installed = user_input
     plot_customs = get_plot_preferences()
     fig_format = plot_customs['fig_format']
     dpi = plot_customs['fig_dpi']
@@ -675,7 +673,7 @@ def gordon_kanazawa(user_input):
     print("Gordon-Kanazawa Analysis Complete")
 
 
-def crystal_thickness(user_input):
+def crystal_thickness(which_plot, will_use_theoretical_vals):
     """application of quartz crystal thickness model
     linear regression on offset value data to crystal thickness eqn, slope (h_q) is reported in mm
 
@@ -686,7 +684,6 @@ def crystal_thickness(user_input):
         )): rely on a tuple passed in of all necessary variables, since tkinter buttons can only pass 1 argument to function
 
     """      
-    which_plot, will_use_theoretical_vals = user_input
     plot_customs = get_plot_preferences()
     fig_format = plot_customs['fig_format']
     dpi = plot_customs['fig_dpi']

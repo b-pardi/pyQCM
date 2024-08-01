@@ -20,6 +20,7 @@ waiting on data:
 
 8/1
 - fixed bug that causes modelling error popups to not show
+- fixed modelling function calls
 
 7/29
 - ensure that qcmd-plots/modeling exists and create it if not

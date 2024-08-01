@@ -1,0 +1,8 @@
+n*Df,bandwidth_shift,bandwidth_shift_FIT,range_name,data_source
+-1.85587365E+01,2.33521766E+00,5.00322389E+00,test,raw_data/Formatted-QSM-I-BSA_1mgpml.csv
+-1.65146714E+02,7.60365093E+00,8.08796936E+00,test,raw_data/Formatted-QSM-I-BSA_1mgpml.csv
+-4.38957540E+02,1.48287050E+01,1.38499474E+01,test,raw_data/Formatted-QSM-I-BSA_1mgpml.csv
+-8.63080000E+02,2.43665439E+01,2.27750302E+01,test,raw_data/Formatted-QSM-I-BSA_1mgpml.csv
+-1.41708186E+03,3.59097705E+01,3.44332490E+01,test,raw_data/Formatted-QSM-I-BSA_1mgpml.csv
+-2.15355835E+03,5.10375338E+01,4.99313993E+01,test,raw_data/Formatted-QSM-I-BSA_1mgpml.csv
+-3.07318164E+03,6.72830233E+01,6.92836260E+01,test,raw_data/Formatted-QSM-I-BSA_1mgpml.csv
