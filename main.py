@@ -906,36 +906,36 @@ class ModelingWindow(tk.Frame):
             sauerbrey(input.will_use_theoretical_vals)
             self.show_path_box("Sauerbrey")
         except Exception as exc:
-            Exceptions.error_popup("Unknown error ocurred\n\n"+exc)
-
+            Exceptions.error_popup("Unknown error ocurred\n\n")
+            print(exc)
     def call_averages(self):
         try:
             avgs_analysis()
             self.show_path_box("Averages")
         except Exception as exc:
-            Exceptions.error_popup("Unknown error ocurred\n\n"+exc)
-
+            Exceptions.error_popup("Unknown error ocurred\n\n")
+            print(exc)
     def call_tf_liquid(self):
         try:
             thin_film_liquid_analysis(input.which_plot['clean'], input.will_use_theoretical_vals, input.latex_installed)
             self.show_path_box("Thin film in liquid")
         except Exception as exc:
-            Exceptions.error_popup("Unknown error ocurred\n\n"+exc)
-
+            Exceptions.error_popup("Unknown error ocurred\n\n")
+            print(exc)
     def call_tf_air(self):
         try:
             thin_film_air_analysis(input.which_plot['clean'], input.will_use_theoretical_vals, input.latex_installed)
             self.show_path_box("Thin film in air")
         except Exception as exc:
-            Exceptions.error_popup("Unknown error ocurred\n\n"+exc)
-
+            Exceptions.error_popup("Unknown error ocurred\n\n")
+            print(exc)
     def call_crystal_thickness(self):
         try:
             crystal_thickness(input.which_plot['raw'], input.will_use_theoretical_vals)
             self.show_path_box("Crystal thickness")
         except Exception as exc:
-            Exceptions.error_popup("Unknown error ocurred\n\n"+exc)
-
+            Exceptions.error_popup("Unknown error ocurred\n\n")
+            print(exc)
 class PlotOptsWindow():
     """window for handling all of the plot customization options
     """    

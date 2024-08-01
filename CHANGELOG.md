@@ -18,6 +18,9 @@ waiting on data:
 
 ### CHANGE LOG
 
+8/1
+- fixed bug that causes modelling error popups to not show
+
 7/29
 - ensure that qcmd-plots/modeling exists and create it if not
 
