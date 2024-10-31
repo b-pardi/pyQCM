@@ -255,6 +255,13 @@ def avg_and_propogate(label, sources, df, is_frequency):
     mean_delta_vals /= n_srcs
     sigma_mean_delta_vals = propogate_mean_err(len(mean_delta_vals), sigma_delta_vals, n_srcs)
     
+    # make 0 for non selected overtones
+    zero_idxs = np.where(mean_delta_vals == 0)[0].astype(int)
+    sigma_mean_delta_vals = np.array(sigma_mean_delta_vals)
+    sigma_mean_delta_vals[zero_idxs] = 0
+
+    print(zero_idxs, sigma_mean_delta_vals)
+
     return mean_delta_vals, sigma_mean_delta_vals
 
 
@@ -446,6 +453,7 @@ def process_bandwidth_calculations_for_linear_regression(which_plot, sources, rf
     calibration_freq = get_calibration_values(which_plot, use_theoretical_vals)
     print(rf_df, dis_df)
     mean_delta_freqs, sigma_mean_delta_freqs = avg_and_propogate(label, sources, rf_df, True)
+    print("###", mean_delta_freqs, sigma_mean_delta_freqs)
     n_mean_delta_freqs = [Df * (2*i+1) for i, Df in enumerate(mean_delta_freqs)] # 2i+1 corresponds to overtone number
     sigma_n_mean_delta_freqs = [sDf * (2*i+1) for i, sDf in enumerate(sigma_mean_delta_freqs)] 
     mean_delta_dis, sigma_mean_delta_dis = avg_and_propogate(label, sources, dis_df, False)        
