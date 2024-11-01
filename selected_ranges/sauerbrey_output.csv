@@ -106,3 +106,20 @@ overtone,avg_Df,avg_Df_err,avg_Df_FIT,avg_Dm,avg_Dm_err,C,range_name,data_source
 7,-2.85603771E+01,1.19361766E+00,-2.74783993E+01,7.37084354E+01,3.08048069E+00,-1.80655545E+01,test,raw_data/Formatted-09192024_Bap 1 at 1.5 uM in M9 buffer on SiO2_n=2_STA_failed most probably.csv
 9,-3.60725632E+01,9.43603832E-01,-3.54650055E+01,7.24078727E+01,1.89408071E+00,-1.80655545E+01,test,raw_data/Formatted-09192024_Bap 1 at 1.5 uM in M9 buffer on SiO2_n=2_STA_failed most probably.csv
 11,-4.24506531E+01,2.71886585E+00,-4.34516117E+01,6.97176895E+01,4.46525628E+00,-1.80655545E+01,test,raw_data/Formatted-09192024_Bap 1 at 1.5 uM in M9 buffer on SiO2_n=2_STA_failed most probably.csv
+3,-1.07981768E+01,1.52239782E-01,-1.14589869E+01,6.37092429E+01,8.98214713E-01,-1.77000000E+01,testtstst,raw_data/Formatted-09192024_Bap 1 at 1.5 uM in M9 buffer on SiO2_n=2_STA_failed most probably.csv
+5,-1.94976826E+01,2.46141395E-01,-1.95197699E+01,6.90217963E+01,8.71340538E-01,-1.77000000E+01,testtstst,raw_data/Formatted-09192024_Bap 1 at 1.5 uM in M9 buffer on SiO2_n=2_STA_failed most probably.csv
+7,-2.86844501E+01,1.23549439E+00,-2.75805529E+01,7.25306811E+01,3.12403581E+00,-1.77000000E+01,testtstst,raw_data/Formatted-09192024_Bap 1 at 1.5 uM in M9 buffer on SiO2_n=2_STA_failed most probably.csv
+9,-3.61430435E+01,9.68963319E-01,-3.56413359E+01,7.10813189E+01,1.90562786E+00,-1.77000000E+01,testtstst,raw_data/Formatted-09192024_Bap 1 at 1.5 uM in M9 buffer on SiO2_n=2_STA_failed most probably.csv
+11,-4.27794113E+01,2.79051139E+00,-4.37021189E+01,6.88359618E+01,4.49018651E+00,-1.77000000E+01,testtstst,raw_data/Formatted-09192024_Bap 1 at 1.5 uM in M9 buffer on SiO2_n=2_STA_failed most probably.csv
+3,-1.07961197E+01,1.43168076E-01,-1.13186718E+01,6.50126294E+01,8.62136892E-01,-1.80655545E+01,terststs,raw_data/Formatted-09192024_Bap 1 at 1.5 uM in M9 buffer on SiO2_n=2_STA_failed most probably.csv
+5,-1.94942207E+01,2.70111203E-01,-1.95116020E+01,7.04347812E+01,9.75941729E-01,-1.80655545E+01,terststs,raw_data/Formatted-09192024_Bap 1 at 1.5 uM in M9 buffer on SiO2_n=2_STA_failed most probably.csv
+7,-2.86357594E+01,1.12396131E+00,-2.77045322E+01,7.39029814E+01,2.90071205E+00,-1.80655545E+01,terststs,raw_data/Formatted-09192024_Bap 1 at 1.5 uM in M9 buffer on SiO2_n=2_STA_failed most probably.csv
+9,-3.61773605E+01,1.00507174E+00,-3.58974625E+01,7.26182307E+01,2.01746426E+00,-1.80655545E+01,terststs,raw_data/Formatted-09192024_Bap 1 at 1.5 uM in M9 buffer on SiO2_n=2_STA_failed most probably.csv
+11,-4.34192009E+01,2.94722318E+00,-4.40903927E+01,7.13083580E+01,4.84029280E+00,-1.80655545E+01,terststs,raw_data/Formatted-09192024_Bap 1 at 1.5 uM in M9 buffer on SiO2_n=2_STA_failed most probably.csv
+1,-1.73132477E+01,4.23417101E-02,-1.64021931E+01,3.11331397E+02,7.61399827E-01,-1.79822644E+01,baseliune check,raw_data/Formatted-QSM-I-BSA_1mgpml.csv
+3,-5.39471588E+01,9.01919817E-02,-5.23241070E+01,3.23364024E+02,5.40618687E-01,-1.79822644E+01,baseliune check,raw_data/Formatted-QSM-I-BSA_1mgpml.csv
+5,-8.69377060E+01,1.56392458E-01,-8.82460210E+01,3.12667363E+02,5.62458108E-01,-1.79822644E+01,baseliune check,raw_data/Formatted-QSM-I-BSA_1mgpml.csv
+7,-1.22678650E+02,5.15849732E-01,-1.24167935E+02,3.15148560E+02,1.32516375E+00,-1.79822644E+01,baseliune check,raw_data/Formatted-QSM-I-BSA_1mgpml.csv
+9,-1.57788132E+02,1.50663059E+00,-1.60089849E+02,3.15265323E+02,3.01029218E+00,-1.79822644E+01,baseliune check,raw_data/Formatted-QSM-I-BSA_1mgpml.csv
+11,-1.96734726E+02,7.48697166E-01,-1.96011763E+02,3.21612351E+02,1.22393367E+00,-1.79822644E+01,baseliune check,raw_data/Formatted-QSM-I-BSA_1mgpml.csv
+13,-2.33775925E+02,1.98164937E+00,-2.31933677E+02,3.23370807E+02,2.74111868E+00,-1.79822644E+01,baseliune check,raw_data/Formatted-QSM-I-BSA_1mgpml.csv

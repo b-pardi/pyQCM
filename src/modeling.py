@@ -306,6 +306,8 @@ def plot_data(xdata, ydata, xerr, yerr, label, has_err, color='black'):
 
     # plotting modeled data slightly different than range data
     if has_err:
+        xerr = np.abs(xerr) if xerr is not None else xerr
+        yerr = np.abs(yerr) if yerr is not None else yerr
         if label:
             ax.plot(xdata, ydata, 'o', markersize=4, label=label, color=color)
             ax.errorbar(xdata, ydata, xerr=xerr, yerr=yerr, fmt='.', label='std dev', color=color)
@@ -476,7 +478,6 @@ def process_bandwidth_calculations_for_linear_regression(which_plot, sources, rf
     return n_mean_delta_freqs, delta_gamma, sigma_n_mean_delta_freqs, sigma_delta_gamma
     
 
-
 def thin_film_liquid_analysis(which_plot, use_theoretical_vals, latex_installed):
     """application of thin film in liquid model
     works for multiple range selections at a time, as long as from same data file
@@ -515,10 +516,12 @@ def thin_film_liquid_analysis(which_plot, use_theoretical_vals, latex_installed)
         
         if n_mean_delta_freqs.shape != delta_gamma.shape:
             raise Exceptions.ShapeMismatchException((n_mean_delta_freqs.shape, delta_gamma.shape),"ERROR: Different number of overtones selected in UI than found in stats file")
+        print("@#$@#$", n_mean_delta_freqs, delta_gamma)   
+        print("@#$@#$", sigma_n_mean_delta_freqs, sigma_delta_gamma)   
         lin_plot, ax = plot_data(n_mean_delta_freqs, delta_gamma, sigma_n_mean_delta_freqs,
                                  sigma_delta_gamma, data_label, True)
         
-        # take care of all linear fitting analysis    
+        # take care of all linear fitting analysis 
         m, b = linearly_analyze(n_mean_delta_freqs, delta_gamma, ax, 'Shear dependent compliance: ', r'$\frac{1}{Pa}$')
         delta_gamma_fit = linear(n_mean_delta_freqs, m, b)
 
