@@ -1,0 +1,8 @@
+overtone,Ddis_average,Ddis_std_dev,Ddis_median,range_name,x_lower,x_upper,data_source
+fundamental_dis,3.1775601314156623E-05,2.3462605437613060E-07,3.1787008585260648E-05,testnew,5411.830194457434,5608.550326013938,raw_data/Formatted-05122025_Central portion of Bap 1 peptide at 1.5 uM in M9 buffer on bare gold in 25C_n=1_STA.csv
+3rd_dis,2.0052475779205693E-05,2.0438572686845939E-07,2.0057449308971286E-05,testnew,5411.830194457434,5608.550326013938,raw_data/Formatted-05122025_Central portion of Bap 1 peptide at 1.5 uM in M9 buffer on bare gold in 25C_n=1_STA.csv
+5th_dis,1.5643683710050526E-05,2.0931567014781965E-07,1.5650719380765509E-05,testnew,5411.830194457434,5608.550326013938,raw_data/Formatted-05122025_Central portion of Bap 1 peptide at 1.5 uM in M9 buffer on bare gold in 25C_n=1_STA.csv
+7th_dis,1.3298952692924860E-05,1.6533644887935242E-07,1.3310920354963358E-05,testnew,5411.830194457434,5608.550326013938,raw_data/Formatted-05122025_Central portion of Bap 1 peptide at 1.5 uM in M9 buffer on bare gold in 25C_n=1_STA.csv
+9th_dis,1.1679428066961878E-05,1.3831253015559836E-07,1.1682274456578782E-05,testnew,5411.830194457434,5608.550326013938,raw_data/Formatted-05122025_Central portion of Bap 1 peptide at 1.5 uM in M9 buffer on bare gold in 25C_n=1_STA.csv
+11th_dis,1.0815881328253996E-05,1.3540669653640815E-07,1.0827206657220814E-05,testnew,5411.830194457434,5608.550326013938,raw_data/Formatted-05122025_Central portion of Bap 1 peptide at 1.5 uM in M9 buffer on bare gold in 25C_n=1_STA.csv
+13th_dis,1.0014549595434742E-05,1.2692291053532551E-07,1.0015091381498763E-05,testnew,5411.830194457434,5608.550326013938,raw_data/Formatted-05122025_Central portion of Bap 1 peptide at 1.5 uM in M9 buffer on bare gold in 25C_n=1_STA.csv

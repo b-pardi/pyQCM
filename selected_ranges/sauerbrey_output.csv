@@ -123,3 +123,10 @@ overtone,avg_Df,avg_Df_err,avg_Df_FIT,avg_Dm,avg_Dm_err,C,range_name,data_source
 9,-1.57788132E+02,1.50663059E+00,-1.60089849E+02,3.15265323E+02,3.01029218E+00,-1.79822644E+01,baseliune check,raw_data/Formatted-QSM-I-BSA_1mgpml.csv
 11,-1.96734726E+02,7.48697166E-01,-1.96011763E+02,3.21612351E+02,1.22393367E+00,-1.79822644E+01,baseliune check,raw_data/Formatted-QSM-I-BSA_1mgpml.csv
 13,-2.33775925E+02,1.98164937E+00,-2.31933677E+02,3.23370807E+02,2.74111868E+00,-1.79822644E+01,baseliune check,raw_data/Formatted-QSM-I-BSA_1mgpml.csv
+1,-1.07653824E+02,1.73337966E+00,-1.20187914E+02,1.90547268E+03,3.06808199E+01,-1.77000000E+01,testnew,raw_data/Formatted-05122025_Central portion of Bap 1 peptide at 1.5 uM in M9 buffer on bare gold in 25C_n=1_STA.csv
+3,-1.63821915E+02,3.00760594E+00,-1.68720457E+02,9.66549297E+02,1.77448751E+01,-1.77000000E+01,testnew,raw_data/Formatted-05122025_Central portion of Bap 1 peptide at 1.5 uM in M9 buffer on bare gold in 25C_n=1_STA.csv
+5,-2.22408493E+02,3.77589137E+00,-2.17252999E+02,7.87326065E+02,1.33666554E+01,-1.77000000E+01,testnew,raw_data/Formatted-05122025_Central portion of Bap 1 peptide at 1.5 uM in M9 buffer on bare gold in 25C_n=1_STA.csv
+7,-2.80312988E+02,5.45031053E+00,-2.65785542E+02,7.08791413E+02,1.37814995E+01,-1.77000000E+01,testnew,raw_data/Formatted-05122025_Central portion of Bap 1 peptide at 1.5 uM in M9 buffer on bare gold in 25C_n=1_STA.csv
+9,-3.31835510E+02,6.18656526E+00,-3.14318085E+02,6.52609837E+02,1.21669117E+01,-1.77000000E+01,testnew,raw_data/Formatted-05122025_Central portion of Bap 1 peptide at 1.5 uM in M9 buffer on bare gold in 25C_n=1_STA.csv
+11,-3.63308716E+02,6.95290780E+00,-3.62850627E+02,5.84596752E+02,1.11878607E+01,-1.77000000E+01,testnew,raw_data/Formatted-05122025_Central portion of Bap 1 peptide at 1.5 uM in M9 buffer on bare gold in 25C_n=1_STA.csv
+13,-3.91157349E+02,7.29122371E+00,-4.11383170E+02,5.32575775E+02,9.92728151E+00,-1.77000000E+01,testnew,raw_data/Formatted-05122025_Central portion of Bap 1 peptide at 1.5 uM in M9 buffer on bare gold in 25C_n=1_STA.csv

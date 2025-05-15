@@ -367,21 +367,22 @@ class App(tk.Tk):
         # properly handle window closing
         self.protocol("WM_DELETE_WINDOW", self.on_exit)
 
-        # initializing frames
+        # Initialize frames
         self.frames = {}
-        self.col1 = Col1 # file input information
-        self.col2 = Col2 # indicate overtones to plot raw data
-        self.col3 = Col3 # indicate overtones to plot baseline corrected data
-        self.col4 = Col4 # special plot options
+        self.col1 = Col1(self, self.inner_frame)  # Pass self (App) as parent to Col1
+        self.frames[Col1] = self.col1
+        self.col2 = Col2(self, self.inner_frame)  # Pass self (App) as parent to Col2
+        self.frames[Col2] = self.col2
+        self.col3 = Col3(self, self.inner_frame)  # Pass self (App) as parent to Col3
+        self.frames[Col3] = self.col3
+        self.col4 = Col4(self, self.inner_frame)  # Pass self (App) as parent to Col4
+        self.frames[Col4] = self.col4
 
-        # define and pack frames
-        for f in [Col1, Col2, Col3, Col4]:
-            frame = f(self, self.inner_frame)
-            self.frames[f] = frame
-            print(f)
-            if frame.is_visible:
-                frame.grid(row=0, column=frame.col_position, sticky = 'nw')
-
+        # Define and grid frames using grid (not pack)
+        for f in [self.col1, self.col2, self.col3, self.col4]:
+            frame = f
+            frame.grid(row=0, column=frame.col_position, sticky='nw')
+        
         # intialize calibration window to be opened later
         self.calibration_window = CalibrationWindow
 
@@ -477,14 +478,22 @@ class App(tk.Tk):
     def confirm_range(self):
         self.modeling_window.confirm_range(self)
 
+    def temp_v_time_check_state(self, file_src_type):
+        print(file_src_type)
+        if file_src_type in ['Qsense', 'AWSensors']:
+            state = 'disable'
+        else:
+            state = 'enable'
+        self.col4.set_plot_temp_v_time_check_state(state)
+
 class srcFileFrame(tk.Frame):
     """Frame handling Tk objects for determing user's QCM-D device manufacturer
 
     Inherits from Tk.Frame
     """    
-    def __init__(self, container):
-        super().__init__(container)
-        self.container = container
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent = parent
         self.file_src_types = ['QCM-d', 'QCM-i', 'Qsense', 'AWSensors']
         self.file_src_type = ''
         file_src_label = tk.Label(self, text="What is the source of the data file?")
@@ -499,7 +508,7 @@ class srcFileFrame(tk.Frame):
         self.opt4_radio = tk.Radiobutton(self, text="AWSensors ", variable=self.file_src_var, value=3, command=self.handle_radios)
         self.opt4_radio.grid(row=2, column=1)
 
-        self.calibration_warning_label = tk.Label(self, text="WARNING: When using Qsense or AWSensors,\nif not calibration data entered,\nuser is limited to only basic visualizations")
+        self.calibration_warning_label = tk.Label(self, text="WARNING: When using Qsense or AWSensors,\nif not calibration data entered,\nuser is limited to only basic visualizations.\n\nAdditionally 'Temperature' plotting is not currently supported.")
 
     def handle_radios(self):
         """handles what to do when this frame's radio buttons are clicked
@@ -510,6 +519,7 @@ class srcFileFrame(tk.Frame):
         self.file_src_type = self.file_src_types[self.file_src_var.get()]
         input.file_src_type = self.file_src_type
 
+        
         if self.file_src_type == 'QCM-d':
             input.is_relative_time = False
             input.will_calculate_offset = True
@@ -521,9 +531,11 @@ class srcFileFrame(tk.Frame):
         elif self.file_src_type == 'Qsense' or self.file_src_type == 'AWSensors':
             input.is_relative_time = True
             self.calibration_warning_label.grid(row=3, column=0, columnspan=2)
+        print("***", self.file_src_type)
+        self.parent.parent.temp_v_time_check_state(self.file_src_type)
         
-        self.container.blit_time_input_frame(input.is_relative_time)
-        self.container.calibration_vals_frame.handle_radios()
+        self.parent.blit_time_input_frame(input.is_relative_time)
+        self.parent.calibration_vals_frame.handle_radios()
 
 
 class calibrationValsFrame(tk.Frame):
@@ -1278,10 +1290,11 @@ class PlotOptsWindow():
             json.dump(self.options, fp, indent=4)
 
 
-class Col1(tk.Frame, App):
+class Col1(tk.Frame):
     '''parent column for all data file related UI entries'''
     def __init__(self, parent, container):
         super().__init__(container)
+        self.container = container
         self.col_position = 0
         self.is_visible = True
         self.parent = parent
@@ -1318,6 +1331,9 @@ class Col1(tk.Frame, App):
 
         self.open_plot_opts_button = tk.Button(self, text="Customize plot options", width=20, command=self.open_plot_opts)
         self.open_plot_opts_button.grid(row=14, pady=(16, 4)) 
+
+    '''def temp_v_time_check_state(self):
+        self.parent.parent.temp_v_time_check_state()'''  # Call the function from App
 
     def open_plot_opts(self):
         self.parent.open_plot_opts_window()
@@ -1590,6 +1606,12 @@ class Col4(tk.Frame):
             self.int_plot_frame.grid(row=8, column=4)
         else:
             self.int_plot_frame.grid_forget()
+
+    def set_plot_temp_v_time_check_state(self, state):
+        if state == 'disable':
+            self.plot_temp_v_time_check.config(state=tk.DISABLED)
+        elif state == 'enable':
+            self.plot_temp_v_time_check.config(state=tk.NORMAL)
 
     def confirm_range(self):
         global input

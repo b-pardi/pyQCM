@@ -119,8 +119,13 @@ def extract_sensor_data(time,freq,dis,reslen,ns):
     df = pd.DataFrame()
     reslen = len(reslen)
     n_overtones = int(reslen / ns)
-    print(n_overtones)
-    df["Time"] = time[0]
+
+    # ensure lengths are consistent (time and data may be offset by 1)
+    if len(time[0]) < len(freq[0]) and len(time[0]) < len(dis[0]):
+        global_time = np.insert(time[0], 0, 0)
+    else:
+        global_time = time[0]    
+    df["Time"] = global_time
 
     # devices use either 1 or 4 sensors, use only 1 sensor
     for i in range(n_overtones):
